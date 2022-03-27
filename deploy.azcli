@@ -1,0 +1,48 @@
+/* 
+
+Curso Avanzado Azure Solutions Architect Expert 
+Edición: 2022-A
+Script de inicialización de recursos 
+
+*/
+
+/* 
+Nomenclatura:  
+    rg: grupo de recursos
+    asae: Azure Solutions Architect Expert
+    mlopez: usuario que realiza el proyecto
+    elz01: Enterprise Landing Zone 01 (escalabilidad de las ELZ)
+*/
+az group create --name rg-asae-mlopez-elz01 --location 'northeurope'
+
+
+/* comandos útiles para inicializar los entornos: */
+/* Iniciar sesión con AZ CLI en Azure y vincular la sesión del terminal */
+az login
+
+/* Listar las suscripciones vinculadas a la cuenta en la que estamos conectados: */
+/* Observar como podemos controlar la salida (json/tabla).
+az account list --output table
+
+/* Salida en JSON con colores */
+
+az account list --output jsonc 
+
+/* En el caso de tener MÁS DE UNA SUSCRIPCIÓN, podemos seleccionar la suscripción */
+/* con la que queremos trabajar, antes de hacer nada! */ 
+az account set --subscription "SolidQ VSE MSDN"
+
+/* Una vez tenemos la suscripción de trabajo activa para interactuar: */
+/* Listamos los grupos de recursos disponibles para verificar que todo está ok:*/
+az group list --output table
+
+/* para desplegar un GRUPO DE RECURSOS USANDO BICEP */
+/* Debemos usar un despliegue DE SUSCRIPCIÓN: "sub" */
+az deployment sub create --location northeurope --template-file .\main.dev.bicep
+
+/* AZURE BICEP DEPLOYMENT -> UNA VEZ ESTÁ CREADA LA PLANTILLA COMPLETA EN BICEP */
+
+az deployment group create \
+    --resource-group rg-asae-mlopez-elz01 \
+    --template-uri https://raw.githubusercontent.com/mspnp/samples/master/solutions/azure-hub-spoke/azuredeploy.json \
+    --parameters adminPassword=Password2020! linuxVMCount=1 windowsVMCount=1 deployVpnGateway=true
