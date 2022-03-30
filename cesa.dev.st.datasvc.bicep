@@ -2,7 +2,7 @@
 ###################################################################################
 ######              AZURE CLOUD EXPERT SOLUTIONS ARCHITECT                    #####
 ######                        ENTERPRISE LANDING ZONE                         #####
-######            a.palma@htmecia.com / 2022, March, 17th (creation)       #####  
+######            a.palma@htmedica.com / 2022, March, 17th (creation)       #####  
 ######                           DEV - ENVIRONMENT                            #####
 ######                   MAIN BICEP DEPLOYMENT / MODULES                      #####
 ###################################################################################                

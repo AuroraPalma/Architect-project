@@ -2,8 +2,8 @@
 
 ## Introducción
 En este repo iremos construyendo un entorno demostrador completo de una zona de aterrizaje emprearial (enterprise landing zone o ELZ) en la nube Microsoft Azure.
-* esto es una lista
-* esto es elmento 2
+* Recursos a implementar para la arquitectura
+
 
 ## Nomenclatura
 
@@ -20,4 +20,6 @@ En este repo iremos construyendo un entorno demostrador completo de una zona de 
 ```CLI
 az group list --output table
 ```
+az login --username <emailaddress> -t <customerTenantId-or-Domain>
+az account set --subscription <customerSubscriptionId>
 
