@@ -15,6 +15,7 @@ param networking_Spoke01 object = {
 param adminUserName string = 'usrwinadmin'
 param adminUserPass string = 'usr$Am1n-2223'
 param vmSize string = 'Standard_A1_v2'
+param vmParadaDiariaNombre string = 'sch-cesa-elz01-parada-vm-21h'
 
 var nicNameWindows = 'nic-windows-01'
 var vmNameWindows = 'vm-windows-01'
@@ -98,5 +99,24 @@ resource res_vmNameWindowsResource_name 'Microsoft.Compute/virtualMachines@2019-
         }
       ]
     }
+  }
+}
+resource res_schedules_shutdown_computevm_vmNameWindowsResource 'microsoft.devtestlab/schedules@2018-09-15' = {
+  name: vmParadaDiariaNombre
+  location: location
+  properties: {
+    status: 'Enabled'
+    taskType: 'ComputeVmShutdownTask'
+    dailyRecurrence: {
+      time: '2200'
+    }
+    timeZoneId: 'Romance Standard Time'
+    notificationSettings: {
+      status: 'Enabled'
+      timeInMinutes: 30
+      emailRecipient: 'mlopezg@vernegroup.com'
+      notificationLocale: 'en'
+    }
+    targetResourceId: res_vmNameWindowsResource_name.id
   }
 }

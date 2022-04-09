@@ -1,5 +1,7 @@
 param location string = resourceGroup().location
-
+/*
+para lanzarlo: az account set --subscription "Aurora Palma"
+*/
 /* /24 = 256 ips --> from 172.16.1.0 -to- 172.16.1.255 */
 param networking_OnPremises object = {
   name: 'vnet-cesa-elz01-onpremises01'
@@ -10,7 +12,11 @@ param networking_OnPremises object = {
 param networking_deploy_OnPrem_VpnGateway bool = true
 
 param networking_OnPrem_vpnGateway object = {
-
+  name: 'vgw-cesa-elz01-onprem-vgw01'
+  subnetName: 'GatewaySubnet'
+  /*addressPrefix: '172.16.1.8/24'*/
+  subnetPrefix: '172.16.1.64/29'
+  pipName: 'pip-cesa-elz01-onprem-vgw01'
 }
 /* -> 2022-04-06 -> params */
 param networking_OnPrem_localNetworkGateway object = {
@@ -39,6 +45,12 @@ resource res_networking_OnPremises 'Microsoft.Network/virtualNetworks@2020-05-01
         name: networking_OnPremises.subnetTransitName
         properties: {
           addressPrefix: networking_OnPremises.subnetTransit
+        }
+      }
+      {
+        name: networking_OnPrem_vpnGateway.subnetName
+        properties: {
+          addressPrefix: networking_OnPrem_vpnGateway.subnetPrefix
         }
       }
     ]
@@ -92,12 +104,6 @@ resource res_networking_OnPrem_vpnGateway 'Microsoft.Network/virtualNetworkGatew
   ]
 }
 
-/*{
-        name: networking_OnPrem_vpnGateway.subnetName
-        properties: {
-          addressPrefix: networking_OnPrem_vpnGateway.subnetPrefix
-        }
-      }*/
 /* Azure VPN Site-to-Site ++ localNetworkGateway resource ++ Connection resource: */
 /* 
   Especifique también los prefijos de dirección IP que se enrutarán a través 
