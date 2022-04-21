@@ -1,6 +1,7 @@
 # Azure Expert Solutions Architect 
 
 ## Introducción
+<<<<<<< Updated upstream
 Entorno completo de una zona de aterrizaje emprearial (enterprise landing zone o ELZ) en la nube Microsoft Azure.
 * Infraestructura como código:
 
@@ -78,6 +79,10 @@ az deployment group create --template-file ./main.bicep --resource-group storage
 Puede ver la plantilla JSON que se envía a Resource Manager mediante el comando bicep build. En el ejemplo siguiente, una plantilla de Bicep se convierte en su plantilla JSON correspondiente:
 ```bicep build ./main.bicep```
 Puede usar la CLI de Bicep para descompilar cualquier plantilla de ARM en una plantilla de Bicep mediante el comando ```bicep decompile```
+=======
+En este repo iremos construyendo un entorno demostrador completo de una zona de aterrizaje empresarial (enterprise landing zone o ELZ) en la nube Microsoft Azure.
+* Recursos a implementar para una arquitectura de Hub and spoke
+>>>>>>> Stashed changes
 
 ## Nomenclatura
 
