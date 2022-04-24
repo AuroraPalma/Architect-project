@@ -29,7 +29,7 @@ param networking_bastionHost object = {
   publicIPAddressName: 'pip-cesa-elz01-bas01'
   subnetName: 'AzureBastionSubnet'
   nsgName: 'nsg-hub01-bastion'
-  subnetPrefix: '10.0.1.64/29'/* 10.0.1.64 -> 10.0.1.71 */
+  subnetPrefix: '10.0.1.64/26'/* 10.0.1.64 -> 10.0.1.127 */
 }
 
 param networking_deploy_VpnGateway bool = true
@@ -37,11 +37,12 @@ param networking_deploy_VpnGateway bool = true
 param networking_vpnGateway object = {
   name: 'vgw-cesa-elz01-hub-vgw01'
   subnetName: 'GatewaySubnet'
-  subnetPrefix: '10.0.1.72/29'
+  subnetPrefix: '10.0.1.128/26'
   pipName: 'pip-cesa-elz01-hub-vgw01'
 }
 
 /* -> 2022-04-06 -> params */
+/*
 param networking_hub01_localNetworkGateway object = {
   name: 'lgw-cesa-elz01-hub01-lgw01'
   localAddressPrefix: '10.0.1.0/24'
@@ -53,6 +54,7 @@ param networking_hub01_conn object = {
   sharedKey: 'cesa-mola-este-curso-2022-abc'
 
 } 
+*/
 /* <- 2022-04-06 <- params */
 
 

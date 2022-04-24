@@ -1,3 +1,4 @@
+/*este código levanta la vpn gateway onprem con una red virtual y una ip address publica*/
 param location string = resourceGroup().location
 /*
 para lanzarlo: az account set --subscription "Aurora Palma"
@@ -15,7 +16,7 @@ param networking_OnPrem_vpnGateway object = {
   name: 'vgw-cesa-elz01-onprem-vgw01'
   subnetName: 'GatewaySubnet'
   /*addressPrefix: '172.16.1.8/24'*/
-  subnetPrefix: '172.16.1.64/29'
+  subnetPrefix: '172.16.1.64/26'
   pipName: 'pip-cesa-elz01-onprem-vgw01'
 }
 /* -> 2022-04-06 -> params */
@@ -110,7 +111,8 @@ resource res_networking_OnPrem_vpnGateway 'Microsoft.Network/virtualNetworkGatew
   de la puerta de enlace VPN al dispositivo VPN. Los prefijos de dirección que 
   especifique son los prefijos que se encuentran en la red local.
 */
-/* resource res_networking_OnPrem_localNetworkGateway 'Microsoft.Network/localNetworkGateways@2021-02-01' = if (networking_deploy_OnPrem_VpnGateway) {
+/*
+resource res_networking_OnPrem_localNetworkGateway 'Microsoft.Network/localNetworkGateways@2021-02-01' = if (networking_deploy_OnPrem_VpnGateway) {
   name: networking_OnPrem_localNetworkGateway.name
   location: location
   properties: {
@@ -143,4 +145,4 @@ resource res_networking_OnPrem_conn 'Microsoft.Network/connections@2021-02-01' =
   }
   dependsOn: []
 }
- */
+*/

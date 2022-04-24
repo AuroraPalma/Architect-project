@@ -119,6 +119,6 @@ az deployment group create --template-file ./main.bicep --resource-group storage
 ```CLI
 az deployment sub create --name Bicepdeployment --location northeurope --template-file .\main.dev.bicep
 ```
-
+az deployment group create --name deploy1 --resource-group "test" --template-file .\storageaccount.bicep
 
 

@@ -19,7 +19,7 @@ var uniqueStorageName = '${storagePrefix}${('mon01')}'
 /*variables que restringen los caracteres para el nombre del parámetro*/
 @minLength(3)
 @maxLength(24)
-param storageAccountName string = 'stcesaneudatasvcau01'
+param storageAccountName string = 'stazneugeneralaccount01'
 /*lista de valores permitidos para los tipos de replicacion de la cuenta de almacenamiento*/
 @allowed([
   'Standard_LRS'
