@@ -115,12 +115,13 @@ resource res_elz_workloads_rg_spk02_name 'Microsoft.Resources/resourceGroups@202
 }
 
 /*modulo para poner fecha en el deployment UNA VEZ se haya creado la cuenta de almacenamiento*/
+/*
 module cesaDevStorageDataSvc_Deploy 'cesa.dev.st.datasvc.bicep' = {
   name: '${'cesaDevHubStorageDataSvc_'}${currentDateTime}'
   scope: res_elz_storage_rg_hub01
   // TO-DO: params dev/pro
 }
-
+*/
 
 module cesaDevElz01_Networking_OnPrem_Deploy 'cesa.dev.networking.onprem.bicep' = {
   name: '${'cesaDevElz01Networking_OnPrem_'}${currentDateTime}'
