@@ -3,10 +3,10 @@ para lanzarlo: az account set --subscription "Aurora Palma"
 */
 param location string = resourceGroup().location
 
-/* /24 = 256 ips --> from 10.0.1.0 -to- 10.0.1.255 */
+/* /16 = 65536 ips --> from 	10.0.0.0 -to- 10.0.255.255 */
 param networking_Hub01 object = {
   name: 'vnet-cesa-elz01-hub01'
-  addressPrefix: '10.0.1.0/24'
+  addressPrefix: '10.0.0.0/16'
 }
 
 /* /24 = 256 ips --> from 10.0.2.0 -to- 10.0.2.255 */
@@ -20,7 +20,7 @@ param networking_AzureFirewall object = {
   name: 'afw-cesa-elz01-firewall01'
   publicIPAddressName: 'pip-cesa-elz01-afw01'
   subnetName: 'AzureFirewallSubnet'
-  subnetPrefix: '10.0.1.0/26' /* 10.0.1.0 -> 10.0.1.63 */
+  subnetPrefix: '10.0.201.0/24' /* 	10.0.201.0 -> 10.0.201.255 */
   routeName: 'udr-cesa-elz01-nxthop-to-fw'
 }
 
@@ -29,7 +29,7 @@ param networking_bastionHost object = {
   publicIPAddressName: 'pip-cesa-elz01-bas01'
   subnetName: 'AzureBastionSubnet'
   nsgName: 'nsg-hub01-bastion'
-  subnetPrefix: '10.0.1.64/26'/* 10.0.1.64 -> 10.0.1.127 */
+  subnetPrefix: '10.0.202.0/24'/* 10.0.202.0 -> 10.0.202.255 */
 }
 
 param networking_deploy_VpnGateway bool = true
@@ -37,7 +37,7 @@ param networking_deploy_VpnGateway bool = true
 param networking_vpnGateway object = {
   name: 'vgw-cesa-elz01-hub-vgw01'
   subnetName: 'GatewaySubnet'
-  subnetPrefix: '10.0.1.128/26'
+  subnetPrefix: '10.0.200.0/24' /* 10.0.200.0 -> 10.0.200.255 */
   pipName: 'pip-cesa-elz01-hub-vgw01'
 }
 
