@@ -139,3 +139,8 @@ module cesaDevElz01_Networking_Spoke01_Deploy 'cesa.dev.networking.spk01.bicep' 
   name: '${'cesaDevElz01Networking_spoke_01'}${currentDateTime}'
   scope: res_elz_networking_rg_spk01_name
 }
+
+module cesaDevElz01_Networking_Spoke02_Deploy 'cesa.dev.networking.spk02.bicep' = {
+  name: '${'cesaDevElz01Networking_spoke_02'}${currentDateTime}'
+  scope: res_elz_networking_rg_spk02_name
+}
