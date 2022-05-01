@@ -47,7 +47,7 @@ resource res_networking_Spk01 'Microsoft.Network/virtualNetworks@2020-05-01' = {
     ]
   }
 }
-
+/*
 resource nicNameWindowsResource 'Microsoft.Network/networkInterfaces@2020-05-01' = {
   name: nicNameWindows
   location: location
@@ -120,3 +120,4 @@ resource res_schedules_shutdown_computevm_vmNameWindowsResource 'microsoft.devte
     targetResourceId: res_vmNameWindowsResource_name.id
   }
 }
+*/
