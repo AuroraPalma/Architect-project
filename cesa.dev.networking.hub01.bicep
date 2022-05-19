@@ -206,7 +206,7 @@ resource res_networking_Hub01_conn 'Microsoft.Network/connections@2021-02-01' = 
 
 
 /* desplegamos MÁQUINA LINUX para testear conectividades */
-/*
+
 resource res_linuxVm_Hub01_pip 'Microsoft.Network/publicIPAddresses@2019-11-01' = if (networking_deploy_VpnGateway) {
   name: 'pip-cesa-elz01-hub01-lxvm2'
   location: location
@@ -260,7 +260,7 @@ resource res_linuxVm_Hub01_pip 'Microsoft.Network/publicIPAddresses@2019-11-01' 
 }
 
 resource res_hub01_linuxVm_nsg 'Microsoft.Network/networkSecurityGroups@2020-06-01' = {
-  name: 'nsg-cesa-elz01-hub01-lxvmcheckcomms'
+  name: 'nsg-cesa-elz01-hub01-lxvmcheckconns'
   location: location
   properties: {
     securityRules: [
@@ -328,7 +328,7 @@ resource vmNameLinuxResource 'Microsoft.Compute/virtualMachines@2019-07-01' = {
     }
     osProfile: {
       computerName: 'lxvmhubnetcheck'
-      adminUsername: 'cesadmin77'
+      adminUsername: 'admin77'
       adminPassword: 'Pa$$w0rd-007.'
     }
     storageProfile: {
@@ -372,4 +372,4 @@ resource res_schedules_shutdown_computevm_vmNameWindowsResource 'microsoft.devte
     targetResourceId: vmNameLinuxResource.id
   }
 }
-*/
+
