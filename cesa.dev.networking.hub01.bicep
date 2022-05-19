@@ -346,3 +346,24 @@ resource res_schedules_shutdown_computevm_vmNameWindowsResource 'microsoft.devte
   }
 }
 
+/*resource*/
+
+/* 'EXISTING' -> We use this kind of reference to access an existing element in the same RG: */
+resource res_networking_Spk01_Vnet 'Microsoft.Network/virtualNetworks@2020-05-01' existing = {
+  name: 'vnet-cesa-elz01-spk01'
+  scope: resourceGroup('rg-cesa-elz01-spk01-networking-01')
+}
+
+
+resource res_peering_Hub01_2_Spk01  'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2020-06-01' = {
+  name: '${res_networking_Hub01.name}/per-cesa-elz01-hub01-to-spk01'
+  properties: {
+    allowVirtualNetworkAccess: true
+    allowForwardedTraffic: true
+    allowGatewayTransit: false
+    useRemoteGateways: false
+    remoteVirtualNetwork: {
+      id: res_networking_Spk01_Vnet.id
+    }
+  }
+}
