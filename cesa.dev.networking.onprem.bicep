@@ -65,8 +65,6 @@ resource res_networking_OnPremises 'Microsoft.Network/virtualNetworks@2020-05-01
   }
 }
 
-/* MLopezG -> 2022-0406: Añadimos soporte VPNGateway para ONPREM + 1 MV Linux para testear comunicaciones */
-
 resource res_networking_OnPrem_vpnGateway_pip 'Microsoft.Network/publicIPAddresses@2019-11-01' = if (networking_deploy_OnPrem_VpnGateway) {
   name: networking_OnPrem_vpnGateway.pipName
   location: location
@@ -180,7 +178,7 @@ resource res_networking_OnPrem_conn 'Microsoft.Network/connections@2021-02-01' =
  */
 
 /* desplegamos MÁQUINA LINUX para testear conectividades */
-
+/*
 resource res_linuxVm_OnPrem_pip 'Microsoft.Network/publicIPAddresses@2019-11-01' = if (networking_deploy_OnPrem_VpnGateway) {
   name: 'pip-cesa-elz01-onprem-lxvm1'
   location: location
@@ -347,3 +345,4 @@ resource res_schedules_shutdown_computevm_vmNameWindowsResource 'microsoft.devte
     targetResourceId: vmNameLinuxResource.id
   }
 }
+*/

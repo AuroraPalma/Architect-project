@@ -1,4 +1,5 @@
 /*
+cambiar el DNS ip pública o borrarla
 para lanzarlo: az account set --subscription "VSES – MPN_02"
 */
 param location string = resourceGroup().location
@@ -106,8 +107,6 @@ resource res_networking_Hub01 'Microsoft.Network/virtualNetworks@2020-05-01' = {
   }
 }
 
-/* MLopezG -> 2022-0406: Añadimos soporte VPNGateway para el Hub + 1 MV Linux para testear comunicaciones */
-
 resource res_networking_Hub_vpnGateway_pip 'Microsoft.Network/publicIPAddresses@2019-11-01' = if (networking_deploy_VpnGateway) {
   name: 'pip-cesa-elz01-hub-vgw01'
   location: location
@@ -207,7 +206,7 @@ resource res_networking_Hub01_conn 'Microsoft.Network/connections@2021-02-01' = 
 
 
 /* desplegamos MÁQUINA LINUX para testear conectividades */
-
+/*
 resource res_linuxVm_Hub01_pip 'Microsoft.Network/publicIPAddresses@2019-11-01' = if (networking_deploy_VpnGateway) {
   name: 'pip-cesa-elz01-hub01-lxvm2'
   location: location
@@ -221,7 +220,7 @@ resource res_linuxVm_Hub01_pip 'Microsoft.Network/publicIPAddresses@2019-11-01' 
     publicIPAllocationMethod: 'Dynamic'
     publicIPAddressVersion: 'IPv4'
     dnsSettings: {
-      domainNameLabel: 'cesalxvmhub01checkcomms'
+      domainNameLabel: 'lxvmarchitecturehub01conncheck'
     }
     idleTimeoutInMinutes: 4
   }
@@ -373,3 +372,4 @@ resource res_schedules_shutdown_computevm_vmNameWindowsResource 'microsoft.devte
     targetResourceId: vmNameLinuxResource.id
   }
 }
+*/
