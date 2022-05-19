@@ -15,7 +15,7 @@ param networking_Spoke01 object = {
 param adminUserName string = 'usrwinadmin'
 param adminUserPass string = 'usr$Am1n-2223'
 param vmSize string = 'Standard_A1_v2'
-param vmParadaDiariaNombre string = 'sch-cesa-elz01-parada-vm-21h'
+param vmParadaDiariaNombre string = 'shutdown-computevm-vm-windows-01'
 
 var nicNameWindows = 'nic-windows-01'
 var vmNameWindows = 'vm-windows-01'

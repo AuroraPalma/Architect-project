@@ -141,10 +141,6 @@ module mod_cesaDevElz01_Vnet2Vnet_Hub_Conn_Deploy 'cesa.dev.networking.Hub.Vnet2
     location: deployment_location
   }
 }
-/*
-}*/
-/*
-
 module mod_cesaDevElz01_Networking_Spk01_Deploy 'cesa.dev.networking.spk01.bicep' = {
   name: '${'cesaDevElz01Networking_Spk01_'}${currentDateTime}'
   scope: res_elz_networking_rg_spk01_name
@@ -153,6 +149,8 @@ module mod_cesaDevElz01_Networking_Spk01_Deploy 'cesa.dev.networking.spk01.bicep
   }
   // TO-DO: params dev/pro
 }
+
+/*
 module mod_cesaDevElz01_Networking_Spk02_Deploy 'cesa.dev.networking.spk02.bicep' = {
   name: '${'cesaDevElz01Networking_Spk02_'}${currentDateTime}'
   scope: res_elz_networking_rg_spk02_name
