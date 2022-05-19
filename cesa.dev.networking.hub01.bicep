@@ -177,33 +177,6 @@ resource res_networking_Hub01_localNetworkGateway 'Microsoft.Network/localNetwor
     gatewayIpAddress: res_networking_Hub_vpnGateway_pip.properties.ipAddress  /*''*/
   }
 }
-/* 
-resource res_networking_Hub01_conn 'Microsoft.Network/connections@2021-02-01' = if (networking_deploy_VpnGateway) {
-  name: networking_hub01_conn.name
-  location: location
-  properties: {
-    connectionType:  networking_hub01_conn.connectionType
-    virtualNetworkGateway1: {
-      id: res_networking_Hub_vpnGateway.id
-      properties: {
-        
-      }
-    }
-    enableBgp: networking_hub01_conn.enableBgp
-    sharedKey: networking_hub01_conn.sharedKey
-    localNetworkGateway2: {
-      id: res_networking_Hub01_localNetworkGateway.id
-      properties: {
-        
-      }
-    }
-  }
-  dependsOn: [
-    res_networking_Hub01
-  ]
-} */
-
-
 
 /* desplegamos MÁQUINA LINUX para testear conectividades */
 

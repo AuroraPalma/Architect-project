@@ -136,49 +136,8 @@ resource res_networking_OnPrem_localNetworkGateway 'Microsoft.Network/localNetwo
   }
 }
 
-/*
-/* Azure VPN Site-to-Site ++ localNetworkGateway resource ++ Connection resource: */
-/* 
-  Especifique también los prefijos de dirección IP que se enrutarán a través 
-  de la puerta de enlace VPN al dispositivo VPN. Los prefijos de dirección que 
-  especifique son los prefijos que se encuentran en la red local.
-*/
-/*  
-resource res_networking_OnPrem_conn 'Microsoft.Network/connections@2021-02-01' = if (networking_deploy_OnPrem_VpnGateway) {
-  name: networking_OnPrem_conn.name
-  location: location
-  tags: {
-    'cor-ctx-environment': 'development'
-    'cor-ctx-projectcode': 'Verne Technology - Curso Cloud Expert Solution Architect'
-    'cor-ctx-purpose': 'Conexión para enrutar tráfico entre redes (extremos del túnel). El tráfico de estas redes irá por el túnel'
-    'cor-aut-delete' : 'true'
-  }
-  properties: {
-    connectionProtocol: 'IKEv2'
-    connectionType: networking_OnPrem_conn.connectionType
-    virtualNetworkGateway1: {
-
-      id: res_networking_OnPrem_vpnGateway.id
-      properties: {
-      }
-    }
-    enableBgp: networking_OnPrem_conn.enableBgp
-    sharedKey: networking_OnPrem_conn.sharedKey
-    localNetworkGateway2: {
-
-      id: res_networking_OnPrem_localNetworkGateway.id
-      properties: {
-      }
-    }
-  }
-  dependsOn: [
-    res_networking_OnPremises
-  ]
-}
- */
-
 /* desplegamos MÁQUINA LINUX para testear conectividades */
-/*
+
 resource res_linuxVm_OnPrem_pip 'Microsoft.Network/publicIPAddresses@2019-11-01' = if (networking_deploy_OnPrem_VpnGateway) {
   name: 'pip-cesa-elz01-onprem-lxvm1'
   location: location
@@ -192,7 +151,7 @@ resource res_linuxVm_OnPrem_pip 'Microsoft.Network/publicIPAddresses@2019-11-01'
     publicIPAllocationMethod: 'Dynamic'
     publicIPAddressVersion: 'IPv4'
     dnsSettings: {
-      domainNameLabel: 'cesalxvmonpremcheckcomms'
+      domainNameLabel: 'lxvmarchitectonpremconncheck'
     }
     idleTimeoutInMinutes: 4
   }
@@ -300,7 +259,7 @@ resource vmNameLinuxResource 'Microsoft.Compute/virtualMachines@2019-07-01' = {
     }
     osProfile: {
       computerName: 'lxvmonpnetcheck'
-      adminUsername: 'cesadmin77'
+      adminUsername: 'admin77'
       adminPassword: 'Pa$$w0rd-007.'
     }
     storageProfile: {
@@ -345,4 +304,4 @@ resource res_schedules_shutdown_computevm_vmNameWindowsResource 'microsoft.devte
     targetResourceId: vmNameLinuxResource.id
   }
 }
-*/
+
