@@ -1,5 +1,5 @@
 /*
-para lanzarlo: az account set --subscription "VSES – MPN_02"
+MOdificar los nombres y resource group
 */
 param location string = resourceGroup().location
 

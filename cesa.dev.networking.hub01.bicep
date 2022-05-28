@@ -1,6 +1,6 @@
 /*
 cambiar el DNS ip pública o borrarla
-para lanzarlo: az account set --subscription "VSES – MPN_02"
+Poner bastión y azure key vault
 */
 param location string = resourceGroup().location
 

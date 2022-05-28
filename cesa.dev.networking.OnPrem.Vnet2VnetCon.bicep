@@ -1,5 +1,5 @@
 /*
-para lanzarlo: az account set --subscription "VSES – MPN_02"
+Connection VPN On prem to Hub
 */
 param location string = resourceGroup().location
 

@@ -1,4 +1,4 @@
-
+/*Añadir VM de chequeo linux en red mnagent*/
 param location string = resourceGroup().location
 
 /* /22 = 1000 ips --> from 10.1.0.0 -to- 10.1.3.255 */

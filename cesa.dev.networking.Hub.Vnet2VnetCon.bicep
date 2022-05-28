@@ -1,5 +1,5 @@
 /*
-para lanzarlo: az account set --subscription "VSES – MPN_02"
+Module for connection VPN HUB
 */
 param location string = resourceGroup().location
 
