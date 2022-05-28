@@ -79,6 +79,96 @@ Puede ver la plantilla JSON que se envía a Resource Manager mediante el comando
 ```bicep build ./main.bicep```
 Puede usar la CLI de Bicep para descompilar cualquier plantilla de ARM en una plantilla de Bicep mediante el comando ```bicep decompile```
 
+* Recursos secundarios anidados
+
+Un enfoque para definir un recurso secundario es anidar el recurso secundario dentro del elemento primario.
+
+``` bicep 
+resource vm 'Microsoft.Compute/virtualMachines@2020-06-01' = {
+  name: vmName
+  location: location
+  properties: {
+    // ...
+  }
+
+  resource installCustomScriptExtension 'extensions' = {
+    name: 'InstallCustomScript'
+    location: location
+    properties: {
+      // ...
+    }
+  }
+}
+
+El recurso anidado tiene un tipo de recurso más sencillo de lo normal. Aunque el nombre de tipo completo es Microsoft.Compute/virtualMachines/extensions, el recurso anidado hereda automáticamente el tipo de recurso del elemento primario, por lo que solo debe especificar el tipo de recurso secundario, extensions
+```
+Puede hacer referencia a un recurso anidado mediante el operador ::. Por ejemplo, podría crear una salida que devolviera el identificador de recurso completo de la extensión
+``` bicep
+output childResourceId string = vm::installCustomScriptExtension.id
+```
+Un segundo enfoque consiste en declarar el recurso secundario sin anidamiento y, a continuación, indicarle a Bicep la relación de elemento primario-secundario mediante la propiedad parent:
+
+```bicep
+resource vm 'Microsoft.Compute/virtualMachines@2020-06-01' = {
+  name: vmName
+  location: location
+  properties: {
+    // ...
+  }
+}
+
+resource installCustomScriptExtension 'Microsoft.Compute/virtualMachines/extensions@2020-06-01' = {
+  parent: vm
+  name: 'InstallCustomScript'
+  location: location
+  properties: {
+    // ...
+  }
+}
+
+output childResourceId string = installCustomScriptExtension.id
+```
+* Construcción del nombre del recurso
+
+```bicep
+resource vm 'Microsoft.Compute/virtualMachines@2020-06-01' = {
+  name: vmName
+  location: location
+  properties: {
+    // ...
+  }
+}
+
+resource installCustomScriptExtension 'Microsoft.Compute/virtualMachines/extensions@2020-06-01' = {
+  name: '${vm.name}/InstallCustomScript'
+  location: location
+  properties: {
+    // ...
+  }
+}
+```
+Se usa la interpolación de cadenas para anexar la propiedad name del recurso de máquina virtual al nombre del recurso secundario. 
+Puede declarar el nombre del recurso secundario mediante la variable vmName en su lugar. Sin embargo, Bicep no comprenderá que el recurso primario debe implementarse antes que el recurso secundario.
+
+Para resolver este problema, puede indicar manualmente a Bicep la dependencia mediante la palabra clave dependsOn:
+```bicep
+resource vm 'Microsoft.Compute/virtualMachines@2020-06-01' = {
+  name: vmName
+  location: location
+  properties: {
+    // ...
+  }
+}
+
+resource installCustomScriptExtension 'Microsoft.Compute/virtualMachines/extensions@2020-06-01' = {
+  name: '${vmName}/InstallCustomScript'
+  dependsOn: [
+    vm
+  ]
+  //...
+}
+```
+
 ## Nomenclatura
 
 
