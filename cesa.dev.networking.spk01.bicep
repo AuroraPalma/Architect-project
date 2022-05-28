@@ -9,15 +9,13 @@ param networking_Spoke01 object = {
   subnetFrontPrefix: '10.1.0.0/25'
   subnetBackName: 'snet-spk01-back'
   subnetBackPrefix: '10.1.0.128/25'
-  subnetMangament: 'snet-spk01-mngnt'
-  subnetMangamentPrefix: '10.1.1.0/29'
 
 }
 
 param adminUserName string = 'usrwinadmin'
 param adminUserPass string = 'usr$Am1n-2223'
 param vmSize string = 'Standard_A1_v2'
-param vmParadaDiariaNombre string = 'shutdown-computevm-vm-windows-01'
+param vmParadaDiariaNombre string = 'sch-cesa-elz01-parada-vm-21h'
 
 var nicNameWindows = 'nic-windows-01'
 var vmNameWindows = 'vm-windows-01'
@@ -34,12 +32,6 @@ resource res_networking_Spk01 'Microsoft.Network/virtualNetworks@2020-05-01' = {
       ]
     }
     subnets: [
-      {
-        name: networking_Spoke01.subnetMangament
-        properties: {
-          addressPrefix: networking_Spoke01.subnetMangamentPrefix
-        }
-      }
       {
         name: networking_Spoke01.subnetFrontName
         properties: {
@@ -128,29 +120,4 @@ resource res_schedules_shutdown_computevm_vmNameWindowsResource 'microsoft.devte
     targetResourceId: res_vmNameWindowsResource_name.id
   }
 }
-
-/*  PEERINGS HUB - SPOKES  */
-
-/*resource*/
-
-/* 'EXISTING' -> We use this kind of reference to access an existing element in the same RG: */
-resource res_networking_Hub01_Vnet 'Microsoft.Network/virtualNetworks@2020-05-01' existing = {
-  name: 'vnet-cesa-elz01-hub01'
-  scope: resourceGroup('rg-cesa-elz01-hub01-networking-01')
-}
-
-
-resource res_peering_Spk01_2_Hub01  'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2020-06-01' = {
-  name: '${res_networking_Spk01.name}/per-cesa-elz01-hub01-to-spk01'
-  properties: {
-    allowVirtualNetworkAccess: true
-    allowForwardedTraffic: true
-    allowGatewayTransit: false
-    useRemoteGateways: false
-    remoteVirtualNetwork: {
-      id: res_networking_Hub01_Vnet.id
-    }
-  }
-}
 */
-
