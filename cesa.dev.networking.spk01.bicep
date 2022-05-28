@@ -152,5 +152,5 @@ resource res_peering_Spk01_2_Hub01  'Microsoft.Network/virtualNetworks/virtualNe
     }
   }
 }
-*/
+
 
