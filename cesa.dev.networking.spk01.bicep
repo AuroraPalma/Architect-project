@@ -55,7 +55,7 @@ resource res_networking_Spk01 'Microsoft.Network/virtualNetworks@2020-05-01' = {
     ]
   }
 }
-
+/*
 resource nicNameWindowsResource 'Microsoft.Network/networkInterfaces@2020-05-01' = {
   name: nicNameWindows
   location: location
@@ -152,3 +152,5 @@ resource res_peering_Spk01_2_Hub01  'Microsoft.Network/virtualNetworks/virtualNe
     }
   }
 }
+*/
+

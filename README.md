@@ -169,9 +169,6 @@ resource installCustomScriptExtension 'Microsoft.Compute/virtualMachines/extensi
 }
 ```
 
-
-
-
 ## Nomenclatura
 
 
