@@ -1,3 +1,4 @@
+/*Añadir VM de chequeo linux en red mnagent*/
 param location string = resourceGroup().location
 
 /* /22 = 1000 ips --> from 10.1.0.0 -to- 10.1.3.255 */
@@ -72,6 +73,7 @@ resource nicNameWindowsResource 'Microsoft.Network/networkInterfaces@2020-05-01'
     ]
   }
 }
+
 resource res_vmNameWindowsResource_name 'Microsoft.Compute/virtualMachines@2019-07-01' = {
   name: vmNameWindows
   location: location
@@ -126,6 +128,7 @@ resource res_schedules_shutdown_computevm_vmNameWindowsResource 'microsoft.devte
     targetResourceId: res_vmNameWindowsResource_name.id
   }
 }
+
 /*  PEERINGS HUB - SPOKES  */
 
 /*resource*/
@@ -151,5 +154,3 @@ resource res_peering_Spk01_2_Hub01  'Microsoft.Network/virtualNetworks/virtualNe
 }
 
 
-
-=======

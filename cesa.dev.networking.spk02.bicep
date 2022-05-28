@@ -1,3 +1,4 @@
+/*Replicar lo del spk01*/
 param location string = resourceGroup().location
 param networking_Spoke02 object = {
   name: 'vnet-cesa-elz01-spk02'

@@ -7,7 +7,8 @@
 ######                   MAIN BICEP DEPLOYMENT / MODULES                      #####
 ###################################################################################                
 */
-/* Definición de parámetros de la implementación */
+/* Definición de parámetros de la implementación 
+Poner variables y ponerlo con descripciones*/
 param elz_networking_rg_hub01_name string = 'rg-cesa-elz01-hub01-networking-01'
 param elz_storage_rg_hub01_name string = 'rg-cesa-elz01-hub01-st-01'
 param deployment_location string = deployment().location
@@ -159,6 +160,4 @@ module mod_cesaDevElz01_Networking_Spk02_Deploy 'cesa.dev.networking.spk02.bicep
   // TO-DO: params dev/pro
 }
 
-
-=======
 
