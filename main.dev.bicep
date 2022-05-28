@@ -159,5 +159,17 @@ module mod_cesaDevElz01_Networking_Spk02_Deploy 'cesa.dev.networking.spk02.bicep
   }
   // TO-DO: params dev/pro
 }
-
-
+module mod_architectdev_KeyVault_Hub_Deploy 'arcchitect.dev.keyvault.bicep' = {
+  name: '${'architectdevKeyvault_Hub_'}${currentDateTime}'
+  scope: res_elz_storage_rg_hub01_name
+  params:{
+    location:deployment_location
+  }
+}
+module mod_cesaDev_Workload_spk01_Deploy 'cesa.dev.worload.spk.bicep' = {
+  name: '${'cesadevworkload_Spk01_'}${currentDateTime}'
+  scope: res_elz_workloads_rg_spk01_name
+  params:{
+    location:deployment_location
+  }
+}
