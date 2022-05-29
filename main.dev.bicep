@@ -133,6 +133,9 @@ module mod_cesaDevElz01_Vnet2Vnet_OnPrem_Conn_Deploy 'cesa.dev.networking.OnPrem
   params:{
     location: deployment_location
   }
+  dependsOn:[
+    mod_cesaDevElz01_Networking_OnPrem_Deploy
+  ]
 }
 
 module mod_cesaDevElz01_Vnet2Vnet_Hub_Conn_Deploy 'cesa.dev.networking.Hub.Vnet2VnetCon.bicep' = {
@@ -141,6 +144,9 @@ module mod_cesaDevElz01_Vnet2Vnet_Hub_Conn_Deploy 'cesa.dev.networking.Hub.Vnet2
   params:{
     location: deployment_location
   }
+  dependsOn:[
+    mod_cesaDevElz01_Networking_Hub_Deploy
+  ]
 }
 
 module mod_cesaDevElz01_Networking_Spk01_Deploy 'cesa.dev.networking.spk01.bicep' = {
@@ -159,13 +165,15 @@ module mod_cesaDevElz01_Networking_Spk02_Deploy 'cesa.dev.networking.spk02.bicep
   }
   // TO-DO: params dev/pro
 }
-module mod_architectdev_KeyVault_Hub_Deploy 'arcchitect.dev.keyvault.bicep' = {
+/*
+module mod_architectdev_KeyVault_Hub_Deploy 'arc.dev.keyvault.bicep' = {
   name: '${'architectdevKeyvault_Hub_'}${currentDateTime}'
   scope: res_elz_storage_rg_hub01_name
   params:{
     location:deployment_location
   }
 }
+
 module mod_cesaDev_Workload_spk01_Deploy 'cesa.dev.worload.spk.bicep' = {
   name: '${'cesadevworkload_Spk01_'}${currentDateTime}'
   scope: res_elz_workloads_rg_spk01_name
@@ -173,3 +181,4 @@ module mod_cesaDev_Workload_spk01_Deploy 'cesa.dev.worload.spk.bicep' = {
     location:deployment_location
   }
 }
+*/

@@ -59,5 +59,6 @@ resource res_networking_OnPrem_conn 'Microsoft.Network/connections@2021-02-01' =
     }*/
   }
   dependsOn: [
+    res_networking_Hub01_vpnGateway
   ]
 }

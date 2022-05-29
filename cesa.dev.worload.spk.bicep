@@ -180,7 +180,7 @@ resource container 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/container
     }
   }
 }
-
+/*
 resource emailActionGroup 'microsoft.insights/actionGroups@2021-09-01' = {
   name: 'emailActionGroupName'
   location: 'global'
@@ -226,3 +226,4 @@ resource alert 'Microsoft.Insights/activityLogAlerts@2020-10-01' = {
     }
   }
 }
+*/
