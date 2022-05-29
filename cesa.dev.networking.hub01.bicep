@@ -26,15 +26,15 @@ param networking_AzureFirewall object = {
   subnetPrefix: '10.0.1.0/26' /* 10.0.1.0 -> 10.0.1.63 */
   routeName: 'udr-cesa-elz01-nxthop-to-fw'
 }
-
+/*
 param networking_bastionHost object = {
   name: 'bas-cesa-elz01-bastionhost01'
   publicIPAddressName: 'pip-cesa-elz01-bas01'
   subnetName: 'AzureBastionSubnet'
   nsgName: 'nsg-hub01-bastion'
-  subnetPrefix: '10.0.1.64/29'/* 10.0.1.64 -> 10.0.1.71 */
+  subnetPrefix: '10.0.1.64/29'/* 10.0.1.64 -> 10.0.1.71 
 }
-
+*/
 param networking_vpnGateway object = {
   name: 'vgw-cesa-elz01-hub01-vgw01'
   subnetName: 'GatewaySubnet'
@@ -69,12 +69,12 @@ resource res_networking_Hub01 'Microsoft.Network/virtualNetworks@2020-05-01' = {
           addressPrefix: networking_AzureFirewall.subnetPrefix
         }
       }
-      {
+      /*{
         name: networking_bastionHost.subnetName
         properties: {
           addressPrefix: networking_bastionHost.subnetPrefix
         }
-      }
+      }*/
       {
         name: networking_vpnGateway.subnetName
         properties: {
@@ -101,7 +101,7 @@ resource res_networking_Hub_vpnGateway_pip 'Microsoft.Network/publicIPAddresses@
     'cor-aut-delete' : 'true'
   }
   properties: {
-    publicIPAllocationMethod: 'Static'/*Se ha cambiado de dinamica a estática*/
+    publicIPAllocationMethod: 'Dynamic'
   }
 }
 

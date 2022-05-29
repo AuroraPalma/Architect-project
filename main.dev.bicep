@@ -127,6 +127,17 @@ module mod_cesaDevElz01_Networking_Hub_Deploy 'cesa.dev.networking.hub01.bicep' 
   // TO-DO: params dev/pro
 }
 
+module mod_architectdev_bastion_Hub_Deploy 'arc.dev.bastion.bicep' = {
+  name: '${'architectdev_bastion_Hub_'}${currentDateTime}'
+  scope:res_elz_networking_rg_hub01_name
+  params:{
+    location:deployment_location
+  }
+  dependsOn:[
+    mod_cesaDevElz01_Networking_Hub_Deploy
+  ]
+}
+
 module mod_cesaDevElz01_Vnet2Vnet_OnPrem_Conn_Deploy 'cesa.dev.networking.OnPrem.Vnet2VnetCon.bicep' = {
   name: '${'cesaDevElz01Net_Vnet2Vnet_Conn_'}${currentDateTime}'
   scope: res_elz_networking_rg_onprem_name
