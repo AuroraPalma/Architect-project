@@ -42,26 +42,10 @@ param networking_vpnGateway object = {
   pipName: 'pip-cesa-elz01-hub01-vgw01'
 }
 
-/* -> 2022-04-06 -> params 
-param networking_hub01_localNetworkGateway object = {
-  name: 'lgw-cesa-elz01-hub01-lgw01'
-  localAddressPrefix: '10.0.1.0/24'
-}*/
-/* -> 2022-05-18 -> params */
 param networking_hub01_localNetworkGateway object = {
   name: 'lgw-cesa-elz01-hub01-lgw01'
   localAddressPrefix: '172.16.1.0/26'
 }
-param networking_hub01_conn object = {
-  name: 'con-cesa-elz01-hub01-con01'
-  connectionType: 'Vnet2Vnet'   /*Site-to-Site => IPSec*/
-  enableBgp: false
-  sharedKey: 'cesa_mola_este_curso_2022_abc'
-
-} 
-/* <- 2022-04-06 <- params */
-
-
 
 resource res_networking_Hub01 'Microsoft.Network/virtualNetworks@2020-05-01' = {
   name: networking_Hub01.name
@@ -117,7 +101,7 @@ resource res_networking_Hub_vpnGateway_pip 'Microsoft.Network/publicIPAddresses@
     'cor-aut-delete' : 'true'
   }
   properties: {
-    publicIPAllocationMethod: 'Dynamic'
+    publicIPAllocationMethod: 'Static'/*Se ha cambiado de dinamica a estática*/
   }
 }
 
@@ -367,3 +351,7 @@ resource res_peering_Hub01_2_Spk01  'Microsoft.Network/virtualNetworks/virtualNe
     }
   }
 }
+/*
+output bastion_subnetid string = res_networking_Hub01.properties.subnets.id
+output bastion_publicIPAddress string = networking_bastionHost.properties.publicIPAddressName
+*/
