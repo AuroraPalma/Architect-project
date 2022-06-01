@@ -13,16 +13,16 @@ param workspaceName string = 'lg-analytics-dev'
 param sku string = 'pergb2018'
 
 @description('Specifies the location for the workspace.')
-param location string
+param location string = 'northeurope'
 
 @description('Number of days to retain data.')
 param retentionInDays int = 30
 
 @description('true to use resource or workspace permissions. false to require workspace permissions.')
-param resourcePermissions bool
+param resourcePermissions bool = true
 
 @description('Number of days to retain data in Heartbeat table.')
-param heartbeatTableRetention int
+param heartbeatTableRetention int = 7
 
 resource workspaceName_resource 'Microsoft.OperationalInsights/workspaces@2020-08-01' = {
   name: workspaceName

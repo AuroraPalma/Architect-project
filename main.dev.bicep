@@ -177,59 +177,21 @@ module mod_cesaDevElz01_Networking_Spk02_Deploy 'cesa.dev.networking.spk02.bicep
   // TO-DO: params dev/pro
 }
 
-/*Log analytics
-param deploymentName string = 'logAnalytics${utcNow()}'
-
-module logAnalytics 'arc.dev.loganalytics.bicep' = {
-  name: deploymentName
-  params: {
-    name: 'myLogAnalyticsWorkspace'
-    sku: 'PerGB2018'
-    retentionInDays: 30
-    enableDeleteLock: true
-    enableDiagnostics: true
-    diagnosticStorageAccountId: 'myStorageAccountResourceId'
-    solutions: [
-      {
-        name: 'AzureActivity'
-        product: 'OMSGallery/AzureActivity'
-        publisher: 'Microsoft'
-        promotionCode: ''
-      }
-    ]
-    dataSources: [
-      {
-        name: 'Application'
-        kind: 'WindowsEvent'
-        properties: {
-          eventLogName: 'Application'
-          eventTypes: [
-            {
-              eventType: 'Error'
-            }
-            {
-              eventType: 'Warning'
-            }
-          ]
-        }
-      }
-      {
-        name: 'LogicalDisk1'
-        kind: 'WindowsPerformanceCounter'
-        properties: {
-          objectName: 'LogicalDisk'
-          instanceName: '*'
-          intervalSeconds: 360
-          counterName: 'Avg Disk sec/Read'
-        }
-      }
-    ]
+/*Log analytics*/
+module mod_architect_devLoganalytics_Hub_Deploy 'arc.dev.loganalytics.bicep' = {
+  name: '${'architectDevLoganalytics_Hub_'}${currentDateTime}'
+  scope:res_elz_networking_rg_hub01_name
+  params:{
+    location:deployment_location
   }
-}*/
+  dependsOn:[
+    mod_cesaDevElz01_Networking_Hub_Deploy
+  ]
+}
 /*
 module mod_architectdev_KeyVault_Hub_Deploy 'arc.dev.keyvault.bicep' = {
   name: '${'architectdevKeyvault_Hub_'}${currentDateTime}'
-  scope: res_elz_storage_rg_hub01_name
+  scope: res_elz_networking_rg_hub01_name
   params:{
     location:deployment_location
   }
