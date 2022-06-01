@@ -79,22 +79,72 @@ var locations = [
     isZoneRedundant: false
   }
 ]
-@description('Specify the name of alert')
-param alertName string = 'FirstAlert'
 
-@description('Specify a description of alert')
+@description('Username for Administrator Account')
+param adminUsername string
+
+@description('The name of you Virtual Machine.')
+param vmName string = 'vmName'
+
+@description('Choose between CPU or GPU processing')
 @allowed([
-  'Active'
-  'InProgress'
-  'Resolved'
+  'CPU-4GB'
+  'CPU-7GB'
+  'CPU-8GB'
+  'CPU-14GB'
+  'CPU-16GB'
+  'GPU-56GB'
 ])
-param status string = 'Active'
+param cpu_gpu string = 'CPU-4GB'
 
-@description('Specify the email address where the alerts are sent to.')
-param emailAddress string = 'a.palma@htmedica.com'
+@description('Name of the VNET')
+param virtualNetworkName string = 'vNet'
 
-@description('Specify the email address name where the alerts are sent to.')
-param emailName string = 'htmedica'
+@description('Name of the subnet in the virtual network')
+param subnetName string = 'subnet'
+
+@description('Name of the Network Security Group')
+param networkSecurityGroupName string = 'SecGroupNet'
+
+@description('Type of authentication to use on the Virtual Machine. SSH key is recommended.')
+@allowed([
+  'sshPublicKey'
+  'password'
+])
+param authenticationType string = 'sshPublicKey'
+
+@description('SSH Key or password for the Virtual Machine. SSH key is recommended.')
+@secure()
+param adminPasswordOrKey string
+
+var networkInterfaceName = '${vmName}NetInt'
+var virtualMachineName = vmName
+var publicIpAddressName = '${vmName}PublicIP'
+var subnetRef = resourceId('Microsoft.Network/virtualNetworks/subnets', virtualNetworkName, subnetName)
+var nsgId = networkSecurityGroup.id
+var osDiskType = 'StandardSSD_LRS'
+var storageAccountName = 'storage${uniqueString(resourceGroup().id)}'
+var storageAccountType = 'Standard_LRS'
+var storageAccountKind = 'Storage'
+var vmSize = {
+  'CPU-4GB': 'Standard_B2s'
+  'CPU-7GB': 'Standard_D2s_v3'
+  'CPU-8GB': 'Standard_D2s_v3'
+  'CPU-14GB': 'Standard_D4s_v3'
+  'CPU-16GB': 'Standard_D4s_v3'
+  'GPU-56GB': 'Standard_NC6_Promo'
+}
+var linuxConfiguration = {
+  disablePasswordAuthentication: true
+  ssh: {
+    publicKeys: [
+      {
+        path: '/home/${adminUsername}/.ssh/authorized_keys'
+        keyData: adminPasswordOrKey
+      }
+    ]
+  }
+}
 
 resource account 'Microsoft.DocumentDB/databaseAccounts@2021-10-15' = {
   name: toLower(accountName)
@@ -180,50 +230,158 @@ resource container 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/container
     }
   }
 }
-/*
-resource emailActionGroup 'microsoft.insights/actionGroups@2021-09-01' = {
-  name: 'emailActionGroupName'
-  location: 'global'
+
+resource networkInterface 'Microsoft.Network/networkInterfaces@2021-05-01' = {
+  name: networkInterfaceName
+  location: location
   properties: {
-    groupShortName: 'string'
-    enabled: true
-    emailReceivers: [
+    ipConfigurations: [
       {
-        name: emailName
-        emailAddress: emailAddress
-        useCommonAlertSchema: true
+        name: 'ipconfig1'
+        properties: {
+          subnet: {
+            id: subnetRef
+          }
+          privateIPAllocationMethod: 'Dynamic'
+          publicIPAddress: {
+            id: publicIpAddress.id
+          }
+        }
+      }
+    ]
+    networkSecurityGroup: {
+      id: nsgId
+    }
+  }
+  dependsOn: [
+    virtualNetwork
+  ]
+}
+
+resource networkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2021-05-01' = {
+  name: networkSecurityGroupName
+  location: location
+  properties: {
+    securityRules: [
+      {
+        name: 'JupyterHub'
+        properties: {
+          priority: 1010
+          protocol: 'Tcp'
+          access: 'Allow'
+          direction: 'Inbound'
+          sourceAddressPrefix: '*'
+          sourcePortRange: '*'
+          destinationAddressPrefix: '*'
+          destinationPortRange: '8000'
+        }
+      }
+      {
+        name: 'RStudioServer'
+        properties: {
+          priority: 1020
+          protocol: 'Tcp'
+          access: 'Allow'
+          direction: 'Inbound'
+          sourceAddressPrefix: '*'
+          sourcePortRange: '*'
+          destinationAddressPrefix: '*'
+          destinationPortRange: '8787'
+        }
+      }
+      {
+        name: 'SSH'
+        properties: {
+          priority: 1030
+          protocol: 'Tcp'
+          access: 'Allow'
+          direction: 'Inbound'
+          sourceAddressPrefix: '*'
+          sourcePortRange: '*'
+          destinationAddressPrefix: '*'
+          destinationPortRange: '22'
+        }
       }
     ]
   }
 }
 
-resource alert 'Microsoft.Insights/activityLogAlerts@2020-10-01' = {
-  name: alertName
-  location: 'global'
+resource virtualNetwork 'Microsoft.Network/virtualNetworks@2021-05-01' = {
+  name: virtualNetworkName
+  location: location
   properties: {
-    enabled: true
-    scopes: [
-      subscription().id
-    ]
-    condition: {
-      allOf: [
-        {
-          field: 'category'
-          equals: 'ResourceHealth'
+    addressSpace: {
+      addressPrefixes: [
+        '10.0.0.0/24'
+      ]
+    }
+    subnets: [
+      {
+        name: subnetName
+        properties: {
+          addressPrefix: '10.0.0.0/24'
+          privateEndpointNetworkPolicies: 'Enabled'
+          privateLinkServiceNetworkPolicies: 'Enabled'
         }
+      }
+    ]
+  }
+}
+
+resource publicIpAddress 'Microsoft.Network/publicIPAddresses@2021-05-01' = {
+  name: publicIpAddressName
+  location: location
+  sku: {
+    name: 'Basic'
+    tier: 'Regional'
+  }
+  properties: {
+    publicIPAllocationMethod: 'Dynamic'
+  }
+}
+
+resource storageAccount 'Microsoft.Storage/storageAccounts@2021-08-01' = {
+  name: storageAccountName
+  location: location
+  sku: {
+    name: storageAccountType
+  }
+  kind: storageAccountKind
+}
+
+resource virtualMachine 'Microsoft.Compute/virtualMachines@2021-11-01' = {
+  name: '${virtualMachineName}-${cpu_gpu}'
+  location: location
+  properties: {
+    hardwareProfile: {
+      vmSize: vmSize[cpu_gpu]
+    }
+    storageProfile: {
+      osDisk: {
+        createOption: 'FromImage'
+        managedDisk: {
+          storageAccountType: osDiskType
+        }
+      }
+      imageReference: {
+        publisher: 'microsoft-dsvm'
+        offer: 'ubuntu-1804'
+        sku: '1804-gen2'
+        version: 'latest'
+      }
+    }
+    networkProfile: {
+      networkInterfaces: [
         {
-          field: 'status'
-          equals: status
+          id: networkInterface.id
         }
       ]
     }
-    actions: {
-      actionGroups: [
-        {
-          actionGroupId: emailActionGroup.id
-        }
-      ]
+    osProfile: {
+      computerName: virtualMachineName
+      adminUsername: adminUsername
+      adminPassword: adminPasswordOrKey
+      linuxConfiguration: ((authenticationType == 'password') ? json('null') : linuxConfiguration)
     }
   }
 }
-*/
