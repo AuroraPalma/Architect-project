@@ -38,10 +38,3 @@ resource workspaceName_resource 'Microsoft.OperationalInsights/workspaces@2020-0
   }
 }
 
-resource workspaceName_Heartbeat 'Microsoft.OperationalInsights/workspaces/tables@2020-08-01' = {
-  parent: workspaceName_resource
-  name: 'Heartbeat'
-  properties: {
-    RetentionInDays: heartbeatTableRetention
-  }
-}

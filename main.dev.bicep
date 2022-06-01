@@ -184,9 +184,6 @@ module mod_architect_devLoganalytics_Hub_Deploy 'arc.dev.loganalytics.bicep' = {
   params:{
     location:deployment_location
   }
-  dependsOn:[
-    mod_cesaDevElz01_Networking_Hub_Deploy
-  ]
 }
 /*
 module mod_architectdev_KeyVault_Hub_Deploy 'arc.dev.keyvault.bicep' = {
