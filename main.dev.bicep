@@ -116,7 +116,7 @@ resource res_elz_log_analytics_rg_name 'Microsoft.Resources/resourceGroups@2021-
     'cor-aut-delete' : 'true'
   }
 }
-module mod_cesaDevElz01_Networking_OnPrem_Deploy 'cesa.dev.networking.onprem.bicep' = {
+module mod_cesaDevElz01_Networking_OnPrem_Deploy 'modules/networking/cesa.dev.networking.onprem.bicep' = {
   name: '${'cesaDevElz01Networking_OnPrem_'}${currentDateTime}'
   scope: res_elz_networking_rg_onprem_name
   params:{
@@ -125,7 +125,7 @@ module mod_cesaDevElz01_Networking_OnPrem_Deploy 'cesa.dev.networking.onprem.bic
   // TO-DO: params dev/pro
 }
 
-module mod_cesaDevElz01_Networking_Hub_Deploy 'cesa.dev.networking.hub01.bicep' = {
+module mod_cesaDevElz01_Networking_Hub_Deploy 'modules/networking/cesa.dev.networking.hub01.bicep' = {
   name: '${'cesaDevElz01Networking_hub01_'}${currentDateTime}'
   scope: res_elz_networking_rg_hub01_name
   params:{
@@ -134,7 +134,7 @@ module mod_cesaDevElz01_Networking_Hub_Deploy 'cesa.dev.networking.hub01.bicep' 
   // TO-DO: params dev/pro
 }
 
-module mod_architectdev_bastion_Hub_Deploy 'arc.dev.bastion.bicep' = {
+module mod_architectdev_bastion_Hub_Deploy 'modules/arc.dev.bastion.bicep' = {
   name: '${'architectdev_bastion_Hub_'}${currentDateTime}'
   scope:res_elz_networking_rg_hub01_name
   params:{
@@ -145,7 +145,7 @@ module mod_architectdev_bastion_Hub_Deploy 'arc.dev.bastion.bicep' = {
   ]
 }
 
-module mod_cesaDevElz01_Vnet2Vnet_OnPrem_Conn_Deploy 'cesa.dev.networking.OnPrem.Vnet2VnetCon.bicep' = {
+module mod_cesaDevElz01_Vnet2Vnet_OnPrem_Conn_Deploy 'modules/networking/cesa.dev.networking.OnPrem.Vnet2VnetCon.bicep' = {
   name: '${'cesaDevElz01Net_Vnet2Vnet_Conn_'}${currentDateTime}'
   scope: res_elz_networking_rg_onprem_name
   params:{
@@ -156,7 +156,7 @@ module mod_cesaDevElz01_Vnet2Vnet_OnPrem_Conn_Deploy 'cesa.dev.networking.OnPrem
   ]
 }
 
-module mod_cesaDevElz01_Vnet2Vnet_Hub_Conn_Deploy 'cesa.dev.networking.Hub.Vnet2VnetCon.bicep' = {
+module mod_cesaDevElz01_Vnet2Vnet_Hub_Conn_Deploy 'modules/networking/cesa.dev.networking.Hub.Vnet2VnetCon.bicep' = {
   name: '${'cesaDevElz01Net_Vnet2Vnet_Hub_Conn_'}${currentDateTime}'
   scope: res_elz_networking_rg_hub01_name
   params:{
@@ -167,7 +167,7 @@ module mod_cesaDevElz01_Vnet2Vnet_Hub_Conn_Deploy 'cesa.dev.networking.Hub.Vnet2
   ]
 }
 
-module mod_cesaDevElz01_Networking_Spk01_Deploy 'cesa.dev.networking.spk01.bicep' = {
+module mod_cesaDevElz01_Networking_Spk01_Deploy 'modules/networking/cesa.dev.networking.spk01.bicep' = {
   name: '${'cesaDevElz01Networking_Spk01_'}${currentDateTime}'
   scope: res_elz_networking_rg_spk01_name
   params:{
@@ -175,7 +175,7 @@ module mod_cesaDevElz01_Networking_Spk01_Deploy 'cesa.dev.networking.spk01.bicep
   }
   // TO-DO: params dev/pro
 }
-module mod_cesaDevElz01_Networking_Spk02_Deploy 'cesa.dev.networking.spk02.bicep' = {
+module mod_cesaDevElz01_Networking_Spk02_Deploy 'modules/networking/cesa.dev.networking.spk02.bicep' = {
   name: '${'cesaDevElz01Networking_Spk02_'}${currentDateTime}'
   scope: res_elz_networking_rg_spk02_name
   params:{
@@ -185,7 +185,7 @@ module mod_cesaDevElz01_Networking_Spk02_Deploy 'cesa.dev.networking.spk02.bicep
 }
 
 /*Log analytics*/
-module mod_architect_devLoganalytics_Hub_Deploy 'arc.dev.loganalytics.bicep' = {
+module mod_architect_devLoganalytics_Hub_Deploy 'modules/arc.dev.loganalytics.bicep' = {
   name: '${'architectDevLoganalytics_Hub_'}${currentDateTime}'
   scope: res_elz_log_analytics_rg_name
   params:{
@@ -193,7 +193,7 @@ module mod_architect_devLoganalytics_Hub_Deploy 'arc.dev.loganalytics.bicep' = {
   }
 }
 /*
-module mod_architectdev_KeyVault_Hub_Deploy 'arc.dev.keyvault.bicep' = {
+module mod_architectdev_KeyVault_Hub_Deploy 'modules/arc.dev.keyvault.bicep' = {
   name: '${'architectdevKeyvault_Hub_'}${currentDateTime}'
   scope: res_elz_networking_rg_hub01_name
   params:{
@@ -201,7 +201,7 @@ module mod_architectdev_KeyVault_Hub_Deploy 'arc.dev.keyvault.bicep' = {
   }
 }
 
-module mod_cesaDev_Workload_spk01_Deploy 'cesa.dev.worload.spk.bicep' = {
+module mod_cesaDev_Workload_spk01_Deploy 'modules/cesa.dev.worload.spk.bicep' = {
   name: '${'cesadevworkload_Spk01_'}${currentDateTime}'
   scope: res_elz_workloads_rg_spk01_name
   params:{
