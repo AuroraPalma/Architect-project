@@ -20,7 +20,7 @@ param elz_workloads_rg_spk01_name string = 'rg-cesa-elz01-spk01-wkls01_01'
 param elz_networking_rg_spk02_name string = 'rg-cesa-elz01-spk02-networking-01'
 /* param elz_storage_rg_spk02_name string = 'rg-cesa-elz01-spk02-st-01'*/
 param elz_workloads_rg_spk02_name string = 'rg-cesa-elz01-spk02-wkls01_01'
-
+param elz_log_analytics_rg_name string = 'rg-arc-analytics_01'
 
 /* importante: vamos a crear incluso los resource groups */
 /* az deployment sub create --location northeurope --template-file .\main.dev.bicep */
@@ -109,6 +109,13 @@ resource res_elz_workloads_rg_spk02_name 'Microsoft.Resources/resourceGroups@202
   }
 }
 
+resource res_elz_log_analytics_rg_name 'Microsoft.Resources/resourceGroups@2021-01-01' = {
+  name: elz_log_analytics_rg_name
+  location:deployment_location
+  tags:{
+    'cor-aut-delete' : 'true'
+  }
+}
 module mod_cesaDevElz01_Networking_OnPrem_Deploy 'cesa.dev.networking.onprem.bicep' = {
   name: '${'cesaDevElz01Networking_OnPrem_'}${currentDateTime}'
   scope: res_elz_networking_rg_onprem_name
@@ -125,6 +132,17 @@ module mod_cesaDevElz01_Networking_Hub_Deploy 'cesa.dev.networking.hub01.bicep' 
     location: deployment_location
   }
   // TO-DO: params dev/pro
+}
+
+module mod_architectdev_bastion_Hub_Deploy 'arc.dev.bastion.bicep' = {
+  name: '${'architectdev_bastion_Hub_'}${currentDateTime}'
+  scope:res_elz_networking_rg_hub01_name
+  params:{
+    location:deployment_location
+  }
+  dependsOn:[
+    mod_cesaDevElz01_Networking_Hub_Deploy
+  ]
 }
 
 module mod_cesaDevElz01_Vnet2Vnet_OnPrem_Conn_Deploy 'cesa.dev.networking.OnPrem.Vnet2VnetCon.bicep' = {
@@ -165,10 +183,19 @@ module mod_cesaDevElz01_Networking_Spk02_Deploy 'cesa.dev.networking.spk02.bicep
   }
   // TO-DO: params dev/pro
 }
+
+/*Log analytics*/
+module mod_architect_devLoganalytics_Hub_Deploy 'arc.dev.loganalytics.bicep' = {
+  name: '${'architectDevLoganalytics_Hub_'}${currentDateTime}'
+  scope: res_elz_log_analytics_rg_name
+  params:{
+    location:deployment_location
+  }
+}
 /*
 module mod_architectdev_KeyVault_Hub_Deploy 'arc.dev.keyvault.bicep' = {
   name: '${'architectdevKeyvault_Hub_'}${currentDateTime}'
-  scope: res_elz_storage_rg_hub01_name
+  scope: res_elz_networking_rg_hub01_name
   params:{
     location:deployment_location
   }
