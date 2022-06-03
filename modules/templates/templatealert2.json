@@ -1,0 +1,38 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {},
+    "variables": {},
+    "resources": [
+        {
+            "type": "microsoft.insights/activityLogAlerts",
+            "apiVersion": "2020-10-01",
+            "name": "Delete subscription",
+            "location": "Global",
+            "tags": {
+                "Monitor": "alert rule"
+            },
+            "properties": {
+                "scopes": [
+                    "/subscriptions/4c81b137-e05f-43f5-a271-e5a7c3ce6f74"
+                ],
+                "condition": {
+                    "allOf": [
+                        {
+                            "field": "category",
+                            "equals": "Administrative"
+                        },
+                        {
+                            "field": "operationName",
+                            "equals": "Microsoft.ApiManagement/service/subscriptions/delete"
+                        }
+                    ]
+                },
+                "actions": {
+                    "actionGroups": []
+                },
+                "enabled": true
+            }
+        }
+    ]
+}

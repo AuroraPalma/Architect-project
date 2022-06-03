@@ -21,6 +21,7 @@ param elz_networking_rg_spk02_name string = 'rg-cesa-elz01-spk02-networking-01'
 /* param elz_storage_rg_spk02_name string = 'rg-cesa-elz01-spk02-st-01'*/
 param elz_workloads_rg_spk02_name string = 'rg-cesa-elz01-spk02-wkls01_01'
 param elz_log_analytics_rg_name string = 'rg-arc-analytics_01'
+param elz_alerts_monitor_rg_name string = 'rg-alerts-monitor-dev-01'
 
 targetScope = 'subscription'
 
@@ -112,6 +113,14 @@ resource res_elz_log_analytics_rg_name 'Microsoft.Resources/resourceGroups@2021-
     'cor-aut-delete' : 'true'
   }
 }
+
+resource res_elz_alerts_monitor_rg_name 'Microsoft.Resources/resourceGroups@2021-01-01' = {
+  name: elz_alerts_monitor_rg_name
+  location: deployment_location
+  tags:{
+    'cor-aut-delete' : 'true'
+  }
+}
 module mod_cesaDevElz01_Networking_OnPrem_Deploy 'modules/networking/cesa.dev.networking.onprem.bicep' = {
   name: '${'cesaDevElz01Networking_OnPrem_'}${currentDateTime}'
   scope: res_elz_networking_rg_onprem_name
@@ -188,6 +197,7 @@ module mod_architect_devLoganalytics_Hub_Deploy 'modules/arc.dev.loganalytics.bi
     location:deployment_location
   }
 }
+/*Azure Policy*/
 
 module mod_architect_dev_Policies_Deploy 'modules/policy.bicep' = {
   name:'${'architectDevPolicies_general_'}${currentDateTime}'
@@ -197,6 +207,11 @@ module mod_architect_dev_Policies_Deploy 'modules/policy.bicep' = {
       'westeurope'
     ]
   }
+}
+
+module mod_architect_dev_Alerts_Deploy 'modules/alertrule.monitor.bicep' = {
+  name:'${'architectDevAlerts_Monitor_'}${currentDateTime}'
+  scope: res_elz_alerts_monitor_rg_name
 }
 /*
 module mod_architectdev_KeyVault_Hub_Deploy 'modules/arc.dev.keyvault.bicep' = {
