@@ -1,0 +1,29 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "listOfAllowedLocations": {
+            "value": [
+                "northeurope",
+                "westeurope"
+            ]
+        },
+        "listOfAllowedSKUs": {
+            "value": [
+                "Standard_B1ls",
+                "Standard_B1ms",
+                "Standard_B1s",
+                "Standard_B2ms",
+                "Standard_B2s",
+                "Standard_B4ms",
+                "Standard_B4s"
+            ]
+        },
+        "assignmentIdentityLocation": {
+            "value": "northeurope"
+        },
+        "mandatoryTag1Value": {
+            "value": "Env"
+        }
+    }
+}

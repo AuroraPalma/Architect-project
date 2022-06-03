@@ -90,6 +90,19 @@ Puede usar la CLI de Bicep para descompilar cualquier plantilla de ARM en una pl
 
 ## Decisiones
 
+## Deployment policy.v2.bicep steps
+# optional step to view the JSON/ARM template
+az bicep build -f ./main.bicep
+
+# required steps - azure authentication
+az login
+az account list
+
+# required steps - deploy to devtest
+az account set -s 'xxxx-xxxx-xxxx-xxxx-xxxx'
+az deployment sub create -f ./main.bicep -l australiaeast -p ./params-devtest.json
+# optional step to trigger a subscription-level policy compliance scan (uses current sub context)
+az policy state trigger-scan --no-wait
 ## Comandos útiles
 ```CLI
 az login
