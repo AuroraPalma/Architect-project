@@ -22,10 +22,6 @@ param elz_networking_rg_spk02_name string = 'rg-cesa-elz01-spk02-networking-01'
 param elz_workloads_rg_spk02_name string = 'rg-cesa-elz01-spk02-wkls01_01'
 param elz_log_analytics_rg_name string = 'rg-arc-analytics_01'
 
-/* importante: vamos a crear incluso los resource groups */
-/* az deployment sub create --location northeurope --template-file .\main.dev.bicep */
-/* importante sub -> indica targetScope = 'subscription' */
-
 targetScope = 'subscription'
 
 
@@ -190,6 +186,16 @@ module mod_architect_devLoganalytics_Hub_Deploy 'modules/arc.dev.loganalytics.bi
   scope: res_elz_log_analytics_rg_name
   params:{
     location:deployment_location
+  }
+}
+
+module mod_architect_dev_Policies_Deploy 'modules/policy.bicep' = {
+  name:'${'architectDevPolicies_general_'}${currentDateTime}'
+  params:{
+    listOfAllowedLocations: [
+      'northeurope'
+      'westeurope'
+    ]
   }
 }
 /*
