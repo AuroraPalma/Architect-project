@@ -4,12 +4,8 @@
     "parameters": {
         "listOfAllowedLocations": {
             "value": [
-                "australiaeast",
-                "australiasoutheast",
-                "eastus",
-                "eastus2",
-                "westus",
-                "westus2"
+                "northeurope",
+                "westeurope"
             ]
         },
         "listOfAllowedSKUs": {
@@ -24,10 +20,10 @@
             ]
         },
         "assignmentIdentityLocation": {
-            "value": "australiaeast"
+            "value": "northeurope"
         },
         "mandatoryTag1Value": {
-            "value": "DevTest"
+            "value": "Env"
         }
     }
 }

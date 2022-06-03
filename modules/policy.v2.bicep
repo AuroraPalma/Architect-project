@@ -1,15 +1,15 @@
 targetScope = 'subscription'
 
 // PARAMETERS
-param policySource string = 'globalbao/azure-policy-as-code'
+param policySource string = 'Bicep/azure-policy-as-code'
 param policyCategory string = 'Custom'
 param assignmentIdentityLocation string //level2
-param mandatoryTag1Key string = 'BicepTagName' //level2
+param mandatoryTag1Key string = 'Env' //level2
 param mandatoryTag1Value string //level2
 param assignmentEnforcementMode string = 'Default'
 param listOfAllowedLocations array = [
-  'australiaeast'
-  'australiasoutheast'
+  'northeurope'
+  'westeurope'
 ]
 param listOfAllowedSKUs array = [
   'Standard_B1ls'
@@ -22,10 +22,10 @@ param listOfAllowedSKUs array = [
 ]
 
 // VARIABLES
-var initiative1Name = 'Initiative1'
-var assignment1Name = 'Initiative1'
-var initiative2Name = 'Initiative2' //level2
-var assignment2Name = 'Initiative2' //level2
+var initiative1Name = 'General Policies Iniciative'
+var assignment1Name = 'Assignment Iniciative1'
+var initiative2Name = 'Tag Policies Iniciative' //level2
+var assignment2Name = 'Assignment Iniciative2' //level2
 
 // OUTPUTS
 output initiative1ID string = initiative1.id
@@ -54,7 +54,7 @@ resource policy 'Microsoft.Authorization/policyDefinitions@2020-09-01' = {
           displayName: 'Mandatory Tag ${mandatoryTag1Key}'
           description: 'Name of the tag, such as ${mandatoryTag1Key}'
         }
-        defaultValue: 'BicepTagName'
+        defaultValue: 'Env'
       }
       tagValue: {
         type: 'String'
