@@ -79,9 +79,9 @@ var locations = [
     isZoneRedundant: false
   }
 ]
-/*
+
 @description('Username for Administrator Account')
-param adminUsername string
+param adminUsername string = 'lxvm-data-science-dev-001'
 
 @description('The name of you Virtual Machine.')
 param vmName string = 'vmName'
@@ -98,10 +98,23 @@ param vmName string = 'vmName'
 param cpu_gpu string = 'CPU-4GB'
 
 @description('Name of the VNET')
-param virtualNetworkName string = 'vNet'
+param virtualNetworkName string = networking_Spoke01.name
 
 @description('Name of the subnet in the virtual network')
-param subnetName string = 'subnet'
+param subnetName string = networking_Spoke01.subnetFrontName
+
+param networking_Spoke01 object = {
+  name: 'vnet-cesa-elz01-spk01'
+  addressPrefix: '10.1.0.0/22'
+  subnetFrontName: 'snet-spk01-front'
+  subnetFrontPrefix: '10.1.0.0/25'
+  subnetBackName: 'snet-spk01-back'
+  subnetBackPrefix: '10.1.0.128/25'
+  subnetMangament: 'snet-spk01-mngnt'
+  subnetMangamentPrefix: '10.1.1.0/29'
+
+}
+param elz_networking_rg_spk01_name string = 'rg-cesa-elz01-spk01-networking-01'
 
 @description('Name of the Network Security Group')
 param networkSecurityGroupName string = 'SecGroupNet'
@@ -145,7 +158,7 @@ var linuxConfiguration = {
     ]
   }
 }
-*/
+
 resource account 'Microsoft.DocumentDB/databaseAccounts@2021-10-15' = {
   name: toLower(accountName)
   location: location
@@ -230,7 +243,11 @@ resource container 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/container
     }
   }
 }
-/*
+
+resource res_networking_Spk01 'Microsoft.Network/virtualNetworks@2020-05-01' existing = {
+  name: networking_Spoke01.name
+  scope: resourceGroup(elz_networking_rg_spk01_name)
+}
 resource networkInterface 'Microsoft.Network/networkInterfaces@2021-05-01' = {
   name: networkInterfaceName
   location: location
@@ -240,7 +257,7 @@ resource networkInterface 'Microsoft.Network/networkInterfaces@2021-05-01' = {
         name: 'ipconfig1'
         properties: {
           subnet: {
-            id: subnetRef
+            id: '${res_networking_Spk01.id}/subnets/${networking_Spoke01.subnetFrontName}'
           }
           privateIPAllocationMethod: 'Dynamic'
           publicIPAddress: {
@@ -254,7 +271,7 @@ resource networkInterface 'Microsoft.Network/networkInterfaces@2021-05-01' = {
     }
   }
   dependsOn: [
-    virtualNetwork
+    res_networking_Spk01
   ]
 }
 
@@ -305,7 +322,7 @@ resource networkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2021-05-0
     ]
   }
 }
-
+/*
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2021-05-01' = {
   name: virtualNetworkName
   location: location
@@ -327,7 +344,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2021-05-01' = {
     ]
   }
 }
-
+*/
 resource publicIpAddress 'Microsoft.Network/publicIPAddresses@2021-05-01' = {
   name: publicIpAddressName
   location: location
@@ -381,8 +398,7 @@ resource virtualMachine 'Microsoft.Compute/virtualMachines@2021-11-01' = {
       computerName: virtualMachineName
       adminUsername: adminUsername
       adminPassword: adminPasswordOrKey
-      linuxConfiguration: ((authenticationType == 'password') ? json('null') : linuxConfiguration)
     }
   }
 }
-*/
+

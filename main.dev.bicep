@@ -223,12 +223,16 @@ module mod_architectdev_KeyVault_Hub_Deploy 'modules/arc.dev.keyvault.bicep' = {
     location:deployment_location
   }
 }
-
+*/
 module mod_cesaDev_Workload_spk01_Deploy 'modules/cesa.dev.worload.spk.bicep' = {
   name: '${'cesadevworkload_Spk01_'}${currentDateTime}'
   scope: res_elz_workloads_rg_spk01_name
   params:{
     location:deployment_location
+    adminPasswordOrKey: 'usr$Am1n-2223'
   }
+  dependsOn: [
+        mod_cesaDevElz01_Networking_Spk01_Deploy
+  ]
 }
-*/
+
