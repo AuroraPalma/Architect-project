@@ -158,6 +158,7 @@ module mod_cesaDevElz01_Vnet2Vnet_OnPrem_Conn_Deploy 'modules/networking/cesa.de
   }
   dependsOn:[
     mod_cesaDevElz01_Networking_OnPrem_Deploy
+    mod_cesaDevElz01_Networking_Hub_Deploy
   ]
 }
 
@@ -169,6 +170,7 @@ module mod_cesaDevElz01_Vnet2Vnet_Hub_Conn_Deploy 'modules/networking/cesa.dev.n
   }
   dependsOn:[
     mod_cesaDevElz01_Networking_Hub_Deploy
+    mod_cesaDevElz01_Networking_OnPrem_Deploy
   ]
 }
 

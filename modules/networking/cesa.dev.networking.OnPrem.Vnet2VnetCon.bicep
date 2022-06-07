@@ -13,14 +13,28 @@ param networking_OnPrem_conn object = {
 
 param networking_deploy_OnPrem_VpnGateway bool = true
 
+param networking_OnPrem_localNetworkGateway object = {
+  name: 'lgw-cesa-elz01-onprem-lgw01'
+  localAddressPrefix: '10.0.1.80/29' /*10.0.1.80 - 10.0.1.87 (3 + 5*/
+}
+param networking_OnPrem_vpnGateway object = {
+  name: 'vgw-cesa-elz01-onprem-vgw01'
+  subnetName: 'GatewaySubnet'
+  /*addressPrefix: '172.16.1.8/24'*/
+  subnetPrefix: '172.16.1.64/29'
+  pipName: 'pip-cesa-elz01-onprem-vgw01'
+}
+
 /* 'EXISTING' -> We use this kind of reference to access an existing element in the same RG: */
 resource res_networking_OnPrem_vpnGateway 'Microsoft.Network/virtualNetworkGateways@2019-11-01' existing = {
   name: 'vgw-cesa-elz01-onprem-vgw01'
 }
 
+/* Create LNG here
 resource res_networking_OnPrem_localNetworkGateway 'Microsoft.Network/localNetworkGateways@2021-02-01' existing = {
   name: 'lgw-cesa-elz01-onprem-lgw01'
 }
+*/
 
 resource res_networking_Hub01_vpnGateway 'Microsoft.Network/virtualNetworkGateways@2019-11-01' existing = {
   name: 'vgw-cesa-elz01-hub01-vgw01'
@@ -61,4 +75,28 @@ resource res_networking_OnPrem_conn 'Microsoft.Network/connections@2021-02-01' =
   dependsOn: [
     res_networking_Hub01_vpnGateway
   ]
+}
+
+resource res_networking_OnPrem_vpnGateway_pip 'Microsoft.Network/publicIPAddresses@2019-11-01' existing = {
+  name: networking_OnPrem_vpnGateway.pipName
+}
+
+resource res_networking_OnPrem_localNetworkGateway 'Microsoft.Network/localNetworkGateways@2021-02-01' = if (networking_deploy_OnPrem_VpnGateway) {
+  name: networking_OnPrem_localNetworkGateway.name
+  location: location
+  tags: {
+    'cor-ctx-environment': 'development'
+    'cor-ctx-projectcode': 'Verne Technology - Curso Cloud Expert Solution Architect'
+    'cor-ctx-purpose': 'Pasarela local (local gateway) para enrutar tráfico entre las redes. El tráfico de estas redes irá por el túnel'
+    'cor-aut-delete' : 'true'
+  }
+  properties: {
+    localNetworkAddressSpace: {
+      addressPrefixes: [
+        networking_OnPrem_localNetworkGateway.localAddressPrefix
+      ]
+    }
+    /*https://docs.microsoft.com/en-us/azure/templates/microsoft.network/publicipaddresses?tabs=bicep#publicipaddresspropertiesformat*/
+    gatewayIpAddress: res_networking_OnPrem_vpnGateway_pip.properties.ipAddress  /*'20.238.39.157'*/
+  }
 }

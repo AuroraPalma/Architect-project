@@ -22,16 +22,11 @@ param networking_OnPrem_vpnGateway object = {
   pipName: 'pip-cesa-elz01-onprem-vgw01'
 }
 
-/* -> 2022-04-06 -> params 
+/* -> 2022-05-18 -> params 
 param networking_OnPrem_localNetworkGateway object = {
   name: 'lgw-cesa-elz01-onprem-lgw01'
-  localAddressPrefix: '172.16.1.0/26'
-}*/
-/* -> 2022-05-18 -> params */
-param networking_OnPrem_localNetworkGateway object = {
-  name: 'lgw-cesa-elz01-onprem-lgw01'
-  localAddressPrefix: '10.0.1.80/29' /*10.0.1.80 - 10.0.1.87 (3 + 5*/
-}
+  localAddressPrefix: '10.0.1.80/29' 
+} /*10.0.1.80 - 10.0.1.87 (3 + 5*/
 
 resource res_networking_OnPremises 'Microsoft.Network/virtualNetworks@2020-05-01' = {
   name: networking_OnPremises.name
@@ -115,7 +110,7 @@ resource res_networking_OnPrem_vpnGateway 'Microsoft.Network/virtualNetworkGatew
     res_networking_OnPremises
   ]
 }
-
+/*
 resource res_networking_OnPrem_localNetworkGateway 'Microsoft.Network/localNetworkGateways@2021-02-01' = if (networking_deploy_OnPrem_VpnGateway) {
   name: networking_OnPrem_localNetworkGateway.name
   location: location
@@ -132,10 +127,11 @@ resource res_networking_OnPrem_localNetworkGateway 'Microsoft.Network/localNetwo
       ]
     }
     /*https://docs.microsoft.com/en-us/azure/templates/microsoft.network/publicipaddresses?tabs=bicep#publicipaddresspropertiesformat*/
-    gatewayIpAddress: res_networking_OnPrem_vpnGateway_pip.properties.ipAddress  /*'20.238.39.157'*/
+    /*gatewayIpAddress: res_networking_OnPrem_vpnGateway_pip.properties.ipAddress  /*'20.238.39.157'*/
+  /*
   }
 }
-
+*/
 /* desplegamos MÁQUINA LINUX para testear conectividades */
 
 resource res_linuxVm_OnPrem_pip 'Microsoft.Network/publicIPAddresses@2019-11-01' = if (networking_deploy_OnPrem_VpnGateway) {

@@ -41,12 +41,12 @@ param networking_vpnGateway object = {
   subnetPrefix: '10.0.1.72/29'
   pipName: 'pip-cesa-elz01-hub01-vgw01'
 }
-
+/*
 param networking_hub01_localNetworkGateway object = {
   name: 'lgw-cesa-elz01-hub01-lgw01'
   localAddressPrefix: '172.16.1.0/26'
 }
-
+*/
 resource res_networking_Hub01 'Microsoft.Network/virtualNetworks@2020-05-01' = {
   name: networking_Hub01.name
   location: location
@@ -141,7 +141,7 @@ resource res_networking_Hub_vpnGateway 'Microsoft.Network/virtualNetworkGateways
     res_networking_Hub01
   ]
 }
-
+/*
 resource res_networking_Hub01_localNetworkGateway 'Microsoft.Network/localNetworkGateways@2021-02-01' = if (networking_deploy_VpnGateway) {
   name: networking_hub01_localNetworkGateway.name
   location: location
@@ -158,10 +158,11 @@ resource res_networking_Hub01_localNetworkGateway 'Microsoft.Network/localNetwor
       ]
     }
     /*https://docs.microsoft.com/en-us/azure/templates/microsoft.network/publicipaddresses?tabs=bicep#publicipaddresspropertiesformat*/
-    gatewayIpAddress: res_networking_Hub_vpnGateway_pip.properties.ipAddress  /*''*/
+   /*gatewayIpAddress: res_networking_Hub_vpnGateway_pip.properties.ipAddress  */
+   /*
   }
 }
-
+*/
 /* desplegamos MÁQUINA LINUX para testear conectividades */
 
 resource res_linuxVm_Hub01_pip 'Microsoft.Network/publicIPAddresses@2019-11-01' = if (networking_deploy_VpnGateway) {
