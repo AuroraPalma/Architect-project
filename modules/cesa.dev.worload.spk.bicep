@@ -79,7 +79,7 @@ var locations = [
     isZoneRedundant: false
   }
 ]
-
+/*
 @description('Username for Administrator Account')
 param adminUsername string
 
@@ -145,7 +145,7 @@ var linuxConfiguration = {
     ]
   }
 }
-
+*/
 resource account 'Microsoft.DocumentDB/databaseAccounts@2021-10-15' = {
   name: toLower(accountName)
   location: location
@@ -230,7 +230,7 @@ resource container 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/container
     }
   }
 }
-
+/*
 resource networkInterface 'Microsoft.Network/networkInterfaces@2021-05-01' = {
   name: networkInterfaceName
   location: location
@@ -385,3 +385,4 @@ resource virtualMachine 'Microsoft.Compute/virtualMachines@2021-11-01' = {
     }
   }
 }
+*/

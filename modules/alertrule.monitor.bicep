@@ -5,14 +5,14 @@ param activityLogAlerts_Certificate_Key_vault_alert_name string = 'Certificate K
 param activityLogAlerts_Policy_Definition_Alert_name string = 'Policy Definition Alert'
 param activityLogAlerts_Policy_Tenant_alert_name string = 'Policy Tenant alert'
 
-param location_alert string = 'Global'
+
 param field_category_name string = 'category'
 param field_equals_name string = 'Administrative'
 param field_operation_name string = 'operationName'
 
 resource activityLogAlerts_Alert_new_user_name_resource 'microsoft.insights/activityLogAlerts@2020-10-01' = {
   name: activityLogAlerts_Alert_new_user_name
-  location: location_alert
+  location: 'Global'
   tags: {
     'Monitor': 'alert rule'
     'Env': 'Development'
@@ -42,7 +42,7 @@ resource activityLogAlerts_Alert_new_user_name_resource 'microsoft.insights/acti
 
 resource activityLogAlerts_Delete_subscription 'microsoft.insights/activityLogAlerts@2020-10-01' = {
   name: activityLogAlerts_Delete_subscription_name
-  location: location_alert
+  location: 'Global'
   tags: {
     'Monitor': 'alert rule'
     'Env': 'Development'
@@ -72,7 +72,7 @@ resource activityLogAlerts_Delete_subscription 'microsoft.insights/activityLogAl
 
 resource activityLogAlerts_Certificate_Key_vault_alert 'microsoft.insights/activityLogAlerts@2020-10-01' = {
   name: activityLogAlerts_Certificate_Key_vault_alert_name
-  location: location_alert
+  location: 'Global'
   tags: {
     'Monitor': 'alert rule'
     'Env': 'Development'
@@ -102,7 +102,7 @@ resource activityLogAlerts_Certificate_Key_vault_alert 'microsoft.insights/activ
 
 resource activityLogAlerts_Policy_Definition_Alert 'microsoft.insights/activityLogAlerts@2020-10-01' = {
   name: activityLogAlerts_Policy_Definition_Alert_name
-  location: location_alert
+  location: 'Global'
   tags: {
     'Monitor': 'alert rule'
     'Env': 'Development'
@@ -132,7 +132,7 @@ resource activityLogAlerts_Policy_Definition_Alert 'microsoft.insights/activityL
 
 resource activityLogAlerts_Policy_Tenant_alert 'microsoft.insights/activityLogAlerts@2020-10-01' = {
   name: activityLogAlerts_Policy_Tenant_alert_name
-  location: location_alert
+  location: 'Global'
   tags: {
     'Monitor': 'alert rule'
     'Env': 'Development'
