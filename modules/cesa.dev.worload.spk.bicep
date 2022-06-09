@@ -81,10 +81,10 @@ var locations = [
 ]
 
 @description('Username for Administrator Account')
-param adminUsername string = 'lxvm-data-science-dev-001'
+param adminUsername string = 'vmadmin'
 
 @description('The name of you Virtual Machine.')
-param vmName string = 'vmName'
+param vmName string = 'lxvm-data-science-dev-001'
 
 @description('Choose between CPU or GPU processing')
 @allowed([
@@ -96,12 +96,6 @@ param vmName string = 'vmName'
   'GPU-56GB'
 ])
 param cpu_gpu string = 'CPU-4GB'
-
-@description('Name of the VNET')
-param virtualNetworkName string = networking_Spoke01.name
-
-@description('Name of the subnet in the virtual network')
-param subnetName string = networking_Spoke01.subnetFrontName
 
 param networking_Spoke01 object = {
   name: 'vnet-cesa-elz01-spk01'
@@ -117,14 +111,14 @@ param networking_Spoke01 object = {
 param elz_networking_rg_spk01_name string = 'rg-cesa-elz01-spk01-networking-01'
 
 @description('Name of the Network Security Group')
-param networkSecurityGroupName string = 'SecGroupNet'
+param networkSecurityGroupName string = 'nsg-lxm-data-science-networking-01'
 
 @description('Type of authentication to use on the Virtual Machine. SSH key is recommended.')
 @allowed([
   'sshPublicKey'
   'password'
 ])
-param authenticationType string = 'sshPublicKey'
+param authenticationType string = 'password'
 
 @description('SSH Key or password for the Virtual Machine. SSH key is recommended.')
 @secure()
@@ -133,7 +127,6 @@ param adminPasswordOrKey string
 var networkInterfaceName = '${vmName}NetInt'
 var virtualMachineName = vmName
 var publicIpAddressName = '${vmName}PublicIP'
-var subnetRef = resourceId('Microsoft.Network/virtualNetworks/subnets', virtualNetworkName, subnetName)
 var nsgId = networkSecurityGroup.id
 var osDiskType = 'StandardSSD_LRS'
 var storageAccountName = 'storage${uniqueString(resourceGroup().id)}'
@@ -147,18 +140,18 @@ var vmSize = {
   'CPU-16GB': 'Standard_D4s_v3'
   'GPU-56GB': 'Standard_NC6_Promo'
 }
-var linuxConfiguration = {
-  disablePasswordAuthentication: true
-  ssh: {
-    publicKeys: [
-      {
-        path: '/home/${adminUsername}/.ssh/authorized_keys'
-        keyData: adminPasswordOrKey
-      }
-    ]
-  }
+param keyVaultName string = 'kvault-dev-hub-01'
+resource kv 'Microsoft.KeyVault/vaults@2021-11-01-preview' existing = {
+  name: keyVaultName
 }
+param adminUserName string = 'usrwinadmin'
+param adminUserPass string = 'usr$Am1n-2223'
+param vm_windows_Size string = 'Standard_D2s_v3'
+param vmParadaDiariaNombre string = 'shutdown-computevm-vm-windows-01'
 
+var nicNameWindows = 'nic-windows-01'
+var vmNameWindows = 'vm-windows-01'
+var windowsOSVersion = '2016-Datacenter'
 resource account 'Microsoft.DocumentDB/databaseAccounts@2021-10-15' = {
   name: toLower(accountName)
   location: location
@@ -322,29 +315,7 @@ resource networkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2021-05-0
     ]
   }
 }
-/*
-resource virtualNetwork 'Microsoft.Network/virtualNetworks@2021-05-01' = {
-  name: virtualNetworkName
-  location: location
-  properties: {
-    addressSpace: {
-      addressPrefixes: [
-        '10.0.0.0/24'
-      ]
-    }
-    subnets: [
-      {
-        name: subnetName
-        properties: {
-          addressPrefix: '10.0.0.0/24'
-          privateEndpointNetworkPolicies: 'Enabled'
-          privateLinkServiceNetworkPolicies: 'Enabled'
-        }
-      }
-    ]
-  }
-}
-*/
+
 resource publicIpAddress 'Microsoft.Network/publicIPAddresses@2021-05-01' = {
   name: publicIpAddressName
   location: location
@@ -402,3 +373,76 @@ resource virtualMachine 'Microsoft.Compute/virtualMachines@2021-11-01' = {
   }
 }
 
+
+resource nicNameWindowsResource 'Microsoft.Network/networkInterfaces@2020-05-01' = {
+  name: nicNameWindows
+  location: location
+  properties: {
+    ipConfigurations: [
+      {
+        name: 'ipconfig'
+        properties: {
+          privateIPAllocationMethod: 'Dynamic'
+          subnet: {
+            id: '${res_networking_Spk01.id}/subnets/${networking_Spoke01.subnetBackName}'
+          }
+        }
+      }
+    ]
+  }
+}
+
+resource res_vmNameWindowsResource_name 'Microsoft.Compute/virtualMachines@2019-07-01' = {
+  name: vmNameWindows
+  location: location
+  dependsOn: [
+    nicNameWindowsResource
+  ]
+  properties: {
+    hardwareProfile: {
+      vmSize: vm_windows_Size
+    }
+    osProfile: {
+      computerName: vmNameWindows
+      adminUsername: adminUserName
+      adminPassword: adminUserPass
+    }
+    storageProfile: {
+      imageReference: {
+        publisher: 'MicrosoftWindowsServer'
+        offer: 'WindowsServer'
+        sku: windowsOSVersion
+        version: 'latest'
+      }
+      osDisk: {
+        createOption: 'FromImage'
+      }
+    }
+    networkProfile: {
+      networkInterfaces: [
+        {
+          id: resourceId('Microsoft.Network/networkInterfaces', nicNameWindows)
+        }
+      ]
+    }
+  }
+}
+resource res_schedules_shutdown_computevm_vmNameWindowsResource 'microsoft.devtestlab/schedules@2018-09-15' = {
+  name: vmParadaDiariaNombre
+  location: location
+  properties: {
+    status: 'Enabled'
+    taskType: 'ComputeVmShutdownTask'
+    dailyRecurrence: {
+      time: '2200'
+    }
+    timeZoneId: 'Romance Standard Time'
+    notificationSettings: {
+      status: 'Enabled'
+      timeInMinutes: 30
+      emailRecipient: 'a.palma@htmedica.com'
+      notificationLocale: 'en'
+    }
+    targetResourceId: res_vmNameWindowsResource_name.id
+  }
+}

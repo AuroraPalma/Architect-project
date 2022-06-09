@@ -215,15 +215,16 @@ module mod_architect_dev_Alerts_Deploy 'modules/alertrule.monitor.bicep' = {
   name:'${'architectDevAlerts_Monitor_'}${currentDateTime}'
   scope: res_elz_alerts_monitor_rg_name
 }
-/*
+
 module mod_architectdev_KeyVault_Hub_Deploy 'modules/arc.dev.keyvault.bicep' = {
   name: '${'architectdevKeyvault_Hub_'}${currentDateTime}'
   scope: res_elz_networking_rg_hub01_name
   params:{
     location:deployment_location
+    secretValue: 'usr$Am1n-2223'
   }
 }
-*/
+
 module mod_cesaDev_Workload_spk01_Deploy 'modules/cesa.dev.worload.spk.bicep' = {
   name: '${'cesadevworkload_Spk01_'}${currentDateTime}'
   scope: res_elz_workloads_rg_spk01_name

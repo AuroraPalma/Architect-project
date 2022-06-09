@@ -14,16 +14,6 @@ param networking_Spoke01 object = {
 
 }
 
-param adminUserName string = 'usrwinadmin'
-param adminUserPass string = 'usr$Am1n-2223'
-param vmSize string = 'Standard_A1_v2'
-param vmParadaDiariaNombre string = 'shutdown-computevm-vm-windows-01'
-
-var nicNameWindows = 'nic-windows-01'
-var vmNameWindows = 'vm-windows-01'
-var windowsOSVersion = '2016-Datacenter'
-
-
 resource res_networking_Spk01 'Microsoft.Network/virtualNetworks@2020-05-01' = {
   name: networking_Spoke01.name
   location: location
@@ -55,83 +45,8 @@ resource res_networking_Spk01 'Microsoft.Network/virtualNetworks@2020-05-01' = {
     ]
   }
 }
-/*
-resource nicNameWindowsResource 'Microsoft.Network/networkInterfaces@2020-05-01' = {
-  name: nicNameWindows
-  location: location
-  properties: {
-    ipConfigurations: [
-      {
-        name: 'ipconfig'
-        properties: {
-          privateIPAllocationMethod: 'Dynamic'
-          subnet: {
-            id: '${res_networking_Spk01.id}/subnets/${networking_Spoke01.subnetFrontName}'
-          }
-        }
-      }
-    ]
-  }
-}
-
-resource res_vmNameWindowsResource_name 'Microsoft.Compute/virtualMachines@2019-07-01' = {
-  name: vmNameWindows
-  location: location
-  dependsOn: [
-    nicNameWindowsResource
-  ]
-  properties: {
-    hardwareProfile: {
-      vmSize: vmSize
-    }
-    osProfile: {
-      computerName: vmNameWindows
-      adminUsername: adminUserName
-      adminPassword: adminUserPass
-    }
-    storageProfile: {
-      imageReference: {
-        publisher: 'MicrosoftWindowsServer'
-        offer: 'WindowsServer'
-        sku: windowsOSVersion
-        version: 'latest'
-      }
-      osDisk: {
-        createOption: 'FromImage'
-      }
-    }
-    networkProfile: {
-      networkInterfaces: [
-        {
-          id: resourceId('Microsoft.Network/networkInterfaces', nicNameWindows)
-        }
-      ]
-    }
-  }
-}
-resource res_schedules_shutdown_computevm_vmNameWindowsResource 'microsoft.devtestlab/schedules@2018-09-15' = {
-  name: vmParadaDiariaNombre
-  location: location
-  properties: {
-    status: 'Enabled'
-    taskType: 'ComputeVmShutdownTask'
-    dailyRecurrence: {
-      time: '2200'
-    }
-    timeZoneId: 'Romance Standard Time'
-    notificationSettings: {
-      status: 'Enabled'
-      timeInMinutes: 30
-      emailRecipient: 'mlopezg@vernegroup.com'
-      notificationLocale: 'en'
-    }
-    targetResourceId: res_vmNameWindowsResource_name.id
-  }
-}
 
 /*  PEERINGS HUB - SPOKES  */
-
-/*resource*/
 
 /* 'EXISTING' -> We use this kind of reference to access an existing element in the same RG: */
 resource res_networking_Hub01_Vnet 'Microsoft.Network/virtualNetworks@2020-05-01' existing = {
