@@ -11,12 +11,27 @@ param networking_Hub01 object = {
   subnetTransitName: 'snet-hub01-transit'
   subnetTransit: '10.0.1.80/29'
 }
-/* /24 = 256 ips --> from 10.0.2.0 -to- 10.0.2.255 */
-/* param networking_Hub02 object = {
-  name: 'vnet-cesa-elz01-hub02'
-  addressPrefix: '10.0.2.0/24'
-} */
+param networking_Spoke01 object = {
+  name: 'vnet-cesa-elz01-spk01'
+  addressPrefix: '10.1.0.0/22'
+  subnetFrontName: 'snet-spk01-front'
+  subnetFrontPrefix: '10.1.0.0/25'
+  subnetBackName: 'snet-spk01-back'
+  subnetBackPrefix: '10.1.0.128/25'
+  subnetMangament: 'snet-spk01-mngnt'
+  subnetMangamentPrefix: '10.1.1.0/29'
 
+}
+
+param networking_Spoke02 object = {
+  name: 'vnet-cesa-elz01-spk02'
+  addressPrefix: '10.2.0.0/22'
+  subnetFrontName: 'snet-spk01-front'
+  subnetFrontPrefix: '10.2.0.0/25'
+  subnetBackName: 'snet-spk01-back'
+  subnetBackPrefix: '10.2.0.128/25'
+
+}
 param networking_deploy_VpnGateway bool = true
 
 param networking_AzureFirewall object = {
@@ -26,27 +41,19 @@ param networking_AzureFirewall object = {
   subnetPrefix: '10.0.1.0/26' /* 10.0.1.0 -> 10.0.1.63 */
   routeName: 'udr-cesa-elz01-nxthop-to-fw'
 }
-/*
-param networking_bastionHost object = {
-  name: 'bas-cesa-elz01-bastionhost01'
-  publicIPAddressName: 'pip-cesa-elz01-bas01'
-  subnetName: 'AzureBastionSubnet'
-  nsgName: 'nsg-hub01-bastion'
-  subnetPrefix: '10.0.1.64/29'/* 10.0.1.64 -> 10.0.1.71 
-}
-*/
+
 param networking_vpnGateway object = {
   name: 'vgw-cesa-elz01-hub01-vgw01'
   subnetName: 'GatewaySubnet'
   subnetPrefix: '10.0.1.72/29'
   pipName: 'pip-cesa-elz01-hub01-vgw01'
 }
-
+/*
 param networking_hub01_localNetworkGateway object = {
   name: 'lgw-cesa-elz01-hub01-lgw01'
   localAddressPrefix: '172.16.1.0/26'
 }
-
+*/
 resource res_networking_Hub01 'Microsoft.Network/virtualNetworks@2020-05-01' = {
   name: networking_Hub01.name
   location: location
@@ -141,7 +148,7 @@ resource res_networking_Hub_vpnGateway 'Microsoft.Network/virtualNetworkGateways
     res_networking_Hub01
   ]
 }
-
+/*
 resource res_networking_Hub01_localNetworkGateway 'Microsoft.Network/localNetworkGateways@2021-02-01' = if (networking_deploy_VpnGateway) {
   name: networking_hub01_localNetworkGateway.name
   location: location
@@ -158,10 +165,11 @@ resource res_networking_Hub01_localNetworkGateway 'Microsoft.Network/localNetwor
       ]
     }
     /*https://docs.microsoft.com/en-us/azure/templates/microsoft.network/publicipaddresses?tabs=bicep#publicipaddresspropertiesformat*/
-    gatewayIpAddress: res_networking_Hub_vpnGateway_pip.properties.ipAddress  /*''*/
+   /*gatewayIpAddress: res_networking_Hub_vpnGateway_pip.properties.ipAddress  */
+   /*
   }
 }
-
+*/
 /* desplegamos MÁQUINA LINUX para testear conectividades */
 
 resource res_linuxVm_Hub01_pip 'Microsoft.Network/publicIPAddresses@2019-11-01' = if (networking_deploy_VpnGateway) {
@@ -334,10 +342,14 @@ resource res_schedules_shutdown_computevm_vmNameWindowsResource 'microsoft.devte
 
 /* 'EXISTING' -> We use this kind of reference to access an existing element in the same RG: */
 resource res_networking_Spk01_Vnet 'Microsoft.Network/virtualNetworks@2020-05-01' existing = {
-  name: 'vnet-cesa-elz01-spk01'
+  name: networking_Spoke01.name
   scope: resourceGroup('rg-cesa-elz01-spk01-networking-01')
 }
 
+resource res_networking_Spk02_Vnet 'Microsoft.Network/virtualNetworks@2020-05-01' existing = {
+  name: networking_Spoke02.name
+  scope: resourceGroup('rg-cesa-elz01-spk02-networking-01')
+}
 
 resource res_peering_Hub01_2_Spk01  'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2020-06-01' = {
   name: '${res_networking_Hub01.name}/per-cesa-elz01-hub01-to-spk01'
@@ -350,8 +362,24 @@ resource res_peering_Hub01_2_Spk01  'Microsoft.Network/virtualNetworks/virtualNe
       id: res_networking_Spk01_Vnet.id
     }
   }
+  dependsOn: [
+    res_networking_Hub01
+  ]
 }
 /*
-output bastion_subnetid string = res_networking_Hub01.properties.subnets.id
-output bastion_publicIPAddress string = networking_bastionHost.properties.publicIPAddressName
+resource res_peering_Hub01_to_Spk02 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2020-06-01' = {
+  name: '${res_networking_Hub01.name}/per-cesa-elz01-hub01-to-spk02'
+  properties: {
+    allowVirtualNetworkAccess: true
+    allowForwardedTraffic: true
+    allowGatewayTransit: false
+    useRemoteGateways: false
+    remoteVirtualNetwork: {
+      id: res_networking_Spk02_Vnet.id
+    }
+  }
+  dependsOn: [
+    res_networking_Hub01
+  ]
+}
 */

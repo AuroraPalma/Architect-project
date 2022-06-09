@@ -158,6 +158,7 @@ module mod_cesaDevElz01_Vnet2Vnet_OnPrem_Conn_Deploy 'modules/networking/cesa.de
   }
   dependsOn:[
     mod_cesaDevElz01_Networking_OnPrem_Deploy
+    mod_cesaDevElz01_Networking_Hub_Deploy
   ]
 }
 
@@ -169,6 +170,7 @@ module mod_cesaDevElz01_Vnet2Vnet_Hub_Conn_Deploy 'modules/networking/cesa.dev.n
   }
   dependsOn:[
     mod_cesaDevElz01_Networking_Hub_Deploy
+    mod_cesaDevElz01_Networking_OnPrem_Deploy
   ]
 }
 
@@ -213,12 +215,13 @@ module mod_architect_dev_Alerts_Deploy 'modules/alertrule.monitor.bicep' = {
   name:'${'architectDevAlerts_Monitor_'}${currentDateTime}'
   scope: res_elz_alerts_monitor_rg_name
 }
-/*
+
 module mod_architectdev_KeyVault_Hub_Deploy 'modules/arc.dev.keyvault.bicep' = {
   name: '${'architectdevKeyvault_Hub_'}${currentDateTime}'
   scope: res_elz_networking_rg_hub01_name
   params:{
     location:deployment_location
+    secretValue: 'usr$Am1n-2223'
   }
 }
 
@@ -227,6 +230,10 @@ module mod_cesaDev_Workload_spk01_Deploy 'modules/cesa.dev.worload.spk.bicep' = 
   scope: res_elz_workloads_rg_spk01_name
   params:{
     location:deployment_location
+    adminPasswordOrKey: 'usr$Am1n-2223'
   }
+  dependsOn: [
+        mod_cesaDevElz01_Networking_Spk01_Deploy
+  ]
 }
-*/
+

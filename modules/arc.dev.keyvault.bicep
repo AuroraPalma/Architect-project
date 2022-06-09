@@ -5,13 +5,13 @@ param keyVaultName string = 'kvault-dev-hub-01'
 param location string = resourceGroup().location
 
 @description('Specifies whether Azure Virtual Machines are permitted to retrieve certificates stored as secrets from the key vault.')
-param enabledForDeployment bool = false
+param enabledForDeployment bool = true
 
 @description('Specifies whether Azure Disk Encryption is permitted to retrieve secrets from the vault and unwrap keys.')
-param enabledForDiskEncryption bool = false
+param enabledForDiskEncryption bool = true
 
 @description('Specifies whether Azure Resource Manager is permitted to retrieve secrets from the key vault.')
-param enabledForTemplateDeployment bool = false
+param enabledForTemplateDeployment bool = true
 
 @description('Specifies the Azure Active Directory tenant ID that should be used for authenticating requests to the key vault. Get it by using Get-AzSubscription cmdlet.')
 param tenantId string = subscription().tenantId
@@ -37,11 +37,11 @@ param secretsPermissions array = [
 param skuName string = 'standard'
 
 @description('Specifies the name of the secret that you want to create.')
-param secretName string = 'FirstSecret'
+param secretName string = 'lxm-password-datascience-spk01'
 
 @description('Specifies the value of the secret that you want to create.')
 @secure()
-param secretValue string = 'lopfgtreszf'
+param secretValue string
 
 resource kv 'Microsoft.KeyVault/vaults@2021-11-01-preview' = {
   name: keyVaultName
