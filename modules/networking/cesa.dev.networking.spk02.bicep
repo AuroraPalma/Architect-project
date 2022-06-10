@@ -36,7 +36,7 @@ resource res_networking_Spk02 'Microsoft.Network/virtualNetworks@2020-05-01' = {
   }
 }
 
-/*Peerings
+/*Peerings*/
 resource res_networking_Hub01_Vnet 'Microsoft.Network/virtualNetworks@2020-05-01' existing = {
   name: 'vnet-cesa-elz01-hub01'
   scope: resourceGroup('rg-cesa-elz01-hub01-networking-01')
@@ -55,4 +55,4 @@ resource res_peering_Spk02_2_Hub01  'Microsoft.Network/virtualNetworks/virtualNe
     }
   }
 }
-*/
+
