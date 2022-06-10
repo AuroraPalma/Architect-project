@@ -48,12 +48,7 @@ param networking_vpnGateway object = {
   subnetPrefix: '10.0.1.72/29'
   pipName: 'pip-cesa-elz01-hub01-vgw01'
 }
-/*
-param networking_hub01_localNetworkGateway object = {
-  name: 'lgw-cesa-elz01-hub01-lgw01'
-  localAddressPrefix: '172.16.1.0/26'
-}
-*/
+
 resource res_networking_Hub01 'Microsoft.Network/virtualNetworks@2020-05-01' = {
   name: networking_Hub01.name
   location: location
@@ -76,12 +71,6 @@ resource res_networking_Hub01 'Microsoft.Network/virtualNetworks@2020-05-01' = {
           addressPrefix: networking_AzureFirewall.subnetPrefix
         }
       }
-      /*{
-        name: networking_bastionHost.subnetName
-        properties: {
-          addressPrefix: networking_bastionHost.subnetPrefix
-        }
-      }*/
       {
         name: networking_vpnGateway.subnetName
         properties: {
@@ -148,28 +137,7 @@ resource res_networking_Hub_vpnGateway 'Microsoft.Network/virtualNetworkGateways
     res_networking_Hub01
   ]
 }
-/*
-resource res_networking_Hub01_localNetworkGateway 'Microsoft.Network/localNetworkGateways@2021-02-01' = if (networking_deploy_VpnGateway) {
-  name: networking_hub01_localNetworkGateway.name
-  location: location
-  tags: {
-    'cor-ctx-environment': 'development'
-    'cor-ctx-projectcode': 'Verne Technology - Curso Cloud Expert Solution Architect'
-    'cor-ctx-purpose': ''
-    'cor-aut-delete' : 'true'
-  }
-  properties: {
-    localNetworkAddressSpace: {
-      addressPrefixes: [
-        networking_hub01_localNetworkGateway.localAddressPrefix
-      ]
-    }
-    /*https://docs.microsoft.com/en-us/azure/templates/microsoft.network/publicipaddresses?tabs=bicep#publicipaddresspropertiesformat*/
-   /*gatewayIpAddress: res_networking_Hub_vpnGateway_pip.properties.ipAddress  */
-   /*
-  }
-}
-*/
+
 /* desplegamos MÁQUINA LINUX para testear conectividades */
 
 resource res_linuxVm_Hub01_pip 'Microsoft.Network/publicIPAddresses@2019-11-01' = if (networking_deploy_VpnGateway) {
@@ -356,7 +324,7 @@ resource res_peering_Hub01_2_Spk01  'Microsoft.Network/virtualNetworks/virtualNe
   properties: {
     allowVirtualNetworkAccess: true
     allowForwardedTraffic: true
-    allowGatewayTransit: false
+    allowGatewayTransit: true
     useRemoteGateways: false
     remoteVirtualNetwork: {
       id: res_networking_Spk01_Vnet.id
@@ -366,13 +334,13 @@ resource res_peering_Hub01_2_Spk01  'Microsoft.Network/virtualNetworks/virtualNe
     res_networking_Hub01
   ]
 }
-/*
+
 resource res_peering_Hub01_to_Spk02 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2020-06-01' = {
   name: '${res_networking_Hub01.name}/per-cesa-elz01-hub01-to-spk02'
   properties: {
     allowVirtualNetworkAccess: true
     allowForwardedTraffic: true
-    allowGatewayTransit: false
+    allowGatewayTransit: true
     useRemoteGateways: false
     remoteVirtualNetwork: {
       id: res_networking_Spk02_Vnet.id
@@ -382,4 +350,4 @@ resource res_peering_Hub01_to_Spk02 'Microsoft.Network/virtualNetworks/virtualNe
     res_networking_Hub01
   ]
 }
-*/
+
