@@ -17,6 +17,7 @@
 var uniqueStorageName = '${storagePrefix}${('mon01')}'
 */
 /*variables que restringen los caracteres para el nombre del parámetro*/
+param location string = resourceGroup().location
 @minLength(3)
 @maxLength(24)
 param storageAccountName string = 'stazneugeneralaccount01'
@@ -32,13 +33,12 @@ param storageAccountName string = 'stazneugeneralaccount01'
   'Standard_RAGZRS'
 ])
 param storageSKU string = 'Standard_LRS'
-param deploymentLocation string = 'northeurope'
 
 /***********************************************************  END PARAMS         */
 
 resource stAccount_stmazneucordfbi_datasvc 'Microsoft.Storage/storageAccounts@2021-02-01' = {
   name: storageAccountName 
-  location: deploymentLocation
+  location: location
   tags:{
     'cesa-ctx-environment': 'development'
     'cesa-ctx-projectcode': 'CESA: Cloud Expert Solutions Architect 2022A'

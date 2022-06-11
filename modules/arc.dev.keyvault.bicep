@@ -21,12 +21,12 @@ param objectId string = 'cd6fd6f1-a0c4-4402-8e74-dee66ddf5485'
 
 @description('Specifies the permissions to keys in the vault. Valid values are: all, encrypt, decrypt, wrapKey, unwrapKey, sign, verify, get, list, create, update, import, delete, backup, restore, recover, and purge.')
 param keysPermissions array = [
-  'list'
+  'all'
 ]
 
 @description('Specifies the permissions to secrets in the vault. Valid values are: all, get, list, set, delete, backup, restore, recover, and purge.')
 param secretsPermissions array = [
-  'list'
+  'all'
 ]
 
 @description('Specifies whether the key vault is a standard vault or a premium vault.')
@@ -38,11 +38,11 @@ param skuName string = 'standard'
 
 @description('Specifies the name of the secret that you want to create.')
 param secretName string = 'lxm-password-datascience-spk01'
-
+param secretName_windows string = 'wind-password-spk01'
 @description('Specifies the value of the secret that you want to create.')
 @secure()
 param secretValue string
-
+param secretValue_windows string
 resource kv 'Microsoft.KeyVault/vaults@2021-11-01-preview' = {
   name: keyVaultName
   location: location
@@ -78,5 +78,13 @@ resource secret 'Microsoft.KeyVault/vaults/secrets@2021-11-01-preview' = {
   name: secretName
   properties: {
     value: secretValue
+  }
+}
+
+resource secret_windows 'Microsoft.KeyVault/vaults/secrets@2021-11-01-preview' = {
+  parent: kv
+  name: secretName_windows
+  properties: {
+    value: secretValue_windows
   }
 }

@@ -38,15 +38,21 @@ param maxIntervalInSeconds int = 300
 param automaticFailover bool = true
 
 @description('The name for the database')
-param databaseName string = 'myDatabase'
+param databaseName string = 'Db-cosmos-dev-data-001'
 
 @description('The name for the container')
-param containerName string = 'myContainer'
+param containerName string = 'dataingestioncosmos'
 
 @minValue(400)
 @maxValue(1000000)
 @description('The throughput for the container')
 param throughput int = 400
+
+/*Para loganalytics*/
+var logAnalyticsWorkspaceName = 'lg-analytics-dev-hub-001'
+var cosmosDBAccountDiagnosticSettingsName = 'route-logs-to-log-analytics'
+/*Cuenta de almacenamiento para los logs de LogAnalytics*/
+var storageAccountBlobDiagnosticSettingsName = 'route-logs-to-log-analytics'
 
 var consistencyPolicy = {
   Eventual: {
@@ -140,18 +146,23 @@ var vmSize = {
   'CPU-16GB': 'Standard_D4s_v3'
   'GPU-56GB': 'Standard_NC6_Promo'
 }
+param storageSKU string = 'Standard_LRS'
 param keyVaultName string = 'kvault-dev-hub-01'
 resource kv 'Microsoft.KeyVault/vaults@2021-11-01-preview' existing = {
   name: keyVaultName
 }
 param adminUserName string = 'usrwinadmin'
-param adminUserPass string = 'usr$Am1n-2223'
+@secure()
+param adminUserPass string
+
+
 param vm_windows_Size string = 'Standard_D2s_v3'
 param vmParadaDiariaNombre string = 'shutdown-computevm-vm-windows-01'
 
 var nicNameWindows = 'nic-windows-01'
 var vmNameWindows = 'vm-windows-01'
 var windowsOSVersion = '2016-Datacenter'
+/*CosmosDB*/
 resource account 'Microsoft.DocumentDB/databaseAccounts@2021-10-15' = {
   name: toLower(accountName)
   location: location
@@ -234,6 +245,133 @@ resource container 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/container
     options: {
       throughput: throughput
     }
+  }
+}
+
+/*Diagnostic Log Analytics*/
+resource loganalyticsdev_resource 'Microsoft.OperationalInsights/workspaces@2021-12-01-preview' existing = {
+  name: logAnalyticsWorkspaceName
+  scope: resourceGroup('rg-arc-analytics_01')
+}
+
+resource cosmosDBAccountDiagnostics 'Microsoft.Insights/diagnosticSettings@2017-05-01-preview' = {
+  scope: account
+  name: cosmosDBAccountDiagnosticSettingsName
+  properties: {
+    workspaceId: loganalyticsdev_resource.id
+    logs: [
+      {
+        category: 'DataPlaneRequests'
+        enabled: true
+      }
+    ]
+  }
+}
+/*
+resource storageAccount 'Microsoft.Storage/storageAccounts@2021-08-01' = {
+  name: storageAccountName
+  location: location
+  sku: {
+    name: storageAccountType
+  }
+  kind: storageAccountKind
+  resource blobservice 'blobServices' = {
+    name: 'default'
+    properties: {
+      /*containerDeleteRetentionPolicy: {
+        days: 2
+      }
+    }
+  }
+}
+*/
+
+resource storageAccount 'Microsoft.Storage/storageAccounts@2021-02-01' = {
+  name: storageAccountName 
+  location: location
+  tags:{
+    'cesa-ctx-environment': 'development'
+    'cesa-ctx-projectcode': 'CESA: Cloud Expert Solutions Architect 2022A'
+    'cesa-ctx-purpose': 'Enterprise Landing Zone 01 - Proyectos Alumnos'
+  }
+  sku:{
+    name: storageSKU
+    tier: 'Standard'
+  }
+  kind: 'StorageV2'
+  properties: {
+    azureFilesIdentityBasedAuthentication: {
+      directoryServiceOptions: 'None'
+    }
+    minimumTlsVersion: 'TLS1_2'
+    allowBlobPublicAccess: false
+    allowSharedKeyAccess: true
+    networkAcls: {
+      bypass: 'AzureServices'
+      virtualNetworkRules: []
+      ipRules: []
+      defaultAction: 'Allow'
+    }
+    supportsHttpsTrafficOnly: true
+      encryption: {
+      services: {
+        file: {
+          keyType: 'Account'
+          enabled: true
+        }
+        blob: {
+          keyType: 'Account'
+          enabled: true
+        }
+      }
+      keySource: 'Microsoft.Storage'
+    }
+    accessTier: 'Hot'
+  }
+  resource DevStorageblobService 'blobServices' = {
+    name: 'default'
+    properties: {
+      cors: {
+        corsRules: []
+      }
+      deleteRetentionPolicy: {
+        enabled: true
+        days: 7
+      }
+    }
+    resource cesaDevStorage01_container01 'Containers' = {
+      name: 'logscosmosdb'
+      properties: {
+        defaultEncryptionScope: '$account-encryption-key'
+        denyEncryptionScopeOverride: false
+        publicAccess: 'None'
+      }
+      dependsOn: [
+        
+      ]
+    }
+  }
+}
+
+resource storageAccountBlobDiagnostics 'Microsoft.Insights/diagnosticSettings@2017-05-01-preview' = {
+  scope: storageAccount::DevStorageblobService
+  name: storageAccountBlobDiagnosticSettingsName
+  properties: {
+    workspaceId: loganalyticsdev_resource.id
+    logs: [
+      {
+        category: 'StorageRead'
+        enabled: true
+      }
+      {
+        category: 'StorageWrite'
+        enabled: true
+      }
+      {
+        category: 'StorageDelete'
+        enabled: true
+      }
+    ]
   }
 }
 
@@ -326,15 +464,6 @@ resource publicIpAddress 'Microsoft.Network/publicIPAddresses@2021-05-01' = {
   properties: {
     publicIPAllocationMethod: 'Dynamic'
   }
-}
-
-resource storageAccount 'Microsoft.Storage/storageAccounts@2021-08-01' = {
-  name: storageAccountName
-  location: location
-  sku: {
-    name: storageAccountType
-  }
-  kind: storageAccountKind
 }
 
 resource virtualMachine 'Microsoft.Compute/virtualMachines@2021-11-01' = {

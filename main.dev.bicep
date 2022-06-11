@@ -30,9 +30,9 @@ resource res_elz_networking_rg_hub01_name 'Microsoft.Resources/resourceGroups@20
   name: elz_networking_rg_hub01_name
   location: deployment_location /* northeurope */
   tags: {
-    'cor-ctx-environment': 'development'
-    'cor-ctx-projectcode': 'Verne Technology - Curso Cloud Expert Solution Architect'
-    'cor-ctx-purpose': 'Grupo de recursos para las redes del hub'
+    'Env': 'infrastructure'
+    'az-core-projectcode': 'BicepDeployment- Designing Microsoft Azure Infrastructure Solutions '
+    'az-core-purpose': 'Networking hub'
     'cor-aut-delete' : 'true'
   }
 }
@@ -41,7 +41,7 @@ resource res_elz_storage_rg_hub01_name 'Microsoft.Resources/resourceGroups@2021-
   name: elz_storage_rg_hub01_name
   location: deployment_location
   tags: {
-    'cor-ctx-environment': 'development'
+    'Env': 'infrastructure'
     'cor-ctx-projectcode': 'Verne Technology - Curso Cloud Expert Solution Architect'
     'cor-ctx-purpose': 'Grupo de recursos para las cuentas de almacenamiento del hub'
     'cor-aut-delete' : 'true'
@@ -52,7 +52,7 @@ resource res_elz_networking_rg_onprem_name 'Microsoft.Resources/resourceGroups@2
   name: elz_networking_rg_onprem_name
   location: deployment_location
   tags: {
-    'cor-ctx-environment': 'development'
+    'Env': 'infrastructure'
     'cor-ctx-projectcode': 'Verne Technology - Curso Cloud Expert Solution Architect'
     'cor-ctx-purpose': 'Grupo de recursos para las redes que simulan on-premises'
     'cor-aut-delete' : 'true'
@@ -66,7 +66,7 @@ resource res_elz_networking_rg_spk01_name 'Microsoft.Resources/resourceGroups@20
   name: elz_networking_rg_spk01_name
   location: deployment_location
   tags: {
-    'cor-ctx-environment': 'development'
+    'Env': 'infrastructure'
     'cor-ctx-projectcode': 'Verne Technology - Curso Cloud Expert Solution Architect'
     'cor-ctx-purpose': 'Grupo de recursos para las redes del Spoke-01'
     'cor-aut-delete' : 'true'
@@ -77,7 +77,7 @@ resource res_elz_networking_rg_spk02_name 'Microsoft.Resources/resourceGroups@20
   name: elz_networking_rg_spk02_name
   location: deployment_location
   tags: {
-    'cor-ctx-environment': 'development'
+    'Env': 'infrastructure'
     'cor-ctx-projectcode': 'Verne Technology - Curso Cloud Expert Solution Architect'
     'cor-ctx-purpose': 'Grupo de recursos para las redes del Spoke-02'
     'cor-aut-delete' : 'true'
@@ -88,7 +88,7 @@ resource res_elz_workloads_rg_spk01_name 'Microsoft.Resources/resourceGroups@202
   name: elz_workloads_rg_spk01_name
   location: deployment_location
   tags: {
-    'cor-ctx-environment': 'development'
+    'Env': 'DevTest'
     'cor-ctx-projectcode': 'Verne Technology - Curso Cloud Expert Solution Architect'
     'cor-ctx-purpose': 'Grupo de recursos para los recursos de las cargas de trabajo del Spoke01'
     'cor-aut-delete' : 'true'
@@ -99,7 +99,7 @@ resource res_elz_workloads_rg_spk02_name 'Microsoft.Resources/resourceGroups@202
   name: elz_workloads_rg_spk02_name
   location: deployment_location
   tags: {
-    'cor-ctx-environment': 'development'
+    'Env': 'Production'
     'cor-ctx-projectcode': 'Verne Technology - Curso Cloud Expert Solution Architect'
     'cor-ctx-purpose': 'Grupo de recursos para los recursos de las cargas de trabajo del Spoke02'
     'cor-aut-delete' : 'true'
@@ -110,6 +110,7 @@ resource res_elz_log_analytics_rg_name 'Microsoft.Resources/resourceGroups@2021-
   name: elz_log_analytics_rg_name
   location:deployment_location
   tags:{
+    'Env': 'monitoring'
     'cor-aut-delete' : 'true'
   }
 }
@@ -118,6 +119,7 @@ resource res_elz_alerts_monitor_rg_name 'Microsoft.Resources/resourceGroups@2021
   name: elz_alerts_monitor_rg_name
   location: deployment_location
   tags:{
+    'Env': 'monitoring'
     'cor-aut-delete' : 'true'
   }
 }
@@ -201,13 +203,15 @@ module mod_architect_devLoganalytics_Hub_Deploy 'modules/arc.dev.loganalytics.bi
 }
 /*Azure Policy*/
 
-module mod_architect_dev_Policies_Deploy 'modules/policy.bicep' = {
+module mod_architect_dev_Policies_Deploy 'modules/policy.v2.bicep' = {
   name:'${'architectDevPolicies_general_'}${currentDateTime}'
   params:{
     listOfAllowedLocations: [
       'northeurope'
       'westeurope'
     ]
+    assignmentIdentityLocation: 'northeurope'
+    mandatoryTag1Value:'Env'
   }
 }
 
@@ -222,18 +226,28 @@ module mod_architectdev_KeyVault_Hub_Deploy 'modules/arc.dev.keyvault.bicep' = {
   params:{
     location:deployment_location
     secretValue: 'usr$Am1n-2223'
+    secretValue_windows: 'usr$Am1n-2224'
   }
 }
 
+module mod_architectDev_storage_Hub_Deploy 'modules/cesa.dev.st.datasvc.bicep' = {
+  name: '${'architectdevstorage_Hub_'}${currentDateTime}'
+  scope: res_elz_storage_rg_hub01_name
+  params: {
+    location: deployment_location
+  }
+}
 module mod_cesaDev_Workload_spk01_Deploy 'modules/cesa.dev.worload.spk.bicep' = {
   name: '${'cesadevworkload_Spk01_'}${currentDateTime}'
   scope: res_elz_workloads_rg_spk01_name
   params:{
     location:deployment_location
     adminPasswordOrKey: 'usr$Am1n-2223'
+    adminUserPass: 'usr$Am1n-2224'
   }
   dependsOn: [
         mod_cesaDevElz01_Networking_Spk01_Deploy
+        mod_architect_devLoganalytics_Hub_Deploy
   ]
 }
 
