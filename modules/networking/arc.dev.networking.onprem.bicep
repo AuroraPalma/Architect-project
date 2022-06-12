@@ -1,13 +1,11 @@
-/*
-MOdificar los nombres y resource group
-*/
-param location string = resourceGroup().location
+//MODULE NETWORKING ON PREMISE BICEP- AZURE ARCHITECT PROJECT
 
+//PARAMS
+param location string = resourceGroup().location
 /* /24 = 256 ips --> from 172.16.1.0 -to- 172.16.1.255 */
 param networking_OnPremises object = {
   name: 'vnet-azarc-onpremises01'
   addressPrefix: '172.16.1.0/24'
-  /*addressPrefix: '172.16.1.0/29'*/
   subnetTransitName: 'snet-onprem-transit'
   subnetTransit: '172.16.1.0/26'
 }
@@ -17,17 +15,11 @@ param networking_deploy_OnPrem_VpnGateway bool = true
 param networking_OnPrem_vpnGateway object = {
   name: 'vgw-azarc-onprem-vgw01'
   subnetName: 'GatewaySubnet'
-  /*addressPrefix: '172.16.1.8/24'*/
   subnetPrefix: '172.16.1.64/29'
   pipName: 'pip-azarc-onprem-vgw01'
 }
 
-/* -> 2022-05-18 -> params 
-param networking_OnPrem_localNetworkGateway object = {
-  name: 'lgw-cesa-elz01-onprem-lgw01'
-  localAddressPrefix: '10.0.1.80/29' 
-} /*10.0.1.80 - 10.0.1.87 (3 + 5*/
-
+//RESOURCES
 resource res_networking_OnPremises 'Microsoft.Network/virtualNetworks@2020-05-01' = {
   name: networking_OnPremises.name
   location: location
@@ -113,29 +105,8 @@ resource res_networking_OnPrem_vpnGateway 'Microsoft.Network/virtualNetworkGatew
     res_networking_OnPremises
   ]
 }
-/*
-resource res_networking_OnPrem_localNetworkGateway 'Microsoft.Network/localNetworkGateways@2021-02-01' = if (networking_deploy_OnPrem_VpnGateway) {
-  name: networking_OnPrem_localNetworkGateway.name
-  location: location
-  tags: {
-    'cor-ctx-environment': 'development'
-    'cor-ctx-projectcode': 'Verne Technology - Curso Cloud Expert Solution Architect'
-    'cor-ctx-purpose': 'Pasarela local (local gateway) para enrutar tráfico entre las redes. El tráfico de estas redes irá por el túnel'
-    'cor-aut-delete' : 'true'
-  }
-  properties: {
-    localNetworkAddressSpace: {
-      addressPrefixes: [
-        networking_OnPrem_localNetworkGateway.localAddressPrefix
-      ]
-    }
-    /*https://docs.microsoft.com/en-us/azure/templates/microsoft.network/publicipaddresses?tabs=bicep#publicipaddresspropertiesformat*/
-    /*gatewayIpAddress: res_networking_OnPrem_vpnGateway_pip.properties.ipAddress  /*'20.238.39.157'*/
-  /*
-  }
-}
-*/
-/* desplegamos MÁQUINA LINUX para testear conectividades */
+
+//Linux VM for connection testing
 
 resource res_linuxVm_OnPrem_pip 'Microsoft.Network/publicIPAddresses@2019-11-01' = if (networking_deploy_OnPrem_VpnGateway) {
   name: 'pip-azarc-onprem-lxvm1'
@@ -283,8 +254,6 @@ resource vmNameLinuxResource 'Microsoft.Compute/virtualMachines@2019-07-01' = {
     }
   }
 }
-
-
 
 resource res_schedules_shutdown_computevm_vmNameWindowsResource 'microsoft.devtestlab/schedules@2018-09-15' = {
   name: 'shutdown-computevm-lxvmonpnetcheck'

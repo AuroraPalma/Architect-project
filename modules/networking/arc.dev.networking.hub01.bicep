@@ -1,9 +1,7 @@
-/*
-cambiar el DNS ip pública o borrarla
-Poner bastión y azure key vault
-*/
-param location string = resourceGroup().location
+//MODULE NETWORKING HUB BICEP- AZURE ARCHITECT PROJECT
 
+//PARAMS
+param location string = resourceGroup().location
 /* /24 = 256 ips --> from 10.0.1.0 -to- 10.0.1.255 */
 param networking_Hub01 object = {
   name: 'vnet-azarc-hub01'
@@ -11,6 +9,7 @@ param networking_Hub01 object = {
   subnetTransitName: 'snet-hub01-transit'
   subnetTransit: '10.0.1.80/29'
 }
+
 param networking_Spoke01 object = {
   name: 'vnet-azarc-spk01'
   addressPrefix: '10.1.0.0/22'
@@ -32,11 +31,12 @@ param networking_Spoke02 object = {
   subnetBackPrefix: '10.2.0.128/25'
 
 }
+
 param networking_deploy_VpnGateway bool = true
 
 param networking_AzureFirewall object = {
   name: 'afw-azarc-firewall01'
-  publicIPAddressName: 'pip-cesa-elz01-afw01'
+  publicIPAddressName: 'pip-azarc-afw01'
   subnetName: 'AzureFirewallSubnet'
   subnetPrefix: '10.0.1.0/26' /* 10.0.1.0 -> 10.0.1.63 */
   routeName: 'udr-azarc-nxthop-to-fw'
@@ -49,6 +49,7 @@ param networking_vpnGateway object = {
   pipName: 'pip-azarc-hub01-vgw01'
 }
 
+//RESOURCES
 resource res_networking_Hub01 'Microsoft.Network/virtualNetworks@2020-05-01' = {
   name: networking_Hub01.name
   location: location
@@ -141,7 +142,7 @@ resource res_networking_Hub_vpnGateway 'Microsoft.Network/virtualNetworkGateways
   ]
 }
 
-/* desplegamos MÁQUINA LINUX para testear conectividades */
+//Linux VM for connection testing
 
 resource res_linuxVm_Hub01_pip 'Microsoft.Network/publicIPAddresses@2019-11-01' = if (networking_deploy_VpnGateway) {
   name: 'pip-azarc-hub01-lxvm2'
@@ -311,9 +312,6 @@ resource res_schedules_shutdown_computevm_vmNameWindowsResource 'microsoft.devte
   }
 }
 
-/*resource*/
-
-/* 'EXISTING' -> We use this kind of reference to access an existing element in the same RG: */
 resource res_networking_Spk01_Vnet 'Microsoft.Network/virtualNetworks@2020-05-01' existing = {
   name: networking_Spoke01.name
   scope: resourceGroup('rg-azarc-spk01-networking-01')

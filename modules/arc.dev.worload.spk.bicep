@@ -1,3 +1,6 @@
+//MODULE DEVELOPMENT SPOKE 01 BICEP- AZURE ARCHITECT PROJECT
+
+//PARAMS
 @description('Cosmos DB account name, max length 44 characters')
 param accountName string = 'sql-${uniqueString(resourceGroup().id)}'
 
@@ -48,44 +51,6 @@ param containerName string = 'dataingestioncosmos'
 @description('The throughput for the container')
 param throughput int = 400
 
-/*Para loganalytics*/
-var logAnalyticsWorkspaceName = 'lg-azarc-hub-analytics-001'
-var cosmosDBAccountDiagnosticSettingsName = 'route-logs-to-log-analytics'
-/*Cuenta de almacenamiento para los logs de LogAnalytics*/
-var storageAccountBlobDiagnosticSettingsName = 'route-logs-to-log-analytics'
-
-var consistencyPolicy = {
-  Eventual: {
-    defaultConsistencyLevel: 'Eventual'
-  }
-  ConsistentPrefix: {
-    defaultConsistencyLevel: 'ConsistentPrefix'
-  }
-  Session: {
-    defaultConsistencyLevel: 'Session'
-  }
-  BoundedStaleness: {
-    defaultConsistencyLevel: 'BoundedStaleness'
-    maxStalenessPrefix: maxStalenessPrefix
-    maxIntervalInSeconds: maxIntervalInSeconds
-  }
-  Strong: {
-    defaultConsistencyLevel: 'Strong'
-  }
-}
-var locations = [
-  {
-    locationName: primaryRegion
-    failoverPriority: 0
-    isZoneRedundant: false
-  }
-  {
-    locationName: secondaryRegion
-    failoverPriority: 1
-    isZoneRedundant: false
-  }
-]
-
 @description('Username for Administrator Account')
 param adminUsername string = 'vmadmin'
 
@@ -129,6 +94,54 @@ param authenticationType string = 'password'
 @description('SSH Key or password for the Virtual Machine. SSH key is recommended.')
 @secure()
 param adminPasswordOrKey string
+param storageSKU string = 'Standard_LRS'
+param keyVaultName string = 'kvault-dev-hub-01'
+resource kv 'Microsoft.KeyVault/vaults@2021-11-01-preview' existing = {
+  name: keyVaultName
+}
+param adminUserName string = 'usrwinadmin'
+@secure()
+param adminUserPass string
+
+
+param vm_windows_Size string = 'Standard_D2s_v3'
+param vmParadaDiariaNombre string = 'shutdown-computevm-vm-windows-01'
+
+//VARIABLES
+var logAnalyticsWorkspaceName = 'lg-azarc-hub-analytics-001'
+var cosmosDBAccountDiagnosticSettingsName = 'route-logs-to-log-analytics'
+var storageAccountBlobDiagnosticSettingsName = 'route-logs-to-log-analytics'
+var consistencyPolicy = {
+  Eventual: {
+    defaultConsistencyLevel: 'Eventual'
+  }
+  ConsistentPrefix: {
+    defaultConsistencyLevel: 'ConsistentPrefix'
+  }
+  Session: {
+    defaultConsistencyLevel: 'Session'
+  }
+  BoundedStaleness: {
+    defaultConsistencyLevel: 'BoundedStaleness'
+    maxStalenessPrefix: maxStalenessPrefix
+    maxIntervalInSeconds: maxIntervalInSeconds
+  }
+  Strong: {
+    defaultConsistencyLevel: 'Strong'
+  }
+}
+var locations = [
+  {
+    locationName: primaryRegion
+    failoverPriority: 0
+    isZoneRedundant: false
+  }
+  {
+    locationName: secondaryRegion
+    failoverPriority: 1
+    isZoneRedundant: false
+  }
+]
 
 var networkInterfaceName = '${vmName}NetInt'
 var virtualMachineName = vmName
@@ -146,23 +159,13 @@ var vmSize = {
   'CPU-16GB': 'Standard_D4s_v3'
   'GPU-56GB': 'Standard_NC6_Promo'
 }
-param storageSKU string = 'Standard_LRS'
-param keyVaultName string = 'kvault-dev-hub-01'
-resource kv 'Microsoft.KeyVault/vaults@2021-11-01-preview' existing = {
-  name: keyVaultName
-}
-param adminUserName string = 'usrwinadmin'
-@secure()
-param adminUserPass string
-
-
-param vm_windows_Size string = 'Standard_D2s_v3'
-param vmParadaDiariaNombre string = 'shutdown-computevm-vm-windows-01'
 
 var nicNameWindows = 'nic-windows-01'
 var vmNameWindows = 'vm-windows-01'
 var windowsOSVersion = '2016-Datacenter'
-/*CosmosDB*/
+
+//RESOURCES
+//COSMOSDB
 resource account 'Microsoft.DocumentDB/databaseAccounts@2021-10-15' = {
   name: toLower(accountName)
   location: location
@@ -267,24 +270,6 @@ resource cosmosDBAccountDiagnostics 'Microsoft.Insights/diagnosticSettings@2017-
     ]
   }
 }
-/*
-resource storageAccount 'Microsoft.Storage/storageAccounts@2021-08-01' = {
-  name: storageAccountName
-  location: location
-  sku: {
-    name: storageAccountType
-  }
-  kind: storageAccountKind
-  resource blobservice 'blobServices' = {
-    name: 'default'
-    properties: {
-      /*containerDeleteRetentionPolicy: {
-        days: 2
-      }
-    }
-  }
-}
-*/
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2021-02-01' = {
   name: storageAccountName 
@@ -339,7 +324,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2021-02-01' = {
         days: 7
       }
     }
-    resource cesaDevStorage01_container01 'Containers' = {
+    resource arcDevStorage01_container01 'Containers' = {
       name: 'logscosmosdb'
       properties: {
         defaultEncryptionScope: '$account-encryption-key'
@@ -375,6 +360,7 @@ resource storageAccountBlobDiagnostics 'Microsoft.Insights/diagnosticSettings@20
   }
 }
 
+//VIRTUAL MACHINE DATA SCIENCE
 resource res_networking_Spk01 'Microsoft.Network/virtualNetworks@2020-05-01' existing = {
   name: networking_Spoke01.name
   scope: resourceGroup(elz_networking_rg_spk01_name)
@@ -556,6 +542,7 @@ resource res_vmNameWindowsResource_name 'Microsoft.Compute/virtualMachines@2019-
     }
   }
 }
+
 resource res_schedules_shutdown_computevm_vmNameWindowsResource 'microsoft.devtestlab/schedules@2018-09-15' = {
   name: vmParadaDiariaNombre
   location: location

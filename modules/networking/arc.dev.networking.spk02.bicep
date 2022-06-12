@@ -1,4 +1,6 @@
-/*Replicar lo del spk01*/
+//MODULE NETWORKING SPOKE 02 BICEP- AZURE ARCHITECT PROJECT
+
+//PARAMS
 param location string = resourceGroup().location
 param networking_Spoke02 object = {
   name: 'vnet-azarc-spk02'
@@ -10,6 +12,7 @@ param networking_Spoke02 object = {
 
 }
 
+//RESOURCES
 resource res_networking_Spk02 'Microsoft.Network/virtualNetworks@2020-05-01' = {
   name: networking_Spoke02.name
   location: location
@@ -36,7 +39,7 @@ resource res_networking_Spk02 'Microsoft.Network/virtualNetworks@2020-05-01' = {
   }
 }
 
-/*Peerings*/
+//PEERINGS HUB - SPOKES
 resource res_networking_Hub01_Vnet 'Microsoft.Network/virtualNetworks@2020-05-01' existing = {
   name: 'vnet-azarc-hub01'
   scope: resourceGroup('rg-azarc-hub-networking-01')

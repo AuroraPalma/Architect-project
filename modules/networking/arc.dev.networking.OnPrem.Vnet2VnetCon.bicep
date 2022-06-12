@@ -1,6 +1,6 @@
-/*
-Connection VPN On prem to Hub
-*/
+//MODULE NETWORKING VPN CONENCTION BICEP- AZURE ARCHITECT PROJECT
+
+//PARAMS
 param location string = resourceGroup().location
 
 param networking_OnPrem_conn object = {
@@ -20,21 +20,14 @@ param networking_OnPrem_localNetworkGateway object = {
 param networking_OnPrem_vpnGateway object = {
   name: 'vgw-azarc-onprem-vgw01'
   subnetName: 'GatewaySubnet'
-  /*addressPrefix: '172.16.1.8/24'*/
   subnetPrefix: '172.16.1.64/29'
   pipName: 'pip-azarc-onprem-vgw01'
 }
 
-/* 'EXISTING' -> We use this kind of reference to access an existing element in the same RG: */
+//RESOURCES
 resource res_networking_OnPrem_vpnGateway 'Microsoft.Network/virtualNetworkGateways@2019-11-01' existing = {
   name: 'vgw-azarc-onprem-vgw01'
 }
-
-/* Create LNG here
-resource res_networking_OnPrem_localNetworkGateway 'Microsoft.Network/localNetworkGateways@2021-02-01' existing = {
-  name: 'lgw-cesa-elz01-onprem-lgw01'
-}
-*/
 
 resource res_networking_Hub01_vpnGateway 'Microsoft.Network/virtualNetworkGateways@2019-11-01' existing = {
   name: 'vgw-azarc-hub01-vgw01'
@@ -66,12 +59,6 @@ resource res_networking_OnPrem_conn 'Microsoft.Network/connections@2021-02-01' =
     }
     enableBgp: networking_OnPrem_conn.enableBgp
     sharedKey: networking_OnPrem_conn.sharedKey
-/*
-    localNetworkGateway2: {
-      properties: {
-
-      }
-    }*/
   }
   dependsOn: [
     res_networking_Hub01_vpnGateway
