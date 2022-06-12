@@ -79,6 +79,7 @@ param networking_Spoke01 object = {
   subnetMangamentPrefix: '10.1.1.0/29'
 
 }
+
 param elz_networking_rg_spk01_name string = 'rg-azarc-spk01-networking-01'
 
 @description('Name of the Network Security Group')
@@ -95,17 +96,12 @@ param authenticationType string = 'password'
 @secure()
 param adminPasswordOrKey string
 param storageSKU string = 'Standard_LRS'
-param keyVaultName string = 'kvault-dev-hub-01'
-resource kv 'Microsoft.KeyVault/vaults@2021-11-01-preview' existing = {
-  name: keyVaultName
-}
+param keyVaultName string = 'kvault-azarc-dev-01'
 param adminUserName string = 'usrwinadmin'
 @secure()
 param adminUserPass string
-
-
 param vm_windows_Size string = 'Standard_D2s_v3'
-param vmParadaDiariaNombre string = 'shutdown-computevm-vm-windows-01'
+param vm_shutdown_daily string = 'shutdown-computevm-vm-windows-01'
 
 //VARIABLES
 var logAnalyticsWorkspaceName = 'lg-azarc-hub-analytics-001'
@@ -361,6 +357,10 @@ resource storageAccountBlobDiagnostics 'Microsoft.Insights/diagnosticSettings@20
 }
 
 //VIRTUAL MACHINE DATA SCIENCE
+resource kv 'Microsoft.KeyVault/vaults@2021-11-01-preview' existing = {
+  name: keyVaultName
+}
+
 resource res_networking_Spk01 'Microsoft.Network/virtualNetworks@2020-05-01' existing = {
   name: networking_Spoke01.name
   scope: resourceGroup(elz_networking_rg_spk01_name)
@@ -488,7 +488,6 @@ resource virtualMachine 'Microsoft.Compute/virtualMachines@2021-11-01' = {
   }
 }
 
-
 resource nicNameWindowsResource 'Microsoft.Network/networkInterfaces@2020-05-01' = {
   name: nicNameWindows
   location: location
@@ -544,7 +543,7 @@ resource res_vmNameWindowsResource_name 'Microsoft.Compute/virtualMachines@2019-
 }
 
 resource res_schedules_shutdown_computevm_vmNameWindowsResource 'microsoft.devtestlab/schedules@2018-09-15' = {
-  name: vmParadaDiariaNombre
+  name: vm_shutdown_daily
   location: location
   properties: {
     status: 'Enabled'

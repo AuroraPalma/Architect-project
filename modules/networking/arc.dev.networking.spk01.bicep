@@ -16,6 +16,15 @@ param networking_Spoke01 object = {
 
 }
 
+param networking_Hub01 object = {
+  name: 'vnet-azarc-hub01'
+  addressPrefix: '10.0.1.0/24'
+  subnetTransitName: 'snet-hub01-transit'
+  subnetTransit: '10.0.1.80/29'
+}
+
+param per_spk01_name string = 'per-azarc-hub01-to-spk01'
+param networking_rg_hub01_name string = 'rg-azarc-hub-networking-01'
 //RESOURCES
 resource res_networking_Spk01 'Microsoft.Network/virtualNetworks@2020-05-01' = {
   name: networking_Spoke01.name
@@ -52,12 +61,12 @@ resource res_networking_Spk01 'Microsoft.Network/virtualNetworks@2020-05-01' = {
 //PEERINGS HUB - SPOKES
 
 resource res_networking_Hub01_Vnet 'Microsoft.Network/virtualNetworks@2020-05-01' existing = {
-  name: 'vnet-azarc-hub01'
-  scope: resourceGroup('rg-azarc-hub-networking-01')
+  name: networking_Hub01.name
+  scope: resourceGroup(networking_rg_hub01_name)
 }
 
 resource res_peering_Spk01_2_Hub01  'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2020-06-01' = {
-  name: '${res_networking_Spk01.name}/per-azarc-hub01-to-spk01'
+  name: '${res_networking_Spk01.name}/${per_spk01_name}'
   properties: {
     allowVirtualNetworkAccess: true
     allowForwardedTraffic: true

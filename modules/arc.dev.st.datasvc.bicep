@@ -61,7 +61,7 @@ resource stAccount_stmazneucordfbi_datasvc 'Microsoft.Storage/storageAccounts@20
     accessTier: 'Hot'
   }
 }
-/*los contedores pueden desplegarse en paralelo porque no dependen uno de otro*/
+
 resource arcDevStorage01_blobService 'Microsoft.Storage/storageAccounts/blobServices@2021-02-01' = {
   parent: stAccount_stmazneucordfbi_datasvc
   name: 'default'

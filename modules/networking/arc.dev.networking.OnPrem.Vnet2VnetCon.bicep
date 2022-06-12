@@ -17,21 +17,30 @@ param networking_OnPrem_localNetworkGateway object = {
   name: 'lgw-azarc-onprem-lgw01'
   localAddressPrefix: '10.0.1.80/29' /*10.0.1.80 - 10.0.1.87 (3 + 5*/
 }
+
+param networking_vpnGateway object = {
+  name: 'vgw-azarc-hub01-vgw01'
+  subnetName: 'GatewaySubnet'
+  subnetPrefix: '10.0.1.72/29'
+  pipName: 'pip-azarc-hub01-vgw01'
+}
+
 param networking_OnPrem_vpnGateway object = {
   name: 'vgw-azarc-onprem-vgw01'
   subnetName: 'GatewaySubnet'
   subnetPrefix: '172.16.1.64/29'
   pipName: 'pip-azarc-onprem-vgw01'
 }
+param networking_rg_hub_name string = 'rg-azarc-hub-networking-01'
 
 //RESOURCES
 resource res_networking_OnPrem_vpnGateway 'Microsoft.Network/virtualNetworkGateways@2019-11-01' existing = {
-  name: 'vgw-azarc-onprem-vgw01'
+  name: networking_OnPrem_vpnGateway.name
 }
 
 resource res_networking_Hub01_vpnGateway 'Microsoft.Network/virtualNetworkGateways@2019-11-01' existing = {
-  name: 'vgw-azarc-hub01-vgw01'
-  scope: resourceGroup('rg-azarc-hub-networking-01')
+  name: networking_vpnGateway.name
+  scope: resourceGroup(networking_rg_hub_name)
 }
 
 resource res_networking_OnPrem_conn 'Microsoft.Network/connections@2021-02-01' = if (networking_deploy_OnPrem_VpnGateway) {

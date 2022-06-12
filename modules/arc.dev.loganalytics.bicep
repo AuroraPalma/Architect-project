@@ -26,8 +26,8 @@ resource loganalyticsdev_resource 'Microsoft.OperationalInsights/workspaces@2021
   name: workspaceName
   location: location
   tags: {
-    tagName1: 'Log Virtual Machines and cosmos'
-    tagName2: 'Monitor'
+    'az-core-purpose': 'Log Virtual Machines and cosmos'
+    'Env': 'Monitor'
   }
   properties: {
     /*defaultDataCollectionRuleResourceId: 'string'*/

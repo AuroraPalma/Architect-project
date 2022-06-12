@@ -19,6 +19,15 @@ param networking_OnPrem_vpnGateway object = {
   pipName: 'pip-azarc-onprem-vgw01'
 }
 
+param lxvm_onprem_pip_name string = 'pip-azarc-onprem-lxvm1'
+param lxvm_onprem_nic_name string = 'nic-azarc-onprem-lxvmcheckcomms'
+param lxvm_onprem_nsg_name string = 'nsg-azarc-onprem-lxvmcheckcomms'
+param lxvm_onprem_machine_name string = 'lxvmonpnetcheck'
+param lxvm_adminuser_onprem string = 'admin77'
+param lxvm_adminpass_onprem string = 'Pa$$w0rd-007.'
+param lxvm_shutdown_name string = 'shutdown-computevm-lxvmonpnetcheck'
+@description('Write an email address to receive notifications when vm is running at 22:00')
+param email_recipient string = 'a.palma@htmedica.com'
 //RESOURCES
 resource res_networking_OnPremises 'Microsoft.Network/virtualNetworks@2020-05-01' = {
   name: networking_OnPremises.name
@@ -109,7 +118,7 @@ resource res_networking_OnPrem_vpnGateway 'Microsoft.Network/virtualNetworkGatew
 //Linux VM for connection testing
 
 resource res_linuxVm_OnPrem_pip 'Microsoft.Network/publicIPAddresses@2019-11-01' = if (networking_deploy_OnPrem_VpnGateway) {
-  name: 'pip-azarc-onprem-lxvm1'
+  name: lxvm_onprem_pip_name
   location: location
   tags: {
     'Env': 'Infrastructure'
@@ -132,7 +141,7 @@ resource res_linuxVm_OnPrem_pip 'Microsoft.Network/publicIPAddresses@2019-11-01'
 }
 
  resource nicNameLinuxResource 'Microsoft.Network/networkInterfaces@2020-05-01' = {
-  name: 'nic-azarc-onprem-lxvmcheckcomms'
+  name: lxvm_onprem_nic_name
   location: location
   tags: {
     'Env': 'Infrastructure'
@@ -163,7 +172,7 @@ resource res_linuxVm_OnPrem_pip 'Microsoft.Network/publicIPAddresses@2019-11-01'
 }
 
 resource res_onprem_linuxVm_nsg 'Microsoft.Network/networkSecurityGroups@2020-06-01' = {
-  name: 'nsg-azarc-onprem-lxvmcheckcomms'
+  name: lxvm_onprem_nsg_name
   location: location
   properties: {
     securityRules: [
@@ -223,16 +232,16 @@ resource res_onprem_linuxVm_nsg 'Microsoft.Network/networkSecurityGroups@2020-06
 }
 
 resource vmNameLinuxResource 'Microsoft.Compute/virtualMachines@2019-07-01' = {
-  name: 'lxvmonpnetcheck'
+  name: lxvm_onprem_machine_name
   location: location
   properties: {
     hardwareProfile: {
       vmSize: 'Standard_B4ms'
     }
     osProfile: {
-      computerName: 'lxvmonpnetcheck'
-      adminUsername: 'admin77'
-      adminPassword: 'Pa$$w0rd-007.'
+      computerName: lxvm_onprem_machine_name
+      adminUsername: lxvm_adminuser_onprem
+      adminPassword: lxvm_adminpass_onprem
     }
     storageProfile: {
       imageReference: {
@@ -256,7 +265,7 @@ resource vmNameLinuxResource 'Microsoft.Compute/virtualMachines@2019-07-01' = {
 }
 
 resource res_schedules_shutdown_computevm_vmNameWindowsResource 'microsoft.devtestlab/schedules@2018-09-15' = {
-  name: 'shutdown-computevm-lxvmonpnetcheck'
+  name: lxvm_shutdown_name
   location: location
   properties: {
     status: 'Enabled'
@@ -268,7 +277,7 @@ resource res_schedules_shutdown_computevm_vmNameWindowsResource 'microsoft.devte
     notificationSettings: {
       status: 'Enabled'
       timeInMinutes: 30
-      emailRecipient: 'a.palma@htmedica.com'
+      emailRecipient: email_recipient
       notificationLocale: 'en'
     }
     targetResourceId: vmNameLinuxResource.id
