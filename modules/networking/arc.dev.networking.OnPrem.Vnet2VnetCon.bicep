@@ -4,30 +4,30 @@ Connection VPN On prem to Hub
 param location string = resourceGroup().location
 
 param networking_OnPrem_conn object = {
-  name: 'con-cesa-elz01-onprem-con01'
+  name: 'con-azarc-onprem-con01'
   connectionType: 'Vnet2Vnet'   /*Site-to-Site => IPSec*/
   enableBgp: false
-  sharedKey: 'cesa_mola_este_curso_2022_abc'
+  sharedKey: 'az_305_desingning_solutions2022'
 
 } 
 
 param networking_deploy_OnPrem_VpnGateway bool = true
 
 param networking_OnPrem_localNetworkGateway object = {
-  name: 'lgw-cesa-elz01-onprem-lgw01'
+  name: 'lgw-azarc-onprem-lgw01'
   localAddressPrefix: '10.0.1.80/29' /*10.0.1.80 - 10.0.1.87 (3 + 5*/
 }
 param networking_OnPrem_vpnGateway object = {
-  name: 'vgw-cesa-elz01-onprem-vgw01'
+  name: 'vgw-azarc-onprem-vgw01'
   subnetName: 'GatewaySubnet'
   /*addressPrefix: '172.16.1.8/24'*/
   subnetPrefix: '172.16.1.64/29'
-  pipName: 'pip-cesa-elz01-onprem-vgw01'
+  pipName: 'pip-azarc-onprem-vgw01'
 }
 
 /* 'EXISTING' -> We use this kind of reference to access an existing element in the same RG: */
 resource res_networking_OnPrem_vpnGateway 'Microsoft.Network/virtualNetworkGateways@2019-11-01' existing = {
-  name: 'vgw-cesa-elz01-onprem-vgw01'
+  name: 'vgw-azarc-onprem-vgw01'
 }
 
 /* Create LNG here
@@ -37,18 +37,19 @@ resource res_networking_OnPrem_localNetworkGateway 'Microsoft.Network/localNetwo
 */
 
 resource res_networking_Hub01_vpnGateway 'Microsoft.Network/virtualNetworkGateways@2019-11-01' existing = {
-  name: 'vgw-cesa-elz01-hub01-vgw01'
-  scope: resourceGroup('rg-cesa-elz01-hub01-networking-01')
+  name: 'vgw-azarc-hub01-vgw01'
+  scope: resourceGroup('rg-azarc-hub-networking-01')
 }
 
 resource res_networking_OnPrem_conn 'Microsoft.Network/connections@2021-02-01' = if (networking_deploy_OnPrem_VpnGateway) {
   name: networking_OnPrem_conn.name
   location: location
   tags: {
-    'cor-ctx-environment': 'development'
-    'cor-ctx-projectcode': 'Verne Technology - Curso Cloud Expert Solution Architect'
-    'cor-ctx-purpose': 'Conexión para enrutar tráfico entre redes (extremos del túnel). El tráfico de estas redes irá por el túnel'
-    'cor-aut-delete' : 'true'
+    'Env': 'Infrastructure'
+    'CostCenter': '00123'
+    'az-core-projectcode': 'BicepDeployment- Designing Microsoft Azure Infrastructure Solutions '
+    'az-core-purpose': 'Networking On premise- Simulation'
+    'az-aut-delete' : 'true'
   }
   properties: {
     connectionProtocol: 'IKEv2'
@@ -85,10 +86,11 @@ resource res_networking_OnPrem_localNetworkGateway 'Microsoft.Network/localNetwo
   name: networking_OnPrem_localNetworkGateway.name
   location: location
   tags: {
-    'cor-ctx-environment': 'development'
-    'cor-ctx-projectcode': 'Verne Technology - Curso Cloud Expert Solution Architect'
-    'cor-ctx-purpose': 'Pasarela local (local gateway) para enrutar tráfico entre las redes. El tráfico de estas redes irá por el túnel'
-    'cor-aut-delete' : 'true'
+    'Env': 'Infrastructure'
+    'CostCenter': '00123'
+    'az-core-projectcode': 'BicepDeployment- Designing Microsoft Azure Infrastructure Solutions '
+    'az-core-purpose': 'Networking On premise- Simulation'
+    'az-aut-delete' : 'true'
   }
   properties: {
     localNetworkAddressSpace: {

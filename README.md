@@ -130,7 +130,7 @@ az deployment sub create --name Bicepdeployment --location northeurope --templat
 az deployment group create --name deploy1 --resource-group "test" --template-file .\storageaccount.bicep
 
 Para borrarlo todo desde bash en Azure: 
-az group list --tag cor-aut-delete=true --query [].name -o tsv | xargs -otl az group delete --no-wait  --yes --name
+az group list --tag az-aut-delete=true --query [].name -o tsv | xargs -otl az group delete --no-wait  --yes --name
 
 
 

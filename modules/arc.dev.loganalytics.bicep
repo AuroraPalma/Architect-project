@@ -1,5 +1,5 @@
 @description('Name of the workspace.')
-param workspaceName string = 'lg-analytics-dev-hub-001'
+param workspaceName string = 'lg-azarc-hub-analytics-001'
 
 @description('Pricing tier: PerGB2018 or legacy tiers (Free, Standalone, PerNode, Standard or Premium) which are not available to all customers.')
 @allowed([
@@ -25,8 +25,8 @@ resource loganalyticsdev_resource 'Microsoft.OperationalInsights/workspaces@2021
   name: workspaceName
   location: location
   tags: {
-    tagName1: 'Usecase: Log Virtual Machines'
-    tagName2: 'Deployment:Dev'
+    tagName1: 'Log Virtual Machines and cosmos'
+    tagName2: 'Monitor'
   }
   properties: {
     /*defaultDataCollectionRuleResourceId: 'string'*/

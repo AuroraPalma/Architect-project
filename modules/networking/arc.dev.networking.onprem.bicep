@@ -5,7 +5,7 @@ param location string = resourceGroup().location
 
 /* /24 = 256 ips --> from 172.16.1.0 -to- 172.16.1.255 */
 param networking_OnPremises object = {
-  name: 'vnet-cesa-elz01-onpremises01'
+  name: 'vnet-azarc-onpremises01'
   addressPrefix: '172.16.1.0/24'
   /*addressPrefix: '172.16.1.0/29'*/
   subnetTransitName: 'snet-onprem-transit'
@@ -15,11 +15,11 @@ param networking_OnPremises object = {
 param networking_deploy_OnPrem_VpnGateway bool = true
 
 param networking_OnPrem_vpnGateway object = {
-  name: 'vgw-cesa-elz01-onprem-vgw01'
+  name: 'vgw-azarc-onprem-vgw01'
   subnetName: 'GatewaySubnet'
   /*addressPrefix: '172.16.1.8/24'*/
   subnetPrefix: '172.16.1.64/29'
-  pipName: 'pip-cesa-elz01-onprem-vgw01'
+  pipName: 'pip-azarc-onprem-vgw01'
 }
 
 /* -> 2022-05-18 -> params 
@@ -32,10 +32,11 @@ resource res_networking_OnPremises 'Microsoft.Network/virtualNetworks@2020-05-01
   name: networking_OnPremises.name
   location: location
   tags: {
-    'cor-ctx-environment': 'development'
-    'cor-ctx-projectcode': 'Verne Technology - Curso Cloud Expert Solution Architect'
-    'cor-ctx-purpose': ''
-    'cor-aut-delete' : 'true'
+    'Env': 'Infrastructure'
+    'CostCenter': '00123'
+    'az-core-projectcode': 'BicepDeployment- Designing Microsoft Azure Infrastructure Solutions '
+    'az-core-purpose': 'Networking On premise'
+    'az-aut-delete' : 'true'
   }
   properties: {
     addressSpace: {
@@ -64,10 +65,11 @@ resource res_networking_OnPrem_vpnGateway_pip 'Microsoft.Network/publicIPAddress
   name: networking_OnPrem_vpnGateway.pipName
   location: location
   tags: {
-    'cor-ctx-environment': 'development'
-    'cor-ctx-projectcode': 'Verne Technology - Curso Cloud Expert Solution Architect'
-    'cor-ctx-purpose': ''
-    'cor-aut-delete' : 'true'
+    'Env': 'Infrastructure'
+    'CostCenter': '00123'
+    'az-core-projectcode': 'BicepDeployment- Designing Microsoft Azure Infrastructure Solutions '
+    'az-core-purpose': 'Networking On premise'
+    'az-aut-delete' : 'true'
   }  
   properties: {
     publicIPAllocationMethod: 'Dynamic'
@@ -78,10 +80,11 @@ resource res_networking_OnPrem_vpnGateway 'Microsoft.Network/virtualNetworkGatew
   name: networking_OnPrem_vpnGateway.name
   location: location
   tags: {
-    'cor-ctx-environment': 'development'
-    'cor-ctx-projectcode': 'Verne Technology - Curso Cloud Expert Solution Architect'
-    'cor-ctx-purpose': 'Simula túnel IPSec entre On-Premises y Hub01 Azure'
-    'cor-aut-delete' : 'true'
+    'Env': 'Infrastructure'
+    'CostCenter': '00123'
+    'az-core-projectcode': 'BicepDeployment- Designing Microsoft Azure Infrastructure Solutions '
+    'az-core-purpose': 'Networking On premise'
+    'az-aut-delete' : 'true'
   }
   properties: {
     ipConfigurations: [
@@ -135,13 +138,14 @@ resource res_networking_OnPrem_localNetworkGateway 'Microsoft.Network/localNetwo
 /* desplegamos MÁQUINA LINUX para testear conectividades */
 
 resource res_linuxVm_OnPrem_pip 'Microsoft.Network/publicIPAddresses@2019-11-01' = if (networking_deploy_OnPrem_VpnGateway) {
-  name: 'pip-cesa-elz01-onprem-lxvm1'
+  name: 'pip-azarc-onprem-lxvm1'
   location: location
   tags: {
-    'cor-ctx-environment': 'development'
-    'cor-ctx-projectcode': 'Verne Technology - Curso Cloud Expert Solution Architect'
-    'cor-ctx-purpose': ''
-    'cor-aut-delete' : 'true'
+    'Env': 'Infrastructure'
+    'CostCenter': '00123'
+    'az-core-projectcode': 'BicepDeployment- Designing Microsoft Azure Infrastructure Solutions '
+    'az-core-purpose': 'Networking On premise'
+    'az-aut-delete' : 'true'
   }  
   properties: {
     publicIPAllocationMethod: 'Dynamic'
@@ -157,13 +161,14 @@ resource res_linuxVm_OnPrem_pip 'Microsoft.Network/publicIPAddresses@2019-11-01'
 }
 
  resource nicNameLinuxResource 'Microsoft.Network/networkInterfaces@2020-05-01' = {
-  name: 'nic-cesa-elz01-onprem-lxvmcheckcomms'
+  name: 'nic-azarc-onprem-lxvmcheckcomms'
   location: location
   tags: {
-    'cor-ctx-environment': 'development'
-    'cor-ctx-projectcode': 'Verne Technology - Curso Cloud Expert Solution Architect'
-    'cor-ctx-purpose': 'NIC Máquina linux testing conectividades de red'
-    'cor-aut-delete' : 'true'
+    'Env': 'Infrastructure'
+    'CostCenter': '00123'
+    'az-core-projectcode': 'BicepDeployment- Designing Microsoft Azure Infrastructure Solutions '
+    'az-core-purpose': 'Networking On premise'
+    'az-aut-delete' : 'true'
   }
   properties: {
     ipConfigurations: [
@@ -187,7 +192,7 @@ resource res_linuxVm_OnPrem_pip 'Microsoft.Network/publicIPAddresses@2019-11-01'
 }
 
 resource res_onprem_linuxVm_nsg 'Microsoft.Network/networkSecurityGroups@2020-06-01' = {
-  name: 'nsg-cesa-elz01-onprem-lxvmcheckcomms'
+  name: 'nsg-azarc-onprem-lxvmcheckcomms'
   location: location
   properties: {
     securityRules: [
@@ -294,7 +299,7 @@ resource res_schedules_shutdown_computevm_vmNameWindowsResource 'microsoft.devte
     notificationSettings: {
       status: 'Enabled'
       timeInMinutes: 30
-      emailRecipient: 'mlopezg@vernegroup.com'
+      emailRecipient: 'a.palma@htmedica.com'
       notificationLocale: 'en'
     }
     targetResourceId: vmNameLinuxResource.id
