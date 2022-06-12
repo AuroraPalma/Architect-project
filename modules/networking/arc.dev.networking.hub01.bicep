@@ -6,13 +6,13 @@ param location string = resourceGroup().location
 
 /* /24 = 256 ips --> from 10.0.1.0 -to- 10.0.1.255 */
 param networking_Hub01 object = {
-  name: 'vnet-cesa-elz01-hub01'
+  name: 'vnet-azarc-hub01'
   addressPrefix: '10.0.1.0/24'
   subnetTransitName: 'snet-hub01-transit'
   subnetTransit: '10.0.1.80/29'
 }
 param networking_Spoke01 object = {
-  name: 'vnet-cesa-elz01-spk01'
+  name: 'vnet-azarc-spk01'
   addressPrefix: '10.1.0.0/22'
   subnetFrontName: 'snet-spk01-front'
   subnetFrontPrefix: '10.1.0.0/25'
@@ -24,7 +24,7 @@ param networking_Spoke01 object = {
 }
 
 param networking_Spoke02 object = {
-  name: 'vnet-cesa-elz01-spk02'
+  name: 'vnet-azarc-spk02'
   addressPrefix: '10.2.0.0/22'
   subnetFrontName: 'snet-spk01-front'
   subnetFrontPrefix: '10.2.0.0/25'
@@ -35,28 +35,29 @@ param networking_Spoke02 object = {
 param networking_deploy_VpnGateway bool = true
 
 param networking_AzureFirewall object = {
-  name: 'afw-cesa-elz01-firewall01'
+  name: 'afw-azarc-firewall01'
   publicIPAddressName: 'pip-cesa-elz01-afw01'
   subnetName: 'AzureFirewallSubnet'
   subnetPrefix: '10.0.1.0/26' /* 10.0.1.0 -> 10.0.1.63 */
-  routeName: 'udr-cesa-elz01-nxthop-to-fw'
+  routeName: 'udr-azarc-nxthop-to-fw'
 }
 
 param networking_vpnGateway object = {
-  name: 'vgw-cesa-elz01-hub01-vgw01'
+  name: 'vgw-azarc-hub01-vgw01'
   subnetName: 'GatewaySubnet'
   subnetPrefix: '10.0.1.72/29'
-  pipName: 'pip-cesa-elz01-hub01-vgw01'
+  pipName: 'pip-azarc-hub01-vgw01'
 }
 
 resource res_networking_Hub01 'Microsoft.Network/virtualNetworks@2020-05-01' = {
   name: networking_Hub01.name
   location: location
   tags: {
-    'cor-ctx-environment': 'development'
-    'cor-ctx-projectcode': 'Verne Technology - Curso Cloud Expert Solution Architect'
-    'cor-ctx-purpose': ''
-    'cor-aut-delete' : 'true'
+    'Env': 'Infrastructure'
+    'CostCenter': '00123'
+    'az-core-projectcode': 'BicepDeployment- Designing Microsoft Azure Infrastructure Solutions '
+    'az-core-purpose': 'Networking Hub'
+    'az-aut-delete' : 'true'
   }
   properties: {
     addressSpace: {
@@ -88,13 +89,14 @@ resource res_networking_Hub01 'Microsoft.Network/virtualNetworks@2020-05-01' = {
 }
 
 resource res_networking_Hub_vpnGateway_pip 'Microsoft.Network/publicIPAddresses@2019-11-01' = if (networking_deploy_VpnGateway) {
-  name: 'pip-cesa-elz01-hub-vgw01'
+  name: 'pip-azarc-hub-vgw01'
   location: location
   tags: {
-    'cor-ctx-environment': 'development'
-    'cor-ctx-projectcode': 'Verne Technology - Curso Cloud Expert Solution Architect'
-    'cor-ctx-purpose': ''
-    'cor-aut-delete' : 'true'
+    'Env': 'Infrastructure'
+    'CostCenter': '00123'
+    'az-core-projectcode': 'BicepDeployment- Designing Microsoft Azure Infrastructure Solutions '
+    'az-core-purpose': 'Networking Hub'
+    'az-aut-delete' : 'true'
   }
   properties: {
     publicIPAllocationMethod: 'Dynamic'
@@ -105,10 +107,11 @@ resource res_networking_Hub_vpnGateway 'Microsoft.Network/virtualNetworkGateways
   name: networking_vpnGateway.name
   location: location
   tags: {
-    'cor-ctx-environment': 'development'
-    'cor-ctx-projectcode': 'Verne Technology - Curso Cloud Expert Solution Architect'
-    'cor-ctx-purpose': 'Simula túnel IPSec entre On-Premises y Hub01 Azure'
-    'cor-aut-delete' : 'true'
+    'Env': 'Infrastructure'
+    'CostCenter': '00123'
+    'az-core-projectcode': 'BicepDeployment- Designing Microsoft Azure Infrastructure Solutions '
+    'az-core-purpose': 'IPSEC tunnel simulation Hub - On prem'
+    'az-aut-delete' : 'true'
   }
   properties: {
     ipConfigurations: [
@@ -141,13 +144,14 @@ resource res_networking_Hub_vpnGateway 'Microsoft.Network/virtualNetworkGateways
 /* desplegamos MÁQUINA LINUX para testear conectividades */
 
 resource res_linuxVm_Hub01_pip 'Microsoft.Network/publicIPAddresses@2019-11-01' = if (networking_deploy_VpnGateway) {
-  name: 'pip-cesa-elz01-hub01-lxvm2'
+  name: 'pip-azarc-hub01-lxvm2'
   location: location
   tags: {
-    'cor-ctx-environment': 'development'
-    'cor-ctx-projectcode': 'Verne Technology - Curso Cloud Expert Solution Architect'
-    'cor-ctx-purpose': 'pip linux vm hub01 check connectivity'
-    'cor-aut-delete' : 'true'
+    'Env': 'Infrastructure'
+    'CostCenter': '00123'
+    'az-core-projectcode': 'BicepDeployment- Designing Microsoft Azure Infrastructure Solutions '
+    'az-core-purpose': 'Connectivity Check'
+    'az-aut-delete' : 'true'
   }  
   properties: {
     publicIPAllocationMethod: 'Dynamic'
@@ -163,13 +167,14 @@ resource res_linuxVm_Hub01_pip 'Microsoft.Network/publicIPAddresses@2019-11-01' 
 }
 
  resource nicNameLinuxResource 'Microsoft.Network/networkInterfaces@2020-05-01' = {
-  name: 'nic-cesa-elz01-hub01-lxvmcheckcomms'
+  name: 'nic-azarc-hub01-lxvmcheckcomms'
   location: location
   tags: {
-    'cor-ctx-environment': 'development'
-    'cor-ctx-projectcode': 'Verne Technology - Curso Cloud Expert Solution Architect'
-    'cor-ctx-purpose': 'NIC Máquina linux testing conectividades de red'
-    'cor-aut-delete' : 'true'
+    'Env': 'Infrastructure'
+    'CostCenter': '00123'
+    'az-core-projectcode': 'BicepDeployment- Designing Microsoft Azure Infrastructure Solutions '
+    'az-core-purpose': 'Nic VM Linux'
+    'az-aut-delete' : 'true'
   }
   properties: {
     ipConfigurations: [
@@ -193,7 +198,7 @@ resource res_linuxVm_Hub01_pip 'Microsoft.Network/publicIPAddresses@2019-11-01' 
 }
 
 resource res_hub01_linuxVm_nsg 'Microsoft.Network/networkSecurityGroups@2020-06-01' = {
-  name: 'nsg-cesa-elz01-hub01-lxvmcheckconns'
+  name: 'nsg-azarc-hub01-lxvmcheckconns'
   location: location
   properties: {
     securityRules: [
@@ -299,7 +304,7 @@ resource res_schedules_shutdown_computevm_vmNameWindowsResource 'microsoft.devte
     notificationSettings: {
       status: 'Enabled'
       timeInMinutes: 30
-      emailRecipient: 'mlopezg@vernegroup.com'
+      emailRecipient: 'a.palma@htmedica.com'
       notificationLocale: 'en'
     }
     targetResourceId: vmNameLinuxResource.id
@@ -311,16 +316,16 @@ resource res_schedules_shutdown_computevm_vmNameWindowsResource 'microsoft.devte
 /* 'EXISTING' -> We use this kind of reference to access an existing element in the same RG: */
 resource res_networking_Spk01_Vnet 'Microsoft.Network/virtualNetworks@2020-05-01' existing = {
   name: networking_Spoke01.name
-  scope: resourceGroup('rg-cesa-elz01-spk01-networking-01')
+  scope: resourceGroup('rg-azarc-spk01-networking-01')
 }
 
 resource res_networking_Spk02_Vnet 'Microsoft.Network/virtualNetworks@2020-05-01' existing = {
   name: networking_Spoke02.name
-  scope: resourceGroup('rg-cesa-elz01-spk02-networking-01')
+  scope: resourceGroup('rg-azarc-spk02-networking-01')
 }
 
 resource res_peering_Hub01_2_Spk01  'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2020-06-01' = {
-  name: '${res_networking_Hub01.name}/per-cesa-elz01-hub01-to-spk01'
+  name: '${res_networking_Hub01.name}/per-azarc-hub01-to-spk01'
   properties: {
     allowVirtualNetworkAccess: true
     allowForwardedTraffic: true
@@ -336,7 +341,7 @@ resource res_peering_Hub01_2_Spk01  'Microsoft.Network/virtualNetworks/virtualNe
 }
 
 resource res_peering_Hub01_to_Spk02 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2020-06-01' = {
-  name: '${res_networking_Hub01.name}/per-cesa-elz01-hub01-to-spk02'
+  name: '${res_networking_Hub01.name}/per-azarc-hub01-to-spk02'
   properties: {
     allowVirtualNetworkAccess: true
     allowForwardedTraffic: true

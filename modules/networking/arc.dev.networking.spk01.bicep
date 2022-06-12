@@ -3,7 +3,7 @@ param location string = resourceGroup().location
 
 /* /22 = 1000 ips --> from 10.1.0.0 -to- 10.1.3.255 */
 param networking_Spoke01 object = {
-  name: 'vnet-cesa-elz01-spk01'
+  name: 'vnet-azarc-spk01'
   addressPrefix: '10.1.0.0/22'
   subnetFrontName: 'snet-spk01-front'
   subnetFrontPrefix: '10.1.0.0/25'
@@ -50,13 +50,13 @@ resource res_networking_Spk01 'Microsoft.Network/virtualNetworks@2020-05-01' = {
 
 /* 'EXISTING' -> We use this kind of reference to access an existing element in the same RG: */
 resource res_networking_Hub01_Vnet 'Microsoft.Network/virtualNetworks@2020-05-01' existing = {
-  name: 'vnet-cesa-elz01-hub01'
-  scope: resourceGroup('rg-cesa-elz01-hub01-networking-01')
+  name: 'vnet-azarc-hub01'
+  scope: resourceGroup('rg-azarc-hub-networking-01')
 }
 
 
 resource res_peering_Spk01_2_Hub01  'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2020-06-01' = {
-  name: '${res_networking_Spk01.name}/per-cesa-elz01-hub01-to-spk01'
+  name: '${res_networking_Spk01.name}/per-azarc-hub01-to-spk01'
   properties: {
     allowVirtualNetworkAccess: true
     allowForwardedTraffic: true

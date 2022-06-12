@@ -49,7 +49,7 @@ param containerName string = 'dataingestioncosmos'
 param throughput int = 400
 
 /*Para loganalytics*/
-var logAnalyticsWorkspaceName = 'lg-analytics-dev-hub-001'
+var logAnalyticsWorkspaceName = 'lg-azarc-hub-analytics-001'
 var cosmosDBAccountDiagnosticSettingsName = 'route-logs-to-log-analytics'
 /*Cuenta de almacenamiento para los logs de LogAnalytics*/
 var storageAccountBlobDiagnosticSettingsName = 'route-logs-to-log-analytics'
@@ -104,7 +104,7 @@ param vmName string = 'lxvm-data-science-dev-001'
 param cpu_gpu string = 'CPU-4GB'
 
 param networking_Spoke01 object = {
-  name: 'vnet-cesa-elz01-spk01'
+  name: 'vnet-azarc-spk01'
   addressPrefix: '10.1.0.0/22'
   subnetFrontName: 'snet-spk01-front'
   subnetFrontPrefix: '10.1.0.0/25'
@@ -114,7 +114,7 @@ param networking_Spoke01 object = {
   subnetMangamentPrefix: '10.1.1.0/29'
 
 }
-param elz_networking_rg_spk01_name string = 'rg-cesa-elz01-spk01-networking-01'
+param elz_networking_rg_spk01_name string = 'rg-azarc-spk01-networking-01'
 
 @description('Name of the Network Security Group')
 param networkSecurityGroupName string = 'nsg-lxm-data-science-networking-01'
@@ -251,7 +251,7 @@ resource container 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/container
 /*Diagnostic Log Analytics*/
 resource loganalyticsdev_resource 'Microsoft.OperationalInsights/workspaces@2021-12-01-preview' existing = {
   name: logAnalyticsWorkspaceName
-  scope: resourceGroup('rg-arc-analytics_01')
+  scope: resourceGroup('rg-azarc-analytics-dev-01')
 }
 
 resource cosmosDBAccountDiagnostics 'Microsoft.Insights/diagnosticSettings@2017-05-01-preview' = {
@@ -290,9 +290,9 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2021-02-01' = {
   name: storageAccountName 
   location: location
   tags:{
-    'cesa-ctx-environment': 'development'
-    'cesa-ctx-projectcode': 'CESA: Cloud Expert Solutions Architect 2022A'
-    'cesa-ctx-purpose': 'Enterprise Landing Zone 01 - Proyectos Alumnos'
+    'Env': 'development'
+    'az-core-projectcode': 'BicepDeployment- Designing Microsoft Azure Infrastructure Solutions '
+    'az-core-purpose': 'Storage Logs'
   }
   sku:{
     name: storageSKU

@@ -2,25 +2,25 @@
 Module for connection VPN HUB
 */
 param location string = resourceGroup().location
-
+param networking_rg_onprem_name string = 'rg-azarc-onprem-networking-01'
 param networking_Hub01_conn object = {
-  name: 'con-cesa-elz01-hub01-con01'
+  name: 'con-azarc-hub01-con01'
   connectionType: 'Vnet2Vnet'   /*Site-to-Site => IPSec*/
   enableBgp: false
-  sharedKey: 'cesa_mola_este_curso_2022_abc'
+  sharedKey: 'az_305_desingning_solutions2022'
 
 } 
 
 param networking_deploy_Hub01_VpnGateway bool = true
 
 param networking_hub01_localNetworkGateway object = {
-  name: 'lgw-cesa-elz01-hub01-lgw01'
+  name: 'lgw-azarc-hub01-lgw01'
   localAddressPrefix: '172.16.1.0/26'
 }
 
 /* 'EXISTING' -> We use this kind of reference to access an existing element in the same RG: */
 resource res_networking_Hub01_vpnGateway 'Microsoft.Network/virtualNetworkGateways@2019-11-01' existing = {
-  name: 'vgw-cesa-elz01-hub01-vgw01'
+  name: 'vgw-azarc-hub01-vgw01'
 }
 /*
 resource res_networking_Hub01_localNetworkGateway 'Microsoft.Network/localNetworkGateways@2021-02-01' existing = {
@@ -28,18 +28,19 @@ resource res_networking_Hub01_localNetworkGateway 'Microsoft.Network/localNetwor
 }
 */
 resource res_networking_OnPrem_vpnGateway 'Microsoft.Network/virtualNetworkGateways@2019-11-01' existing = {
-  name: 'vgw-cesa-elz01-onprem-vgw01'
-  scope: resourceGroup('rg-cesa-onprem-networking-01')
+  name: 'vgw-azarc-onprem-vgw01'
+  scope: resourceGroup(networking_rg_onprem_name)
 }
 
 resource res_networking_OnPrem_conn 'Microsoft.Network/connections@2021-02-01' = if (networking_deploy_Hub01_VpnGateway) {
   name: networking_Hub01_conn.name
   location: location
   tags: {
-    'cor-ctx-environment': 'development'
-    'cor-ctx-projectcode': 'Verne Technology - Curso Cloud Expert Solution Architect'
-    'cor-ctx-purpose': 'Conexión para enrutar tráfico entre redes (extremos del túnel). El tráfico de estas redes irá por el túnel'
-    'cor-aut-delete' : 'true'
+    'Env': 'Infrastructure'
+    'CostCenter': '00123'
+    'az-core-projectcode': 'BicepDeployment- Designing Microsoft Azure Infrastructure Solutions '
+    'az-core-purpose': 'Connection Hub-On premise'
+    'az-aut-delete' : 'true'
   }
   properties: {
     connectionProtocol: 'IKEv2'
@@ -69,17 +70,18 @@ resource res_networking_OnPrem_conn 'Microsoft.Network/connections@2021-02-01' =
 }
 
 resource res_networking_Hub_vpnGateway_pip 'Microsoft.Network/publicIPAddresses@2019-11-01' existing = {
-  name: 'pip-cesa-elz01-hub-vgw01'
+  name: 'pip-azarc-hub-vgw01'
 }
 
 resource res_networking_Hub01_localNetworkGateway 'Microsoft.Network/localNetworkGateways@2021-02-01' = {
   name: networking_hub01_localNetworkGateway.name
   location: location
   tags: {
-    'cor-ctx-environment': 'development'
-    'cor-ctx-projectcode': 'Verne Technology - Curso Cloud Expert Solution Architect'
-    'cor-ctx-purpose': ''
-    'cor-aut-delete' : 'true'
+    'Env': 'Infrastructure'
+    'CostCenter': '00123'
+    'az-core-projectcode': 'BicepDeployment- Designing Microsoft Azure Infrastructure Solutions '
+    'az-core-purpose': 'Connection HUb- On premise'
+    'az-aut-delete' : 'true'
   }
   properties: {
     localNetworkAddressSpace: {

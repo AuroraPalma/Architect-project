@@ -21,10 +21,10 @@ param addressPrefix string = '10.0.1.64/29'
 param publicIpName string = 'pip-bastion'
 
 @description('The name of the Bastion host')
-param bastionHostName string = 'bas-cesa-elz01-bastionhost01'
+param bastionHostName string = 'bas-azarc-bastionhost01'
 
 param networking_Hub01 object = {
-  name: 'vnet-cesa-elz01-hub01'
+  name: 'vnet-azarc-hub01'
   addressPrefix: '10.0.1.0/24'
   subnetTransitName: 'snet-hub01-transit'
   subnetTransit: '10.0.1.80/29'
