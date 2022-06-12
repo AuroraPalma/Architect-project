@@ -1,5 +1,6 @@
-/*MAIN BICEP- AZURE ARCHITECT PROJECT*/
-//Params
+//MAIN BICEP- AZURE ARCHITECT PROJECT
+
+//PARAMS
 param elz_networking_rg_hub01_name string = 'rg-azarc-hub-networking-01'
 param elz_storage_rg_hub01_name string = 'rg-azarc-hub-st-01'
 param deployment_location string = deployment().location
@@ -14,7 +15,7 @@ param elz_alerts_monitor_rg_name string = 'rg-azarc-alerts-monitor-dev-01'
 
 targetScope = 'subscription'
 
-
+//RESOURCES
 resource res_elz_networking_rg_hub01_name 'Microsoft.Resources/resourceGroups@2021-01-01' = {
   name: elz_networking_rg_hub01_name
   location: deployment_location
@@ -126,6 +127,7 @@ resource res_elz_alerts_monitor_rg_name 'Microsoft.Resources/resourceGroups@2021
   }
 }
 
+//MODULES
 module mod_architectdev_Networking_OnPrem_Deploy 'modules/networking/arc.dev.networking.onprem.bicep' = {
   name: '${'architectdevNetworking_OnPrem_'}${currentDateTime}'
   scope: res_elz_networking_rg_onprem_name

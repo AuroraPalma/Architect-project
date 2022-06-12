@@ -1,13 +1,7 @@
-// Creates an Azure Bastion Subnet and host in the specified virtual network
-/*
-param networking_bastionHost object = {
-  name: 'bas-cesa-elz01-bastionhost01'
-  publicIPAddressName: 'pip-cesa-elz01-bas01'
-  subnetName: 'AzureBastionSubnet'
-  nsgName: 'nsg-hub01-bastion'
-  subnetPrefix: '10.0.1.64/29'/* 10.0.1.64 -> 10.0.1.71 
-}
-*/
+// MODULE BASTION BICEP- AZURE ARCHITECT PROJECT
+//Creates an Azure Bastion Subnet and host in the specified virtual network
+
+//PARAMS
 @description('The Azure region where the Bastion should be deployed')
 param location string = resourceGroup().location
 
@@ -37,6 +31,7 @@ resource res_networking_Hub01 'Microsoft.Network/virtualNetworks@2020-05-01' exi
 // The Bastion Subnet is required to be named 'AzureBastionSubnet'
 var subnetName = 'AzureBastionSubnet'
 
+//RESOURCES
 resource bastionSubnet 'Microsoft.Network/virtualNetworks/subnets@2020-06-01' = {
   name: '${vnetName}/${subnetName}'
   properties: {
@@ -77,4 +72,5 @@ resource bastionHost 'Microsoft.Network/bastionHosts@2020-06-01' = {
   }
 }
 
+//OUTPUT
 output bastionId string = bastionHost.id

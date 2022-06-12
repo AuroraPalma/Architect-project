@@ -1,11 +1,12 @@
+//MODULE POLICY BICEP- AZURE ARCHITECT PROJECT
 targetScope = 'subscription'
 
 // PARAMETERS
 param policySource string = 'Bicep/azure-policy-as-code'
 param policyCategory string = 'Custom'
-param assignmentIdentityLocation string //level2
-param mandatoryTag1Key string = 'Env' //level2
-param mandatoryTag1Value string //level2
+param assignmentIdentityLocation string 
+param mandatoryTag1Key string = 'Env' //TAG MANDATORY RESOURCES
+param mandatoryTag1Value string 
 param assignmentEnforcementMode string = 'Default'
 param listOfAllowedLocations array = [
   'northeurope'
@@ -26,18 +27,17 @@ param listOfAllowedSKUs array = [
 // VARIABLES
 var initiative1Name = 'General Policies Iniciative'
 var assignment1Name = 'Assignment Iniciative1'
-var initiative2Name = 'Tag Policies Iniciative' //level2
-var assignment2Name = 'Assignment Iniciative2' //level2
+var initiative2Name = 'Tag Policies Iniciative' 
+var assignment2Name = 'Assignment Iniciative2' 
 
 // OUTPUTS
 output initiative1ID string = initiative1.id
-output initiative2ID string = initiative2.id //level2
+output initiative2ID string = initiative2.id 
 output assignment1ID string = assignment1.id
-output assignment2ID string = assignment2.id //level2
+output assignment2ID string = assignment2.id 
 
 // RESOURCES
 resource policy 'Microsoft.Authorization/policyDefinitions@2020-09-01' = {
-  //level2
   name: 'addTagToRG'
   properties: {
     displayName: 'Add tag to resource group'
@@ -166,7 +166,6 @@ resource initiative1 'Microsoft.Authorization/policySetDefinitions@2020-09-01' =
 }
 
 resource initiative2 'Microsoft.Authorization/policySetDefinitions@2020-09-01' = {
-  //level2
   name: initiative2Name
   properties: {
     policyType: 'Custom'
@@ -233,7 +232,6 @@ resource assignment1 'Microsoft.Authorization/policyAssignments@2020-09-01' = {
 }
 
 resource assignment2 'Microsoft.Authorization/policyAssignments@2020-09-01' = {
-  //level2
   name: assignment2Name
   location: assignmentIdentityLocation
   identity: {

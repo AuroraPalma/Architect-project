@@ -1,3 +1,6 @@
+//MODULE LOG ANALYTICS BICEP- AZURE ARCHITECT PROJECT
+
+//PARAMS
 @description('Name of the workspace.')
 param workspaceName string = 'lg-azarc-hub-analytics-001'
 
@@ -18,15 +21,13 @@ param location string = resourceGroup().location
 @description('Number of days to retain data.')
 param retentionInDays int = 30
 
-@description('true to use resource or workspace permissions. false to require workspace permissions.')
-param resourcePermissions bool = true
-
+//RESOURCES
 resource loganalyticsdev_resource 'Microsoft.OperationalInsights/workspaces@2021-12-01-preview' = {
   name: workspaceName
   location: location
   tags: {
-    tagName1: 'Log Virtual Machines and cosmos'
-    tagName2: 'Monitor'
+    'az-core-purpose': 'Log Virtual Machines and cosmos'
+    'Env': 'Monitor'
   }
   properties: {
     /*defaultDataCollectionRuleResourceId: 'string'*/

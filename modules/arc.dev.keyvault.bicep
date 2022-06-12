@@ -1,3 +1,6 @@
+//MODULE KEY VAULT BICEP- AZURE ARCHITECT PROJECT
+
+//PARAMS
 @description('Specifies the name of the key vault.')
 param keyVaultName string = 'kvault-azarc-dev-01'
 

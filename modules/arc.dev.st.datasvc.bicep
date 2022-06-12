@@ -1,27 +1,10 @@
-/*
-###################################################################################
-######              AZURE CLOUD EXPERT SOLUTIONS ARCHITECT                    #####
-######                        ENTERPRISE LANDING ZONE                         #####
-######            a.palma@htmedica.com / 2022, March, 17th (creation)       #####  
-######                           DEV - ENVIRONMENT                            #####
-######                   MAIN BICEP DEPLOYMENT / MODULES                      #####
-###################################################################################                
-*/
-/*PARA CUENTA DE ALMACENAMIENTO*/
-/***********************************************************  BEGIN PARAMS         */
-/* @minLength(3)
-@maxLength(24)
-@description('Specify a storage account name.')
-// param storageAccountName string
-// Use of Bicep functions & Vars to generaliza a good naming convention:
-var uniqueStorageName = '${storagePrefix}${('mon01')}'
-*/
-/*variables que restringen los caracteres para el nombre del parámetro*/
+//MODULE STORAGE ACCOUNT BICEP- AZURE ARCHITECT PROJECT
+
+//PARAMS
 param location string = resourceGroup().location
 @minLength(3)
 @maxLength(24)
 param storageAccountName string = 'stazneugeneralaccount01'
-/*lista de valores permitidos para los tipos de replicacion de la cuenta de almacenamiento*/
 @allowed([
   'Standard_LRS'
   'Standard_GRS'
@@ -34,15 +17,14 @@ param storageAccountName string = 'stazneugeneralaccount01'
 ])
 param storageSKU string = 'Standard_LRS'
 
-/***********************************************************  END PARAMS         */
-
+//RESOURCES
 resource stAccount_stmazneucordfbi_datasvc 'Microsoft.Storage/storageAccounts@2021-02-01' = {
   name: storageAccountName 
   location: location
   tags:{
-    'cesa-ctx-environment': 'development'
-    'cesa-ctx-projectcode': 'CESA: Cloud Expert Solutions Architect 2022A'
-    'cesa-ctx-purpose': 'Enterprise Landing Zone 01 - Proyectos Alumnos'
+    'Env': 'Dev'
+    'az-core-projectcode': 'BicepDeployment- Designing Microsoft Azure Infrastructure Solutions '
+    'az-core-purpose': 'General purpose storage'
   }
   sku:{
     name: storageSKU
@@ -79,8 +61,8 @@ resource stAccount_stmazneucordfbi_datasvc 'Microsoft.Storage/storageAccounts@20
     accessTier: 'Hot'
   }
 }
-/*los contedores pueden desplegarse en paralelo porque no dependen uno de otro*/
-resource cesaDevStorage01_blobService 'Microsoft.Storage/storageAccounts/blobServices@2021-02-01' = {
+
+resource arcDevStorage01_blobService 'Microsoft.Storage/storageAccounts/blobServices@2021-02-01' = {
   parent: stAccount_stmazneucordfbi_datasvc
   name: 'default'
   properties: {
@@ -94,8 +76,8 @@ resource cesaDevStorage01_blobService 'Microsoft.Storage/storageAccounts/blobSer
   }
 }
 
-resource cesaDevStorage01_container01 'Microsoft.Storage/storageAccounts/blobServices/containers@2021-02-01' = {
-  parent: cesaDevStorage01_blobService
+resource arcDevStorage01_container01 'Microsoft.Storage/storageAccounts/blobServices/containers@2021-02-01' = {
+  parent: arcDevStorage01_blobService
   name: 'backupsql'
   properties: {
     defaultEncryptionScope: '$account-encryption-key'
@@ -107,8 +89,8 @@ resource cesaDevStorage01_container01 'Microsoft.Storage/storageAccounts/blobSer
   ]
 }
 
-resource cesaDevStorage01_container02 'Microsoft.Storage/storageAccounts/blobServices/containers@2021-02-01' = {
-  parent: cesaDevStorage01_blobService
+resource arcDevStorage01_container02 'Microsoft.Storage/storageAccounts/blobServices/containers@2021-02-01' = {
+  parent: arcDevStorage01_blobService
   name: 'backupssas'
   properties: {
     defaultEncryptionScope: '$account-encryption-key'

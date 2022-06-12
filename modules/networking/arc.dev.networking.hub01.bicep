@@ -1,9 +1,7 @@
-/*
-cambiar el DNS ip pública o borrarla
-Poner bastión y azure key vault
-*/
-param location string = resourceGroup().location
+//MODULE NETWORKING HUB BICEP- AZURE ARCHITECT PROJECT
 
+//PARAMS
+param location string = resourceGroup().location
 /* /24 = 256 ips --> from 10.0.1.0 -to- 10.0.1.255 */
 param networking_Hub01 object = {
   name: 'vnet-azarc-hub01'
@@ -11,6 +9,7 @@ param networking_Hub01 object = {
   subnetTransitName: 'snet-hub01-transit'
   subnetTransit: '10.0.1.80/29'
 }
+
 param networking_Spoke01 object = {
   name: 'vnet-azarc-spk01'
   addressPrefix: '10.1.0.0/22'
@@ -32,11 +31,12 @@ param networking_Spoke02 object = {
   subnetBackPrefix: '10.2.0.128/25'
 
 }
+
 param networking_deploy_VpnGateway bool = true
 
 param networking_AzureFirewall object = {
   name: 'afw-azarc-firewall01'
-  publicIPAddressName: 'pip-cesa-elz01-afw01'
+  publicIPAddressName: 'pip-azarc-afw01'
   subnetName: 'AzureFirewallSubnet'
   subnetPrefix: '10.0.1.0/26' /* 10.0.1.0 -> 10.0.1.63 */
   routeName: 'udr-azarc-nxthop-to-fw'
@@ -49,6 +49,20 @@ param networking_vpnGateway object = {
   pipName: 'pip-azarc-hub01-vgw01'
 }
 
+param lxvm_hub_pip_name string = 'pip-azarc-hub01-lxvm2'
+param lxvm_hub_nic_name string = 'nic-azarc-hub01-lxvmcheckcomms'
+param lxvm_hub_nsg_name string = 'nsg-azarc-hub01-lxvmcheckconns'
+param lxvm_hub_machine_name string = 'lxvmhubnetcheck'
+param lxvm_adminuser_hub string = 'admin77'
+param lxvm_adminpass_hub string = 'Pa$$w0rd-007.'
+param lxvm_shutdown_name string = 'shutdown-computevm-lxvmhubnetcheck'
+@description('Write an email address to receive notifications when vm is running at 22:00')
+param email_recipient string = 'a.palma@htmedica.com'
+param networking_rg_spk01_name string = 'rg-azarc-spk01-networking-01'
+param networking_rg_spk02_name string = 'rg-azarc-spk02-networking-01'
+param per_spk01_name string = 'per-azarc-hub01-to-spk01'
+param per_spk02_name string = 'per-azarc-hub01-to-spk02'
+//RESOURCES
 resource res_networking_Hub01 'Microsoft.Network/virtualNetworks@2020-05-01' = {
   name: networking_Hub01.name
   location: location
@@ -89,7 +103,7 @@ resource res_networking_Hub01 'Microsoft.Network/virtualNetworks@2020-05-01' = {
 }
 
 resource res_networking_Hub_vpnGateway_pip 'Microsoft.Network/publicIPAddresses@2019-11-01' = if (networking_deploy_VpnGateway) {
-  name: 'pip-azarc-hub-vgw01'
+  name: networking_vpnGateway.pipName
   location: location
   tags: {
     'Env': 'Infrastructure'
@@ -141,10 +155,10 @@ resource res_networking_Hub_vpnGateway 'Microsoft.Network/virtualNetworkGateways
   ]
 }
 
-/* desplegamos MÁQUINA LINUX para testear conectividades */
+//Linux VM for connection testing
 
 resource res_linuxVm_Hub01_pip 'Microsoft.Network/publicIPAddresses@2019-11-01' = if (networking_deploy_VpnGateway) {
-  name: 'pip-azarc-hub01-lxvm2'
+  name: lxvm_hub_pip_name
   location: location
   tags: {
     'Env': 'Infrastructure'
@@ -167,7 +181,7 @@ resource res_linuxVm_Hub01_pip 'Microsoft.Network/publicIPAddresses@2019-11-01' 
 }
 
  resource nicNameLinuxResource 'Microsoft.Network/networkInterfaces@2020-05-01' = {
-  name: 'nic-azarc-hub01-lxvmcheckcomms'
+  name: lxvm_hub_nic_name
   location: location
   tags: {
     'Env': 'Infrastructure'
@@ -198,7 +212,7 @@ resource res_linuxVm_Hub01_pip 'Microsoft.Network/publicIPAddresses@2019-11-01' 
 }
 
 resource res_hub01_linuxVm_nsg 'Microsoft.Network/networkSecurityGroups@2020-06-01' = {
-  name: 'nsg-azarc-hub01-lxvmcheckconns'
+  name: lxvm_hub_nsg_name
   location: location
   properties: {
     securityRules: [
@@ -258,16 +272,16 @@ resource res_hub01_linuxVm_nsg 'Microsoft.Network/networkSecurityGroups@2020-06-
 }
 
 resource vmNameLinuxResource 'Microsoft.Compute/virtualMachines@2019-07-01' = {
-  name: 'lxvmhubnetcheck'
+  name: lxvm_hub_machine_name
   location: location
   properties: {
     hardwareProfile: {
       vmSize: 'Standard_B4ms'
     }
     osProfile: {
-      computerName: 'lxvmhubnetcheck'
-      adminUsername: 'admin77'
-      adminPassword: 'Pa$$w0rd-007.'
+      computerName: lxvm_hub_machine_name
+      adminUsername: lxvm_adminuser_hub
+      adminPassword: lxvm_adminpass_hub
     }
     storageProfile: {
       imageReference: {
@@ -290,9 +304,8 @@ resource vmNameLinuxResource 'Microsoft.Compute/virtualMachines@2019-07-01' = {
   }
 }
 
-
 resource res_schedules_shutdown_computevm_vmNameWindowsResource 'microsoft.devtestlab/schedules@2018-09-15' = {
-  name: 'shutdown-computevm-lxvmhubnetcheck'
+  name: lxvm_shutdown_name
   location: location
   properties: {
     status: 'Enabled'
@@ -304,28 +317,25 @@ resource res_schedules_shutdown_computevm_vmNameWindowsResource 'microsoft.devte
     notificationSettings: {
       status: 'Enabled'
       timeInMinutes: 30
-      emailRecipient: 'a.palma@htmedica.com'
+      emailRecipient: email_recipient
       notificationLocale: 'en'
     }
     targetResourceId: vmNameLinuxResource.id
   }
 }
 
-/*resource*/
-
-/* 'EXISTING' -> We use this kind of reference to access an existing element in the same RG: */
 resource res_networking_Spk01_Vnet 'Microsoft.Network/virtualNetworks@2020-05-01' existing = {
   name: networking_Spoke01.name
-  scope: resourceGroup('rg-azarc-spk01-networking-01')
+  scope: resourceGroup(networking_rg_spk01_name)
 }
 
 resource res_networking_Spk02_Vnet 'Microsoft.Network/virtualNetworks@2020-05-01' existing = {
   name: networking_Spoke02.name
-  scope: resourceGroup('rg-azarc-spk02-networking-01')
+  scope: resourceGroup(networking_rg_spk02_name)
 }
 
 resource res_peering_Hub01_2_Spk01  'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2020-06-01' = {
-  name: '${res_networking_Hub01.name}/per-azarc-hub01-to-spk01'
+  name: '${res_networking_Hub01.name}/${per_spk01_name}'
   properties: {
     allowVirtualNetworkAccess: true
     allowForwardedTraffic: true
@@ -341,7 +351,7 @@ resource res_peering_Hub01_2_Spk01  'Microsoft.Network/virtualNetworks/virtualNe
 }
 
 resource res_peering_Hub01_to_Spk02 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2020-06-01' = {
-  name: '${res_networking_Hub01.name}/per-azarc-hub01-to-spk02'
+  name: '${res_networking_Hub01.name}/${per_spk02_name}'
   properties: {
     allowVirtualNetworkAccess: true
     allowForwardedTraffic: true

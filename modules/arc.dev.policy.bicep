@@ -1,3 +1,4 @@
+//MODULE POLICY BICEP- AZURE ARCHITECT PROJECT
 targetScope = 'subscription'
 
 // PARAMETERS

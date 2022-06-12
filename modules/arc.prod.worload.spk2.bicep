@@ -1,4 +1,4 @@
-//MODULE DEVELOPMENT SPOKE 01 BICEP- AZURE ARCHITECT PROJECT
+//MODULE DEVELOPMENT SPOKE 02 BICEP- AZURE ARCHITECT PROJECT
 
 //PARAMS
 @description('Cosmos DB account name, max length 44 characters')
@@ -41,7 +41,7 @@ param maxIntervalInSeconds int = 300
 param automaticFailover bool = true
 
 @description('The name for the database')
-param databaseName string = 'Db-cosmos-dev-data-001'
+param databaseName string = 'Db-cosmos-prod-data-001'
 
 @description('The name for the container')
 param containerName string = 'dataingestioncosmos'
@@ -55,7 +55,7 @@ param throughput int = 400
 param adminUsername string = 'vmadmin'
 
 @description('The name of you Virtual Machine.')
-param vmName string = 'lxvm-data-science-dev-001'
+param vmName string = 'lxvm-data-science-prod-001'
 
 @description('Choose between CPU or GPU processing')
 @allowed([
@@ -68,22 +68,19 @@ param vmName string = 'lxvm-data-science-dev-001'
 ])
 param cpu_gpu string = 'CPU-4GB'
 
-param networking_Spoke01 object = {
-  name: 'vnet-azarc-spk01'
-  addressPrefix: '10.1.0.0/22'
-  subnetFrontName: 'snet-spk01-front'
-  subnetFrontPrefix: '10.1.0.0/25'
-  subnetBackName: 'snet-spk01-back'
-  subnetBackPrefix: '10.1.0.128/25'
-  subnetMangament: 'snet-spk01-mngnt'
-  subnetMangamentPrefix: '10.1.1.0/29'
-
+param networking_Spoke02 object = {
+  name: 'vnet-azarc-spk02'
+  addressPrefix: '10.2.0.0/22'
+  subnetFrontName: 'snet-spk02-front'
+  subnetFrontPrefix: '10.2.0.0/25'
+  subnetBackName: 'snet-spk02-back'
+  subnetBackPrefix: '10.2.0.128/25'
 }
 
-param elz_networking_rg_spk01_name string = 'rg-azarc-spk01-networking-01'
+param elz_networking_rg_spk02_name string = 'rg-azarc-spk02-networking-01'
 
 @description('Name of the Network Security Group')
-param networkSecurityGroupName string = 'nsg-lxm-data-science-networking-01'
+param networkSecurityGroupName string = 'nsg-lxm-data-science-networking-02'
 
 @description('Type of authentication to use on the Virtual Machine. SSH key is recommended.')
 @allowed([
@@ -101,7 +98,7 @@ param adminUserName string = 'usrwinadmin'
 @secure()
 param adminUserPass string
 param vm_windows_Size string = 'Standard_D2s_v3'
-param vm_shutdown_daily string = 'shutdown-computevm-vm-windows-01'
+param vm_shutdown_daily string = 'shutdown-computevm-vm-windows-02'
 
 //VARIABLES
 var logAnalyticsWorkspaceName = 'lg-azarc-hub-analytics-001'
@@ -271,7 +268,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2021-02-01' = {
   name: storageAccountName 
   location: location
   tags:{
-    'Env': 'development'
+    'Env': 'Production'
     'az-core-projectcode': 'BicepDeployment- Designing Microsoft Azure Infrastructure Solutions '
     'az-core-purpose': 'Storage Logs'
   }
@@ -361,9 +358,9 @@ resource kv 'Microsoft.KeyVault/vaults@2021-11-01-preview' existing = {
   name: keyVaultName
 }
 
-resource res_networking_Spk01 'Microsoft.Network/virtualNetworks@2020-05-01' existing = {
-  name: networking_Spoke01.name
-  scope: resourceGroup(elz_networking_rg_spk01_name)
+resource res_networking_Spk02 'Microsoft.Network/virtualNetworks@2020-05-01' existing = {
+  name: networking_Spoke02.name
+  scope: resourceGroup(elz_networking_rg_spk02_name)
 }
 resource networkInterface 'Microsoft.Network/networkInterfaces@2021-05-01' = {
   name: networkInterfaceName
@@ -374,7 +371,7 @@ resource networkInterface 'Microsoft.Network/networkInterfaces@2021-05-01' = {
         name: 'ipconfig1'
         properties: {
           subnet: {
-            id: '${res_networking_Spk01.id}/subnets/${networking_Spoke01.subnetFrontName}'
+            id: '${res_networking_Spk02.id}/subnets/${networking_Spoke02.subnetFrontName}'
           }
           privateIPAllocationMethod: 'Dynamic'
           publicIPAddress: {
@@ -388,7 +385,7 @@ resource networkInterface 'Microsoft.Network/networkInterfaces@2021-05-01' = {
     }
   }
   dependsOn: [
-    res_networking_Spk01
+    res_networking_Spk02
   ]
 }
 
@@ -498,7 +495,7 @@ resource nicNameWindowsResource 'Microsoft.Network/networkInterfaces@2020-05-01'
         properties: {
           privateIPAllocationMethod: 'Dynamic'
           subnet: {
-            id: '${res_networking_Spk01.id}/subnets/${networking_Spoke01.subnetBackName}'
+            id: '${res_networking_Spk02.id}/subnets/${networking_Spoke02.subnetBackName}'
           }
         }
       }
