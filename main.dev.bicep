@@ -12,7 +12,7 @@ param elz_networking_rg_spk02_name string = 'rg-azarc-spk02-networking-01'
 param elz_workloads_rg_spk02_name string = 'rg-azarc-spk02-prod-01'
 param elz_log_analytics_rg_name string = 'rg-azarc-analytics-dev-01'
 param elz_alerts_monitor_rg_name string = 'rg-azarc-alerts-monitor-dev-01'
-
+param elz_log_analytics_rg_p_name string = 'rg-azarc-analytics-prod-01'
 targetScope = 'subscription'
 
 //RESOURCES
@@ -105,6 +105,18 @@ resource res_elz_workloads_rg_spk02_name 'Microsoft.Resources/resourceGroups@202
 
 resource res_elz_log_analytics_rg_name 'Microsoft.Resources/resourceGroups@2021-01-01' = {
   name: elz_log_analytics_rg_name
+  location:deployment_location
+  tags:{
+    'Env': 'Monitoring'
+    'CostCenter': '00123'
+    'az-core-projectcode': 'BicepDeployment- Designing Microsoft Azure Infrastructure Solutions '
+    'az-core-purpose': 'Log analytics-Resource Group'
+    'az-aut-delete' : 'true'
+  }
+}
+
+resource res_elz_log_analytics_rg_p_name 'Microsoft.Resources/resourceGroups@2021-01-01' = {
+  name: elz_log_analytics_rg_p_name
   location:deployment_location
   tags:{
     'Env': 'Monitoring'

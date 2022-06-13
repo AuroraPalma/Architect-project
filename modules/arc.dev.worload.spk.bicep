@@ -104,7 +104,7 @@ param vm_windows_Size string = 'Standard_D2s_v3'
 param vm_shutdown_daily string = 'shutdown-computevm-vm-windows-01'
 
 //VARIABLES
-var logAnalyticsWorkspaceName = 'lg-azarc-hub-analytics-001'
+var logAnalyticsWorkspaceName = 'lg-azarc-analytics-dev-001'
 var cosmosDBAccountDiagnosticSettingsName = 'route-logs-to-log-analytics'
 var storageAccountBlobDiagnosticSettingsName = 'route-logs-to-log-analytics'
 var consistencyPolicy = {
