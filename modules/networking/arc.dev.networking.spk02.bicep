@@ -29,6 +29,19 @@ param lxvm_shutdown_name string = 'shutdown-computevm-lxvmspk02netcheck'
 @description('Write an email address to receive notifications when vm is running at 22:00')
 param email_recipient string = 'a.palma@htmedica.com'
 
+@allowed([
+  'Standard_B1ls'
+  'Standard_B1ms'
+  'Standard_B1s'
+  'Standard_B2ms'
+  'Standard_B2s'
+  'Standard_B4ms'
+  'Standard_B4s'
+  'Standard_D2s_v3'
+  'Standard_D4s_v3'
+])
+
+param vmsize string = 'Standard_B2s'
 //RESOURCES
 resource res_networking_Spk02 'Microsoft.Network/virtualNetworks@2020-05-01' = {
   name: networking_Spoke02.name
@@ -57,7 +70,7 @@ resource res_networking_Spk02 'Microsoft.Network/virtualNetworks@2020-05-01' = {
 }
 
 //LINUX VM FOR CONNECTION TESTING
-
+/*
 resource res_linuxVm_spk02_pip 'Microsoft.Network/publicIPAddresses@2019-11-01' = {
   name: lxvm_spk02_pip_name
   location: location
@@ -177,7 +190,7 @@ resource vmNameLinuxResource 'Microsoft.Compute/virtualMachines@2019-07-01' = {
   location: location
   properties: {
     hardwareProfile: {
-      vmSize: 'Standard_B4ms'
+      vmSize: vmsize
     }
     osProfile: {
       computerName: lxvm_spk02_machine_name
@@ -224,7 +237,7 @@ resource res_schedules_shutdown_computevm_vmNameWindowsResource 'microsoft.devte
     targetResourceId: vmNameLinuxResource.id
   }
 }
-
+*/
 //PEERINGS HUB - SPOKES
 resource res_networking_Hub01_Vnet 'Microsoft.Network/virtualNetworks@2020-05-01' existing = {
   name: networking_Hub01.name
