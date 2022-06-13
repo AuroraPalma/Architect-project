@@ -10,9 +10,9 @@ param elz_networking_rg_spk01_name string = 'rg-azarc-spk01-networking-01'
 param elz_workloads_rg_spk01_name string = 'rg-azarc-spk01-dev-01'
 param elz_networking_rg_spk02_name string = 'rg-azarc-spk02-networking-01'
 param elz_workloads_rg_spk02_name string = 'rg-azarc-spk02-prod-01'
-param elz_log_analytics_rg_name string = 'rg-azarc-analytics-dev-01'
+param elz_log_analytics_rg_name string = 'rg-azarc-analytics-01'
 param elz_alerts_monitor_rg_name string = 'rg-azarc-alerts-monitor-dev-01'
-param elz_log_analytics_rg_p_name string = 'rg-azarc-analytics-prod-01'
+param elz_peerings_networking_rg_name string = 'rg-azarc-peerings-networking-01'
 targetScope = 'subscription'
 
 //RESOURCES
@@ -57,6 +57,18 @@ resource res_elz_networking_rg_onprem_name 'Microsoft.Resources/resourceGroups@2
 
 resource res_elz_networking_rg_spk01_name 'Microsoft.Resources/resourceGroups@2021-01-01' = {
   name: elz_networking_rg_spk01_name
+  location: deployment_location
+  tags: {
+    'Env': 'Infrastructure'
+    'CostCenter': '00123'
+    'az-core-projectcode': 'BicepDeployment- Designing Microsoft Azure Infrastructure Solutions '
+    'az-core-purpose': 'Networking Spoke01'
+    'az-aut-delete' : 'true'
+  }
+}
+
+resource res_elz_networking_rg_peering_name 'Microsoft.Resources/resourceGroups@2021-01-01' = {
+  name: elz_peerings_networking_rg_name
   location: deployment_location
   tags: {
     'Env': 'Infrastructure'
@@ -115,18 +127,6 @@ resource res_elz_log_analytics_rg_name 'Microsoft.Resources/resourceGroups@2021-
   }
 }
 
-resource res_elz_log_analytics_rg_p_name 'Microsoft.Resources/resourceGroups@2021-01-01' = {
-  name: elz_log_analytics_rg_p_name
-  location:deployment_location
-  tags:{
-    'Env': 'Monitoring'
-    'CostCenter': '00123'
-    'az-core-projectcode': 'BicepDeployment- Designing Microsoft Azure Infrastructure Solutions '
-    'az-core-purpose': 'Log analytics-Resource Group'
-    'az-aut-delete' : 'true'
-  }
-}
-
 resource res_elz_alerts_monitor_rg_name 'Microsoft.Resources/resourceGroups@2021-01-01' = {
   name: elz_alerts_monitor_rg_name
   location: deployment_location
@@ -155,7 +155,6 @@ module mod_architectdev_Networking_Hub_Deploy 'modules/networking/arc.dev.networ
   params:{
     location: deployment_location
   }
-  // TO-DO: params dev/pro
 }
 
 module mod_architectdev_bastion_Hub_Deploy 'modules/arc.dev.bastion.bicep' = {
@@ -199,7 +198,6 @@ module mod_architectdev_Networking_Spk01_Deploy 'modules/networking/arc.dev.netw
   params:{
     location: deployment_location
   }
-  // TO-DO: params dev/pro
 }
 module mod_architectprod_Networking_Spk02_Deploy 'modules/networking/arc.prod.networking.spk02.bicep' = {
   name: '${'architectprodNetworking_Spk02_'}${currentDateTime}'
@@ -207,7 +205,16 @@ module mod_architectprod_Networking_Spk02_Deploy 'modules/networking/arc.prod.ne
   params:{
     location: deployment_location
   }
-  // TO-DO: params dev/pro
+}
+
+module mod_architectdev_NetworkPeerings_Deploy 'modules/networking/arc.dev.networking.peering.bicep' = {
+  name: '${'architectdevNetwork_Peering_Deploy'}${currentDateTime}'
+  scope: resourceGroup(elz_peerings_networking_rg_name)
+  dependsOn:[
+    mod_architectdev_Networking_Hub_Deploy
+    mod_architectdev_Networking_Spk01_Deploy
+    mod_architectprod_Networking_Spk02_Deploy
+  ]
 }
 
 /*Log analytics*/
@@ -219,9 +226,9 @@ module mod_architectdev_Loganalytics_dev_Deploy 'modules/arc.dev.loganalytics.bi
   }
 }
 
-module mod_architectdev_Loganalytics_prod_Deploy 'modules/arc.prod.loganalytics.bicep' = {
-  name: '${'architectdevLoganalytics_prod_'}${currentDateTime}'
-  scope: res_elz_log_analytics_rg_p_name
+module mod_architectprod_Loganalytics_Deploy 'modules/arc.prod.loganalytics.bicep' = {
+  name: '${'architectprodLoganalytics_'}${currentDateTime}'
+  scope: res_elz_log_analytics_rg_name
   params:{
     location:deployment_location
   }
@@ -287,6 +294,6 @@ module mod_architectprod_Workload_spk02_Deploy 'modules/arc.prod.worload.spk2.bi
   }
   dependsOn:[
     mod_architectprod_Networking_Spk02_Deploy
-    mod_architectdev_Loganalytics_prod_Deploy
+    mod_architectprod_Loganalytics_Deploy
   ]
 }

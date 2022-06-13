@@ -247,7 +247,7 @@ resource container 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/container
 /*Diagnostic Log Analytics*/
 resource loganalyticsprod_resource 'Microsoft.OperationalInsights/workspaces@2021-12-01-preview' existing = {
   name: logAnalyticsWorkspaceName
-  scope: resourceGroup('rg-azarc-analytics-prod-01')
+  scope: resourceGroup('rg-azarc-analytics-01')
 }
 
 resource cosmosDBAccountDiagnostics 'Microsoft.Insights/diagnosticSettings@2017-05-01-preview' = {
@@ -560,4 +560,5 @@ resource res_schedules_shutdown_computevm_vmNameWindowsResource 'microsoft.devte
     targetResourceId: res_vmNameWindowsResource_name.id
   }
 }
+
 

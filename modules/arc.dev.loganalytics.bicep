@@ -2,7 +2,7 @@
 
 //PARAMS
 @description('Name of the workspace.')
-param workspaceName string = 'lg-azarc-analytics-dev-001'
+param workspaceName string = 'lg-azarc-analytics-hub-001'
 
 @description('Pricing tier: PerGB2018 or legacy tiers (Free, Standalone, PerNode, Standard or Premium) which are not available to all customers.')
 @allowed([
@@ -26,7 +26,7 @@ resource loganalyticsdev_resource 'Microsoft.OperationalInsights/workspaces@2021
   name: workspaceName
   location: location
   tags: {
-    'az-core-purpose': 'Log Virtual Machines and cosmos'
+    'az-core-purpose': 'Log Virtual Machines and bastion'
     'Env': 'Monitor'
   }
   properties: {
