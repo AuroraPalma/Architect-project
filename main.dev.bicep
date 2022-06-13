@@ -12,7 +12,7 @@ param elz_networking_rg_spk02_name string = 'rg-azarc-spk02-networking-01'
 param elz_workloads_rg_spk02_name string = 'rg-azarc-spk02-prod-01'
 param elz_log_analytics_rg_name string = 'rg-azarc-analytics-01'
 param elz_alerts_monitor_rg_name string = 'rg-azarc-alerts-monitor-dev-01'
-param elz_peerings_networking_rg_name string = 'rg-azarc-peerings-networking-01'
+
 targetScope = 'subscription'
 
 //RESOURCES
@@ -57,18 +57,6 @@ resource res_elz_networking_rg_onprem_name 'Microsoft.Resources/resourceGroups@2
 
 resource res_elz_networking_rg_spk01_name 'Microsoft.Resources/resourceGroups@2021-01-01' = {
   name: elz_networking_rg_spk01_name
-  location: deployment_location
-  tags: {
-    'Env': 'Infrastructure'
-    'CostCenter': '00123'
-    'az-core-projectcode': 'BicepDeployment- Designing Microsoft Azure Infrastructure Solutions '
-    'az-core-purpose': 'Networking Spoke01'
-    'az-aut-delete' : 'true'
-  }
-}
-
-resource res_elz_networking_rg_peering_name 'Microsoft.Resources/resourceGroups@2021-01-01' = {
-  name: elz_peerings_networking_rg_name
   location: deployment_location
   tags: {
     'Env': 'Infrastructure'
@@ -207,19 +195,9 @@ module mod_architectprod_Networking_Spk02_Deploy 'modules/networking/arc.prod.ne
   }
 }
 
-module mod_architectdev_NetworkPeerings_Deploy 'modules/networking/arc.dev.networking.peering.bicep' = {
-  name: '${'architectdevNetwork_Peering_Deploy'}${currentDateTime}'
-  scope: resourceGroup(elz_peerings_networking_rg_name)
-  dependsOn:[
-    mod_architectdev_Networking_Hub_Deploy
-    mod_architectdev_Networking_Spk01_Deploy
-    mod_architectprod_Networking_Spk02_Deploy
-  ]
-}
-
 /*Log analytics*/
-module mod_architectdev_Loganalytics_dev_Deploy 'modules/arc.dev.loganalytics.bicep' = {
-  name: '${'architectdevLoganalytics_dev_'}${currentDateTime}'
+module mod_architectdev_Loganalytics_hub_Deploy 'modules/arc.dev.loganalytics.bicep' = {
+  name: '${'architectdevLoganalytics_hub_'}${currentDateTime}'
   scope: res_elz_log_analytics_rg_name
   params:{
     location:deployment_location
@@ -280,7 +258,7 @@ module mod_architectdev_Workload_spk01_Deploy 'modules/arc.dev.worload.spk.bicep
   }
   dependsOn: [
         mod_architectdev_Networking_Spk01_Deploy
-        mod_architectdev_Loganalytics_dev_Deploy
+        mod_architectdev_Loganalytics_hub_Deploy
   ]
 }
 
