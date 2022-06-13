@@ -44,6 +44,7 @@ param email_recipient string = 'a.palma@htmedica.com'
 ])
 
 param vmsize string = 'Standard_B2s'
+
 //RESOURCES
 resource res_networking_Spk02 'Microsoft.Network/virtualNetworks@2020-05-01' = {
   name: networking_Spoke02.name
@@ -55,6 +56,12 @@ resource res_networking_Spk02 'Microsoft.Network/virtualNetworks@2020-05-01' = {
       ]
     }
     subnets: [
+      {
+        name: networking_Spoke02.subnetMangament
+        properties: {
+          addressPrefix: networking_Spoke02.subnetMangamentPrefix
+        }
+      }
       {
         name: networking_Spoke02.subnetFrontName
         properties: {
