@@ -486,7 +486,7 @@ resource virtualMachine 'Microsoft.Compute/virtualMachines@2021-11-01' = {
 }
 
 //VM WINDOWS SERVER
-/*
+
 resource nicNameWindowsResource 'Microsoft.Network/networkInterfaces@2020-05-01' = {
   name: nicNameWindows
   location: location
@@ -560,4 +560,4 @@ resource res_schedules_shutdown_computevm_vmNameWindowsResource 'microsoft.devte
     targetResourceId: res_vmNameWindowsResource_name.id
   }
 }
-*/
+
