@@ -104,9 +104,6 @@ param vm_windows_Size string = 'Standard_D2s_v3'
 param vm_shutdown_daily string = 'shutdown-computevm-vm-windows-01'
 
 //VARIABLES
-var logAnalyticsWorkspaceName = 'lg-azarc-hub-analytics-001'
-var cosmosDBAccountDiagnosticSettingsName = 'route-logs-to-log-analytics'
-var storageAccountBlobDiagnosticSettingsName = 'route-logs-to-log-analytics'
 var consistencyPolicy = {
   Eventual: {
     defaultConsistencyLevel: 'Eventual'
@@ -145,8 +142,6 @@ var publicIpAddressName = '${vmName}PublicIP'
 var nsgId = networkSecurityGroup.id
 var osDiskType = 'StandardSSD_LRS'
 var storageAccountName = 'storage${uniqueString(resourceGroup().id)}'
-var storageAccountType = 'Standard_LRS'
-var storageAccountKind = 'Storage'
 var vmSize = {
   'CPU-4GB': 'Standard_B2s'
   'CPU-7GB': 'Standard_D2s_v3'
@@ -247,26 +242,6 @@ resource container 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/container
   }
 }
 
-/*Diagnostic Log Analytics*/
-resource loganalyticsdev_resource 'Microsoft.OperationalInsights/workspaces@2021-12-01-preview' existing = {
-  name: logAnalyticsWorkspaceName
-  scope: resourceGroup('rg-azarc-analytics-dev-01')
-}
-
-resource cosmosDBAccountDiagnostics 'Microsoft.Insights/diagnosticSettings@2017-05-01-preview' = {
-  scope: account
-  name: cosmosDBAccountDiagnosticSettingsName
-  properties: {
-    workspaceId: loganalyticsdev_resource.id
-    logs: [
-      {
-        category: 'DataPlaneRequests'
-        enabled: true
-      }
-    ]
-  }
-}
-
 resource storageAccount 'Microsoft.Storage/storageAccounts@2021-02-01' = {
   name: storageAccountName 
   location: location
@@ -331,28 +306,6 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2021-02-01' = {
         
       ]
     }
-  }
-}
-
-resource storageAccountBlobDiagnostics 'Microsoft.Insights/diagnosticSettings@2017-05-01-preview' = {
-  scope: storageAccount::DevStorageblobService
-  name: storageAccountBlobDiagnosticSettingsName
-  properties: {
-    workspaceId: loganalyticsdev_resource.id
-    logs: [
-      {
-        category: 'StorageRead'
-        enabled: true
-      }
-      {
-        category: 'StorageWrite'
-        enabled: true
-      }
-      {
-        category: 'StorageDelete'
-        enabled: true
-      }
-    ]
   }
 }
 

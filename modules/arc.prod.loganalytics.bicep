@@ -1,8 +1,8 @@
-//MODULE LOG ANALYTICS DEV BICEP- AZURE ARCHITECT PROJECT
+//MODULE LOG ANALYTICS PROD BICEP- AZURE ARCHITECT PROJECT
 
 //PARAMS
 @description('Name of the workspace.')
-param workspaceName string = 'lg-azarc-analytics-hub-001'
+param workspaceName string = 'lg-azarc-analytics-prod-001'
 
 @description('Pricing tier: PerGB2018 or legacy tiers (Free, Standalone, PerNode, Standard or Premium) which are not available to all customers.')
 @allowed([
@@ -26,7 +26,7 @@ resource loganalyticsdev_resource 'Microsoft.OperationalInsights/workspaces@2021
   name: workspaceName
   location: location
   tags: {
-    'az-core-purpose': 'Log Virtual Machines and bastion'
+    'az-core-purpose': 'Log Cosmos Prod'
     'Env': 'Monitor'
   }
   properties: {

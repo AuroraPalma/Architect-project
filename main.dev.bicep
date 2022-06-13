@@ -10,7 +10,7 @@ param elz_networking_rg_spk01_name string = 'rg-azarc-spk01-networking-01'
 param elz_workloads_rg_spk01_name string = 'rg-azarc-spk01-dev-01'
 param elz_networking_rg_spk02_name string = 'rg-azarc-spk02-networking-01'
 param elz_workloads_rg_spk02_name string = 'rg-azarc-spk02-prod-01'
-param elz_log_analytics_rg_name string = 'rg-azarc-analytics-dev-01'
+param elz_log_analytics_rg_name string = 'rg-azarc-analytics-01'
 param elz_alerts_monitor_rg_name string = 'rg-azarc-alerts-monitor-dev-01'
 
 targetScope = 'subscription'
@@ -143,7 +143,6 @@ module mod_architectdev_Networking_Hub_Deploy 'modules/networking/arc.dev.networ
   params:{
     location: deployment_location
   }
-  // TO-DO: params dev/pro
 }
 
 module mod_architectdev_bastion_Hub_Deploy 'modules/arc.dev.bastion.bicep' = {
@@ -187,25 +186,32 @@ module mod_architectdev_Networking_Spk01_Deploy 'modules/networking/arc.dev.netw
   params:{
     location: deployment_location
   }
-  // TO-DO: params dev/pro
 }
-module mod_architectdev_Networking_Spk02_Deploy 'modules/networking/arc.dev.networking.spk02.bicep' = {
-  name: '${'architectdevNetworking_Spk02_'}${currentDateTime}'
+module mod_architectprod_Networking_Spk02_Deploy 'modules/networking/arc.prod.networking.spk02.bicep' = {
+  name: '${'architectprodNetworking_Spk02_'}${currentDateTime}'
   scope: res_elz_networking_rg_spk02_name
   params:{
     location: deployment_location
   }
-  // TO-DO: params dev/pro
 }
 
 /*Log analytics*/
-module mod_architectdev_Loganalytics_Hub_Deploy 'modules/arc.dev.loganalytics.bicep' = {
-  name: '${'architectdevLoganalytics_Hub_'}${currentDateTime}'
+module mod_architectdev_Loganalytics_hub_Deploy 'modules/arc.dev.loganalytics.bicep' = {
+  name: '${'architectdevLoganalytics_hub_'}${currentDateTime}'
   scope: res_elz_log_analytics_rg_name
   params:{
     location:deployment_location
   }
 }
+
+module mod_architectprod_Loganalytics_Deploy 'modules/arc.prod.loganalytics.bicep' = {
+  name: '${'architectprodLoganalytics_'}${currentDateTime}'
+  scope: res_elz_log_analytics_rg_name
+  params:{
+    location:deployment_location
+  }
+}
+
 /*Azure Policy*/
 
 module mod_architectdev_Policies_Deploy 'modules/arc.dev.policy.v2.bicep' = {
@@ -252,7 +258,20 @@ module mod_architectdev_Workload_spk01_Deploy 'modules/arc.dev.worload.spk.bicep
   }
   dependsOn: [
         mod_architectdev_Networking_Spk01_Deploy
-        mod_architectdev_Loganalytics_Hub_Deploy
+        mod_architectdev_Loganalytics_hub_Deploy
   ]
 }
 
+module mod_architectprod_Workload_spk02_Deploy 'modules/arc.prod.worload.spk2.bicep' = {
+  name: '${'architectprodworkload_Spk02_'}${currentDateTime}'
+  scope:res_elz_workloads_rg_spk02_name
+  params:{
+    location:deployment_location
+    adminPasswordOrKey: 'usr$Am1n-2223'
+    adminUserPass: 'usr$Am1n-2224'
+  }
+  dependsOn:[
+    mod_architectprod_Networking_Spk02_Deploy
+    mod_architectprod_Loganalytics_Deploy
+  ]
+}

@@ -55,7 +55,7 @@ param throughput int = 400
 param adminUsername string = 'vmadmin'
 
 @description('The name of you Virtual Machine.')
-param vmName string = 'lxvm-data-science-prod-001'
+param vmName string = 'lxvm-azarc-science-prod-001'
 
 @description('Choose between CPU or GPU processing')
 @allowed([
@@ -80,7 +80,7 @@ param networking_Spoke02 object = {
 param elz_networking_rg_spk02_name string = 'rg-azarc-spk02-networking-01'
 
 @description('Name of the Network Security Group')
-param networkSecurityGroupName string = 'nsg-lxm-data-science-networking-02'
+param networkSecurityGroupName string = 'nsg-lxm-azarc-science-networking-02'
 
 @description('Type of authentication to use on the Virtual Machine. SSH key is recommended.')
 @allowed([
@@ -101,9 +101,9 @@ param vm_windows_Size string = 'Standard_D2s_v3'
 param vm_shutdown_daily string = 'shutdown-computevm-vm-windows-02'
 
 //VARIABLES
-var logAnalyticsWorkspaceName = 'lg-azarc-hub-analytics-001'
-var cosmosDBAccountDiagnosticSettingsName = 'route-logs-to-log-analytics'
-var storageAccountBlobDiagnosticSettingsName = 'route-logs-to-log-analytics'
+var logAnalyticsWorkspaceName = 'lg-azarc-analytics-prod-001'
+var cosmosDBAccountDiagnosticSettingsName = 'route-logs-to-log-p-analytics'
+var storageAccountBlobDiagnosticSettingsName = 'route-logs-to-log-p-analytics'
 var consistencyPolicy = {
   Eventual: {
     defaultConsistencyLevel: 'Eventual'
@@ -153,8 +153,8 @@ var vmSize = {
   'GPU-56GB': 'Standard_NC6_Promo'
 }
 
-var nicNameWindows = 'nic-windows-01'
-var vmNameWindows = 'vm-windows-01'
+var nicNameWindows = 'nic-windows-02'
+var vmNameWindows = 'vm-windows-02'
 var windowsOSVersion = '2016-Datacenter'
 
 //RESOURCES
@@ -245,16 +245,16 @@ resource container 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/container
 }
 
 /*Diagnostic Log Analytics*/
-resource loganalyticsdev_resource 'Microsoft.OperationalInsights/workspaces@2021-12-01-preview' existing = {
+resource loganalyticsprod_resource 'Microsoft.OperationalInsights/workspaces@2021-12-01-preview' existing = {
   name: logAnalyticsWorkspaceName
-  scope: resourceGroup('rg-azarc-analytics-dev-01')
+  scope: resourceGroup('rg-azarc-analytics-01')
 }
 
 resource cosmosDBAccountDiagnostics 'Microsoft.Insights/diagnosticSettings@2017-05-01-preview' = {
   scope: account
   name: cosmosDBAccountDiagnosticSettingsName
   properties: {
-    workspaceId: loganalyticsdev_resource.id
+    workspaceId: loganalyticsprod_resource.id
     logs: [
       {
         category: 'DataPlaneRequests'
@@ -306,7 +306,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2021-02-01' = {
     }
     accessTier: 'Hot'
   }
-  resource DevStorageblobService 'blobServices' = {
+  resource prodStorageblobService 'blobServices' = {
     name: 'default'
     properties: {
       cors: {
@@ -317,7 +317,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2021-02-01' = {
         days: 7
       }
     }
-    resource arcDevStorage01_container01 'Containers' = {
+    resource arcprodStorage01_container01 'Containers' = {
       name: 'logscosmosdb'
       properties: {
         defaultEncryptionScope: '$account-encryption-key'
@@ -332,10 +332,10 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2021-02-01' = {
 }
 
 resource storageAccountBlobDiagnostics 'Microsoft.Insights/diagnosticSettings@2017-05-01-preview' = {
-  scope: storageAccount::DevStorageblobService
+  scope: storageAccount::prodStorageblobService
   name: storageAccountBlobDiagnosticSettingsName
   properties: {
-    workspaceId: loganalyticsdev_resource.id
+    workspaceId: loganalyticsprod_resource.id
     logs: [
       {
         category: 'StorageRead'
@@ -485,6 +485,8 @@ resource virtualMachine 'Microsoft.Compute/virtualMachines@2021-11-01' = {
   }
 }
 
+//VM WINDOWS SERVER
+
 resource nicNameWindowsResource 'Microsoft.Network/networkInterfaces@2020-05-01' = {
   name: nicNameWindows
   location: location
@@ -558,3 +560,5 @@ resource res_schedules_shutdown_computevm_vmNameWindowsResource 'microsoft.devte
     targetResourceId: res_vmNameWindowsResource_name.id
   }
 }
+
+
