@@ -201,8 +201,8 @@ module mod_architectdev_Networking_Spk01_Deploy 'modules/networking/arc.dev.netw
   }
   // TO-DO: params dev/pro
 }
-module mod_architectdev_Networking_Spk02_Deploy 'modules/networking/arc.dev.networking.spk02.bicep' = {
-  name: '${'architectdevNetworking_Spk02_'}${currentDateTime}'
+module mod_architectprod_Networking_Spk02_Deploy 'modules/networking/arc.prod.networking.spk02.bicep' = {
+  name: '${'architectprodNetworking_Spk02_'}${currentDateTime}'
   scope: res_elz_networking_rg_spk02_name
   params:{
     location: deployment_location
@@ -211,13 +211,22 @@ module mod_architectdev_Networking_Spk02_Deploy 'modules/networking/arc.dev.netw
 }
 
 /*Log analytics*/
-module mod_architectdev_Loganalytics_Hub_Deploy 'modules/arc.dev.loganalytics.bicep' = {
-  name: '${'architectdevLoganalytics_Hub_'}${currentDateTime}'
+module mod_architectdev_Loganalytics_dev_Deploy 'modules/arc.dev.loganalytics.bicep' = {
+  name: '${'architectdevLoganalytics_dev_'}${currentDateTime}'
   scope: res_elz_log_analytics_rg_name
   params:{
     location:deployment_location
   }
 }
+
+module mod_architectdev_Loganalytics_prod_Deploy 'modules/arc.prod.loganalytics.bicep' = {
+  name: '${'architectdevLoganalytics_prod_'}${currentDateTime}'
+  scope: res_elz_log_analytics_rg_p_name
+  params:{
+    location:deployment_location
+  }
+}
+
 /*Azure Policy*/
 
 module mod_architectdev_Policies_Deploy 'modules/arc.dev.policy.v2.bicep' = {
@@ -264,7 +273,20 @@ module mod_architectdev_Workload_spk01_Deploy 'modules/arc.dev.worload.spk.bicep
   }
   dependsOn: [
         mod_architectdev_Networking_Spk01_Deploy
-        mod_architectdev_Loganalytics_Hub_Deploy
+        mod_architectdev_Loganalytics_dev_Deploy
   ]
 }
 
+module mod_architectprod_Workload_spk02_Deploy 'modules/arc.prod.worload.spk2.bicep' = {
+  name: '${'architectprodworkload_Spk02_'}${currentDateTime}'
+  scope:res_elz_workloads_rg_spk02_name
+  params:{
+    location:deployment_location
+    adminPasswordOrKey: 'usr$Am1n-2223'
+    adminUserPass: 'usr$Am1n-2224'
+  }
+  dependsOn:[
+    mod_architectprod_Networking_Spk02_Deploy
+    mod_architectdev_Loganalytics_prod_Deploy
+  ]
+}
