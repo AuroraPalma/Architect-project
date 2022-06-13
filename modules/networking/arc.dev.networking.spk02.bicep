@@ -9,6 +9,8 @@ param networking_Spoke02 object = {
   subnetFrontPrefix: '10.2.0.0/25'
   subnetBackName: 'snet-spk02-back'
   subnetBackPrefix: '10.2.0.128/25'
+  subnetMangament: 'snet-spk02-mngnt'
+  subnetMangamentPrefix: '10.2.1.0/29'
 
 }
 param networking_Hub01 object = {
@@ -70,7 +72,7 @@ resource res_networking_Spk02 'Microsoft.Network/virtualNetworks@2020-05-01' = {
 }
 
 //LINUX VM FOR CONNECTION TESTING
-/*
+
 resource res_linuxVm_spk02_pip 'Microsoft.Network/publicIPAddresses@2019-11-01' = {
   name: lxvm_spk02_pip_name
   location: location
@@ -237,7 +239,7 @@ resource res_schedules_shutdown_computevm_vmNameWindowsResource 'microsoft.devte
     targetResourceId: vmNameLinuxResource.id
   }
 }
-*/
+
 //PEERINGS HUB - SPOKES
 resource res_networking_Hub01_Vnet 'Microsoft.Network/virtualNetworks@2020-05-01' existing = {
   name: networking_Hub01.name
