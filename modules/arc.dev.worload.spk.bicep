@@ -96,11 +96,6 @@ param authenticationType string = 'password'
 @secure()
 param adminPasswordOrKey string
 param storageSKU string = 'Standard_LRS'
-param adminUserName string = 'usrwinadmin'
-@secure()
-param adminUserPass string
-param vm_windows_Size string = 'Standard_D2s_v3'
-param vm_shutdown_daily string = 'shutdown-computevm-vm-windows-01'
 @description('Nombre de la aplicación o proyecto - Prefijo para el nombre de los recursos')
 param resourceName string = 'lxvm-data-science-dev'
 
@@ -153,10 +148,6 @@ var vmSize = {
   'CPU-16GB': 'Standard_D4s_v3'
   'GPU-56GB': 'Standard_NC6_Promo'
 }
-
-var nicNameWindows = 'nic-windows-01'
-var vmNameWindows = 'vm-windows-01'
-var windowsOSVersion = '2016-Datacenter'
 
 //RESOURCES
 //COSMOSDB
@@ -312,7 +303,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2021-02-01' = {
   }
 }
 
-//VIRTUAL MACHINE DATA SCIENCE
+//VIRTUAL MACHINES DATA SCIENCE
 
 resource res_networking_Spk01 'Microsoft.Network/virtualNetworks@2020-05-01' existing = {
   name: networking_Spoke01.name
@@ -547,79 +538,3 @@ resource virtualMachine_vm2 'Microsoft.Compute/virtualMachines@2021-11-01' = {
   ]
 }
 
-//VM WINDOWS
-/*
-resource nicNameWindowsResource 'Microsoft.Network/networkInterfaces@2020-05-01' = {
-  name: nicNameWindows
-  location: location
-  properties: {
-    ipConfigurations: [
-      {
-        name: 'ipconfig'
-        properties: {
-          privateIPAllocationMethod: 'Dynamic'
-          subnet: {
-            id: '${res_networking_Spk01.id}/subnets/${networking_Spoke01.subnetBackName}'
-          }
-        }
-      }
-    ]
-  }
-}
-
-resource res_vmNameWindowsResource_name 'Microsoft.Compute/virtualMachines@2019-07-01' = {
-  name: vmNameWindows
-  location: location
-  dependsOn: [
-    nicNameWindowsResource
-  ]
-  properties: {
-    hardwareProfile: {
-      vmSize: vm_windows_Size
-    }
-    osProfile: {
-      computerName: vmNameWindows
-      adminUsername: adminUserName
-      adminPassword: adminUserPass
-    }
-    storageProfile: {
-      imageReference: {
-        publisher: 'MicrosoftWindowsServer'
-        offer: 'WindowsServer'
-        sku: windowsOSVersion
-        version: 'latest'
-      }
-      osDisk: {
-        createOption: 'FromImage'
-      }
-    }
-    networkProfile: {
-      networkInterfaces: [
-        {
-          id: resourceId('Microsoft.Network/networkInterfaces', nicNameWindows)
-        }
-      ]
-    }
-  }
-}
-
-resource res_schedules_shutdown_computevm_vmNameWindowsResource 'microsoft.devtestlab/schedules@2018-09-15' = {
-  name: vm_shutdown_daily
-  location: location
-  properties: {
-    status: 'Enabled'
-    taskType: 'ComputeVmShutdownTask'
-    dailyRecurrence: {
-      time: '2200'
-    }
-    timeZoneId: 'Romance Standard Time'
-    notificationSettings: {
-      status: 'Enabled'
-      timeInMinutes: 30
-      emailRecipient: 'a.palma@htmedica.com'
-      notificationLocale: 'en'
-    }
-    targetResourceId: res_vmNameWindowsResource_name.id
-  }
-}
-*/
