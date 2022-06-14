@@ -11,7 +11,7 @@ param elz_workloads_rg_spk01_name string = 'rg-azarc-spk01-dev-01'
 param elz_networking_rg_spk02_name string = 'rg-azarc-spk02-networking-01'
 param elz_workloads_rg_spk02_name string = 'rg-azarc-spk02-prod-01'
 param elz_log_analytics_rg_name string = 'rg-azarc-analytics-01'
-param elz_alerts_monitor_rg_name string = 'rg-azarc-alerts-monitor-dev-01'
+param elz_alerts_monitor_rg_name string = 'rg-azarc-alerts-monitor-01'
 
 targetScope = 'subscription'
 
@@ -254,7 +254,6 @@ module mod_architectdev_Workload_spk01_Deploy 'modules/arc.dev.worload.spk.bicep
   params:{
     location:deployment_location
     adminPasswordOrKey: 'usr$Am1n-2223'
-    adminUserPass: 'usr$Am1n-2224'
   }
   dependsOn: [
         mod_architectdev_Networking_Spk01_Deploy
@@ -268,7 +267,6 @@ module mod_architectprod_Workload_spk02_Deploy 'modules/arc.prod.worload.spk2.bi
   params:{
     location:deployment_location
     adminPasswordOrKey: 'usr$Am1n-2223'
-    adminUserPass: 'usr$Am1n-2224'
   }
   dependsOn:[
     mod_architectprod_Networking_Spk02_Deploy

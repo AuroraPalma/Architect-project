@@ -93,14 +93,12 @@ param authenticationType string = 'password'
 @secure()
 param adminPasswordOrKey string
 param storageSKU string = 'Standard_LRS'
-param keyVaultName string = 'kvault-azarc-dev-01'
-param adminUserName string = 'usrwinadmin'
-@secure()
-param adminUserPass string
-param vm_windows_Size string = 'Standard_D2s_v3'
-param vm_shutdown_daily string = 'shutdown-computevm-vm-windows-02'
+@description('Nombre de la aplicación o proyecto - Prefijo para el nombre de los recursos')
+param resourceName string = 'lxvm-data-science-prod'
 
 //VARIABLES
+var avSetName       = 'avset-${resourceName}-avset-01'
+var envTag          = 'prod'
 var logAnalyticsWorkspaceName = 'lg-azarc-analytics-prod-001'
 var cosmosDBAccountDiagnosticSettingsName = 'route-logs-to-log-p-analytics'
 var storageAccountBlobDiagnosticSettingsName = 'route-logs-to-log-p-analytics'
@@ -152,10 +150,6 @@ var vmSize = {
   'CPU-16GB': 'Standard_D4s_v3'
   'GPU-56GB': 'Standard_NC6_Promo'
 }
-
-var nicNameWindows = 'nic-windows-02'
-var vmNameWindows = 'vm-windows-02'
-var windowsOSVersion = '2016-Datacenter'
 
 //RESOURCES
 //COSMOSDB
@@ -354,16 +348,29 @@ resource storageAccountBlobDiagnostics 'Microsoft.Insights/diagnosticSettings@20
 }
 
 //VIRTUAL MACHINE DATA SCIENCE
-resource kv 'Microsoft.KeyVault/vaults@2021-11-01-preview' existing = {
-  name: keyVaultName
-}
-
 resource res_networking_Spk02 'Microsoft.Network/virtualNetworks@2020-05-01' existing = {
   name: networking_Spoke02.name
   scope: resourceGroup(elz_networking_rg_spk02_name)
 }
+
+resource availavilitySet 'Microsoft.Compute/availabilitySets@2021-07-01' = {
+  name: avSetName
+  location: location
+  properties: {
+    platformFaultDomainCount: 2
+    platformUpdateDomainCount: 5
+  }
+  sku: {
+    name: 'Aligned'
+  }
+  tags: {
+    Name: resourceName
+    env: envTag
+  }
+}
+
 resource networkInterface 'Microsoft.Network/networkInterfaces@2021-05-01' = {
-  name: networkInterfaceName
+  name: '${networkInterfaceName}-01'
   location: location
   properties: {
     ipConfigurations: [
@@ -376,6 +383,33 @@ resource networkInterface 'Microsoft.Network/networkInterfaces@2021-05-01' = {
           privateIPAllocationMethod: 'Dynamic'
           publicIPAddress: {
             id: publicIpAddress.id
+          }
+        }
+      }
+    ]
+    networkSecurityGroup: {
+      id: nsgId
+    }
+  }
+  dependsOn: [
+    res_networking_Spk02
+  ]
+}
+
+resource networkInterface_vm2 'Microsoft.Network/networkInterfaces@2021-05-01' = {
+  name: '${networkInterfaceName}-02'
+  location: location
+  properties: {
+    ipConfigurations: [
+      {
+        name: 'ipconfig1'
+        properties: {
+          subnet: {
+            id: '${res_networking_Spk02.id}/subnets/${networking_Spoke02.subnetBackName}'
+          }
+          privateIPAllocationMethod: 'Dynamic'
+          publicIPAddress: {
+            id: publicIpAddress_vm2.id
           }
         }
       }
@@ -438,7 +472,19 @@ resource networkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2021-05-0
 }
 
 resource publicIpAddress 'Microsoft.Network/publicIPAddresses@2021-05-01' = {
-  name: publicIpAddressName
+  name: '${publicIpAddressName}-01'
+  location: location
+  sku: {
+    name: 'Basic'
+    tier: 'Regional'
+  }
+  properties: {
+    publicIPAllocationMethod: 'Dynamic'
+  }
+}
+
+resource publicIpAddress_vm2 'Microsoft.Network/publicIPAddresses@2021-05-01' = {
+  name: '${publicIpAddressName}-02'
   location: location
   sku: {
     name: 'Basic'
@@ -450,9 +496,12 @@ resource publicIpAddress 'Microsoft.Network/publicIPAddresses@2021-05-01' = {
 }
 
 resource virtualMachine 'Microsoft.Compute/virtualMachines@2021-11-01' = {
-  name: '${virtualMachineName}-${cpu_gpu}'
+  name: '${virtualMachineName}-${cpu_gpu}-01'
   location: location
   properties: {
+    availabilitySet: {
+      id: availavilitySet.id
+    }
     hardwareProfile: {
       vmSize: vmSize[cpu_gpu]
     }
@@ -483,82 +532,51 @@ resource virtualMachine 'Microsoft.Compute/virtualMachines@2021-11-01' = {
       adminPassword: adminPasswordOrKey
     }
   }
-}
-
-//VM WINDOWS SERVER
-
-resource nicNameWindowsResource 'Microsoft.Network/networkInterfaces@2020-05-01' = {
-  name: nicNameWindows
-  location: location
-  properties: {
-    ipConfigurations: [
-      {
-        name: 'ipconfig'
-        properties: {
-          privateIPAllocationMethod: 'Dynamic'
-          subnet: {
-            id: '${res_networking_Spk02.id}/subnets/${networking_Spoke02.subnetBackName}'
-          }
-        }
-      }
-    ]
-  }
-}
-
-resource res_vmNameWindowsResource_name 'Microsoft.Compute/virtualMachines@2019-07-01' = {
-  name: vmNameWindows
-  location: location
-  dependsOn: [
-    nicNameWindowsResource
+  dependsOn:[
+    availavilitySet
+    networkInterface
   ]
+}
+
+resource virtualMachine_vm2 'Microsoft.Compute/virtualMachines@2021-11-01' = {
+  name: '${virtualMachineName}-${cpu_gpu}-02'
+  location: location
   properties: {
-    hardwareProfile: {
-      vmSize: vm_windows_Size
+    availabilitySet: {
+      id: availavilitySet.id
     }
-    osProfile: {
-      computerName: vmNameWindows
-      adminUsername: adminUserName
-      adminPassword: adminUserPass
+    hardwareProfile: {
+      vmSize: vmSize[cpu_gpu]
     }
     storageProfile: {
-      imageReference: {
-        publisher: 'MicrosoftWindowsServer'
-        offer: 'WindowsServer'
-        sku: windowsOSVersion
-        version: 'latest'
-      }
       osDisk: {
         createOption: 'FromImage'
+        managedDisk: {
+          storageAccountType: osDiskType
+        }
+      }
+      imageReference: {
+        publisher: 'microsoft-dsvm'
+        offer: 'ubuntu-1804'
+        sku: '1804-gen2'
+        version: 'latest'
       }
     }
     networkProfile: {
       networkInterfaces: [
         {
-          id: resourceId('Microsoft.Network/networkInterfaces', nicNameWindows)
+          id: networkInterface_vm2.id
         }
       ]
     }
-  }
-}
-
-resource res_schedules_shutdown_computevm_vmNameWindowsResource 'microsoft.devtestlab/schedules@2018-09-15' = {
-  name: vm_shutdown_daily
-  location: location
-  properties: {
-    status: 'Enabled'
-    taskType: 'ComputeVmShutdownTask'
-    dailyRecurrence: {
-      time: '2200'
+    osProfile: {
+      computerName: virtualMachineName
+      adminUsername: adminUsername
+      adminPassword: adminPasswordOrKey
     }
-    timeZoneId: 'Romance Standard Time'
-    notificationSettings: {
-      status: 'Enabled'
-      timeInMinutes: 30
-      emailRecipient: 'a.palma@htmedica.com'
-      notificationLocale: 'en'
-    }
-    targetResourceId: res_vmNameWindowsResource_name.id
   }
+  dependsOn:[
+    availavilitySet
+    networkInterface_vm2
+  ]
 }
-
-

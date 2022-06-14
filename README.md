@@ -78,7 +78,6 @@ az deployment group create --template-file ./main.bicep --resource-group storage
 Puede ver la plantilla JSON que se envía a Resource Manager mediante el comando bicep build. En el ejemplo siguiente, una plantilla de Bicep se convierte en su plantilla JSON correspondiente:
 ```bicep build ./main.bicep```
 Puede usar la CLI de Bicep para descompilar cualquier plantilla de ARM en una plantilla de Bicep mediante el comando ```bicep decompile```
-
 ## Nomenclatura
 
 
@@ -88,16 +87,10 @@ Puede usar la CLI de Bicep para descompilar cualquier plantilla de ARM en una pl
 ## Principios de arquitectura
 
 
-## Decisiones
-
-## Deployment policy.v2.bicep steps
-# optional step to view the JSON/ARM template
-az bicep build -f ./main.bicep
 
 # required steps - azure authentication
 az login
 az account list
-
 # required steps - deploy to devtest
 az account set -s 'xxxx-xxxx-xxxx-xxxx-xxxx'
 az deployment sub create -f ./main.bicep -l australiaeast -p ./params-devtest.json
