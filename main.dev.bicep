@@ -336,7 +336,7 @@ module mod_architectdev_Policies_Deploy 'modules/arc.dev.policy.v2.bicep' = {
       'westeurope'
     ]
     assignmentIdentityLocation: 'northeurope'
-    mandatoryTag1Value:'Env'
+    mandatoryTag1Value:'az-core-env'
   }
 }
 
