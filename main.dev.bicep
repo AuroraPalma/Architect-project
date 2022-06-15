@@ -239,7 +239,7 @@ module mod_architectprod_Networking_Spk02_Deploy 'modules/networking/arc.prod.ne
     location: deployment_location
   }
 }
-/*
+
 module mod_architecdev_Peering_Hub_spk01_deploy 'modules/networking/arc.dev.hub.peering.spok01.bicep'={
   name:'${'architectdevPeering_hub_spoke01_'}${currentDateTime}'
   scope:res_elz_networking_rg_hub01_name
@@ -267,9 +267,10 @@ module mod_architecprod_Peering_Hub_spk02_deploy 'modules/networking/arc.prod.hu
   dependsOn:[
     mod_architectprod_Networking_Spk02_Deploy
     mod_architectdev_Networking_Hub_Deploy
+    mod_architecdev_Peering_Hub_spk01_deploy
   ]
 }
-/*
+
 module mod_architectdev_Peering_Spok01_Deploy 'modules/networking/arc.dev.peerings.bicep' = {
   name: '${'architectdevPeering_Spk01_'}${currentDateTime}'
   scope: res_elz_networking_rg_spk01_name
@@ -304,7 +305,6 @@ module mod_architectdev_Peering_Spok02_Deploy 'modules/networking/arc.prod.peeri
   ]
 }
 
-*/
 /*Log analytics*/
 module mod_architectdev_Loganalytics_hub_Deploy 'modules/arc.dev.loganalytics.bicep' = {
   name: '${'architectdevLoganalytics_hub_'}${currentDateTime}'
