@@ -2,7 +2,7 @@
 
 //PARAMS
 @description('Name of the workspace.')
-param workspaceName string = 'lg-azarc-analytics-hub-001'
+param workspaceName string = 'lg-azarc-analytics-hub01-001'
 
 @description('Pricing tier: PerGB2018 or legacy tiers (Free, Standalone, PerNode, Standard or Premium) which are not available to all customers.')
 @allowed([

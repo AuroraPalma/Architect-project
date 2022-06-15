@@ -12,15 +12,15 @@ param vnetName string = networking_Hub01.name
 param addressPrefix string = '10.0.1.64/29'
 
 @description('The name of the Bastion public IP address')
-param publicIpName string = 'pip-bastion'
+param publicIpName string = 'pip-hub01-bastion-01'
 
 @description('The name of the Bastion host')
-param bastionHostName string = 'bas-azarc-bastionhost01'
+param bastionHostName string = 'bas-azarc-hub01-bastion-shared-01'
 
 param networking_Hub01 object = {
-  name: 'vnet-azarc-hub01'
+  name: 'vnet-azarc-hub01-01'
   addressPrefix: '10.0.1.0/24'
-  subnetTransitName: 'snet-hub01-transit'
+  subnetTransitName: 'snet-hub01-transit01'
   subnetTransit: '10.0.1.80/29'
 }
 

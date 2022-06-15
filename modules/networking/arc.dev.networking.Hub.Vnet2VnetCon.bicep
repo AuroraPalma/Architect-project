@@ -2,7 +2,7 @@
 
 //PARAMS
 param location string = resourceGroup().location
-param networking_rg_onprem_name string = 'rg-azarc-onprem-networking-01'
+param networking_rg_onprem_name string = 'rg-azarc-onprem-networking-shared-01'
 param networking_Hub01_conn object = {
   name: 'con-azarc-hub01-con01'
   connectionType: 'Vnet2Vnet'   /*Site-to-Site => IPSec*/

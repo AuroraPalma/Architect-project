@@ -1,16 +1,17 @@
 //MAIN BICEP- AZURE ARCHITECT PROJECT
 
 //PARAMS
-param elz_networking_rg_hub01_name string = 'rg-azarc-hub-networking-01'
-param elz_storage_rg_hub01_name string = 'rg-azarc-hub-st-01'
+//Resource Groups
+param elz_networking_rg_hub01_name string = 'rg-azarc-hub01-networking-shared-01'
+param elz_storage_rg_hub01_name string = 'rg-azarc-hub01-st-shared-01'
 param deployment_location string = deployment().location
 param currentDateTime string = utcNow()
-param elz_networking_rg_onprem_name string = 'rg-azarc-onprem-networking-01'
-param elz_networking_rg_spk01_name string = 'rg-azarc-spk01-networking-01'
+param elz_networking_rg_onprem_name string = 'rg-azarc-onprem-networking-shared-01'
+param elz_networking_rg_spk01_name string = 'rg-azarc-spk01-networking-dev-01'
 param elz_workloads_rg_spk01_name string = 'rg-azarc-spk01-dev-01'
-param elz_networking_rg_spk02_name string = 'rg-azarc-spk02-networking-01'
+param elz_networking_rg_spk02_name string = 'rg-azarc-spk02-networking-prod-01'
 param elz_workloads_rg_spk02_name string = 'rg-azarc-spk02-prod-01'
-param elz_log_analytics_rg_name string = 'rg-azarc-analytics-01'
+param elz_log_analytics_rg_name string = 'rg-azarc-analytics-monitor-01'
 param elz_alerts_monitor_rg_name string = 'rg-azarc-alerts-monitor-01'
 
 targetScope = 'subscription'
@@ -20,7 +21,7 @@ resource res_elz_networking_rg_hub01_name 'Microsoft.Resources/resourceGroups@20
   name: elz_networking_rg_hub01_name
   location: deployment_location
   tags: {
-    'Env': 'Infrastructure'
+    'Env': 'Shared'
     'CostCenter': '00123'
     'az-core-projectcode': 'BicepDeployment- Designing Microsoft Azure Infrastructure Solutions '
     'az-core-purpose': 'Networking Hub'
@@ -32,7 +33,7 @@ resource res_elz_storage_rg_hub01_name 'Microsoft.Resources/resourceGroups@2021-
   name: elz_storage_rg_hub01_name
   location: deployment_location
   tags: {
-    'Env': 'Infrastructure'
+    'Env': 'Shared'
     'CostCenter': '00123'
     'az-core-projectcode': 'BicepDeployment- Designing Microsoft Azure Infrastructure Solutions '
     'az-core-purpose': 'Storage Accounts Hub'
@@ -44,7 +45,7 @@ resource res_elz_networking_rg_onprem_name 'Microsoft.Resources/resourceGroups@2
   name: elz_networking_rg_onprem_name
   location: deployment_location
   tags: {
-    'Env': 'Infrastructure'
+    'Env': 'Shared'
     'CostCenter': '00123'
     'az-core-projectcode': 'BicepDeployment- Designing Microsoft Azure Infrastructure Solutions '
     'az-core-purpose': 'Networking On premise- Simulation'
@@ -59,7 +60,7 @@ resource res_elz_networking_rg_spk01_name 'Microsoft.Resources/resourceGroups@20
   name: elz_networking_rg_spk01_name
   location: deployment_location
   tags: {
-    'Env': 'Infrastructure'
+    'Env': 'Development'
     'CostCenter': '00123'
     'az-core-projectcode': 'BicepDeployment- Designing Microsoft Azure Infrastructure Solutions '
     'az-core-purpose': 'Networking Spoke01'
@@ -71,7 +72,7 @@ resource res_elz_networking_rg_spk02_name 'Microsoft.Resources/resourceGroups@20
   name: elz_networking_rg_spk02_name
   location: deployment_location
   tags: {
-    'Env': 'Infrastructure'
+    'Env': 'Production'
     'CostCenter': '00123'
     'az-core-projectcode': 'BicepDeployment- Designing Microsoft Azure Infrastructure Solutions '
     'az-core-purpose': 'Networking Spoke02'
@@ -83,7 +84,7 @@ resource res_elz_workloads_rg_spk01_name 'Microsoft.Resources/resourceGroups@202
   name: elz_workloads_rg_spk01_name
   location: deployment_location
   tags: {
-    'Env': 'DevTest'
+    'Env': 'Development'
     'CostCenter': '00124'
     'az-core-projectcode': 'BicepDeployment- Designing Microsoft Azure Infrastructure Solutions '
     'az-core-purpose': 'Project-Data Science'
@@ -107,7 +108,7 @@ resource res_elz_log_analytics_rg_name 'Microsoft.Resources/resourceGroups@2021-
   name: elz_log_analytics_rg_name
   location:deployment_location
   tags:{
-    'Env': 'Monitoring'
+    'Env': 'Monitoring shared'
     'CostCenter': '00123'
     'az-core-projectcode': 'BicepDeployment- Designing Microsoft Azure Infrastructure Solutions '
     'az-core-purpose': 'Log analytics-Resource Group'
@@ -119,7 +120,7 @@ resource res_elz_alerts_monitor_rg_name 'Microsoft.Resources/resourceGroups@2021
   name: elz_alerts_monitor_rg_name
   location: deployment_location
   tags:{
-    'Env': 'Monitoring'
+    'Env': 'Monitoring shared'
     'CostCenter': '00123'
     'az-core-projectcode': 'BicepDeployment- Designing Microsoft Azure Infrastructure Solutions '
     'az-core-purpose': 'Alerts Monitor-Resource Group'
@@ -237,7 +238,7 @@ module mod_architectdev_KeyVault_Hub_Deploy 'modules/arc.dev.keyvault.bicep' = {
   params:{
     location:deployment_location
     secretValue: 'usr$Am1n-2223'
-    secretValue_windows: 'usr$Am1n-2224'
+    secretValue_shared: 'Pa$$w0rd-007.'
   }
 }
 
