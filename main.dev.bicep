@@ -53,6 +53,7 @@ param peering_spok01_to_hub_name string = '${networking_Spoke01.name}/${per_spk0
 param peering_spok02_to_hub_name string = '${networking_Spoke02.name}/${per_spk02_name}'
 param peering_hub01_to_spk01_name string = '${networking_Hub01.name}/${per_hub01spk01_name}'
 param peering_hub01_to_spok02_name string = '${networking_Hub01.name}/${per_hub01spk02_name}'
+
 targetScope = 'subscription'
 
 //RESOURCES
@@ -60,8 +61,8 @@ resource res_elz_networking_rg_hub01_name 'Microsoft.Resources/resourceGroups@20
   name: elz_networking_rg_hub01_name
   location: deployment_location
   tags: {
-    'Env': 'Shared'
-    'CostCenter': '00123'
+    'az-core-env': 'Shared'
+    'az-core-costCenter': '00123'
     'az-core-projectcode': 'BicepDeployment- Designing Microsoft Azure Infrastructure Solutions '
     'az-core-purpose': 'Networking Hub'
     'az-aut-delete' : 'true'
@@ -72,8 +73,8 @@ resource res_elz_storage_rg_hub01_name 'Microsoft.Resources/resourceGroups@2021-
   name: elz_storage_rg_hub01_name
   location: deployment_location
   tags: {
-    'Env': 'Shared'
-    'CostCenter': '00123'
+    'az-core-env': 'Shared'
+    'az-core-costCenter': '00123'
     'az-core-projectcode': 'BicepDeployment- Designing Microsoft Azure Infrastructure Solutions '
     'az-core-purpose': 'Storage Accounts Hub'
     'az-aut-delete' : 'true'
@@ -84,8 +85,8 @@ resource res_elz_networking_rg_onprem_name 'Microsoft.Resources/resourceGroups@2
   name: elz_networking_rg_onprem_name
   location: deployment_location
   tags: {
-    'Env': 'Shared'
-    'CostCenter': '00123'
+    'az-core-env': 'Shared'
+    'az-core-costCenter': '00123'
     'az-core-projectcode': 'BicepDeployment- Designing Microsoft Azure Infrastructure Solutions '
     'az-core-purpose': 'Networking On premise- Simulation'
     'az-aut-delete' : 'true'
@@ -99,8 +100,8 @@ resource res_elz_networking_rg_spk01_name 'Microsoft.Resources/resourceGroups@20
   name: elz_networking_rg_spk01_name
   location: deployment_location
   tags: {
-    'Env': 'Development'
-    'CostCenter': '00123'
+    'az-core-env': 'Development'
+    'az-core-costCenter': '00123'
     'az-core-projectcode': 'BicepDeployment- Designing Microsoft Azure Infrastructure Solutions '
     'az-core-purpose': 'Networking Spoke01'
     'az-aut-delete' : 'true'
@@ -111,8 +112,8 @@ resource res_elz_networking_rg_spk02_name 'Microsoft.Resources/resourceGroups@20
   name: elz_networking_rg_spk02_name
   location: deployment_location
   tags: {
-    'Env': 'Production'
-    'CostCenter': '00123'
+    'az-core-env': 'Production'
+    'az-core-costCenter': '00123'
     'az-core-projectcode': 'BicepDeployment- Designing Microsoft Azure Infrastructure Solutions '
     'az-core-purpose': 'Networking Spoke02'
     'az-aut-delete' : 'true'
@@ -123,8 +124,8 @@ resource res_elz_workloads_rg_spk01_name 'Microsoft.Resources/resourceGroups@202
   name: elz_workloads_rg_spk01_name
   location: deployment_location
   tags: {
-    'Env': 'Development'
-    'CostCenter': '00124'
+    'az-core-env': 'Development'
+    'az-core-costCenter': '00124'
     'az-core-projectcode': 'BicepDeployment- Designing Microsoft Azure Infrastructure Solutions '
     'az-core-purpose': 'Project-Data Science'
     'az-aut-delete' : 'true'
@@ -135,8 +136,8 @@ resource res_elz_workloads_rg_spk02_name 'Microsoft.Resources/resourceGroups@202
   name: elz_workloads_rg_spk02_name
   location: deployment_location
   tags: {
-    'Env': 'Production'
-    'CostCenter': '00125'
+    'az-core-env': 'Production'
+    'az-core-costCenter': '00125'
     'az-core-projectcode': 'BicepDeployment- Designing Microsoft Azure Infrastructure Solutions '
     'az-core-purpose': 'Project-Web'
     'az-aut-delete' : 'true'
@@ -147,8 +148,8 @@ resource res_elz_log_analytics_rg_name 'Microsoft.Resources/resourceGroups@2021-
   name: elz_log_analytics_rg_name
   location:deployment_location
   tags:{
-    'Env': 'Monitoring shared'
-    'CostCenter': '00123'
+    'az-core-env': 'Monitoring shared'
+    'az-core-costCenter': '00123'
     'az-core-projectcode': 'BicepDeployment- Designing Microsoft Azure Infrastructure Solutions '
     'az-core-purpose': 'Log analytics-Resource Group'
     'az-aut-delete' : 'true'
@@ -159,8 +160,8 @@ resource res_elz_alerts_monitor_rg_name 'Microsoft.Resources/resourceGroups@2021
   name: elz_alerts_monitor_rg_name
   location: deployment_location
   tags:{
-    'Env': 'Monitoring shared'
-    'CostCenter': '00123'
+    'az-core-env': 'Monitoring shared'
+    'az-core-costCenter': '00123'
     'az-core-projectcode': 'BicepDeployment- Designing Microsoft Azure Infrastructure Solutions '
     'az-core-purpose': 'Alerts Monitor-Resource Group'
     'az-aut-delete' : 'true'
@@ -174,7 +175,6 @@ module mod_architectdev_Networking_OnPrem_Deploy 'modules/networking/arc.dev.net
   params:{
     location: deployment_location
   }
-  // TO-DO: params dev/pro
 }
 
 module mod_architectdev_Networking_Hub_Deploy 'modules/networking/arc.dev.networking.hub01.bicep' = {
@@ -182,6 +182,7 @@ module mod_architectdev_Networking_Hub_Deploy 'modules/networking/arc.dev.networ
   scope: res_elz_networking_rg_hub01_name
   params:{
     location: deployment_location
+    networking_Hub01:networking_Hub01
   }
   dependsOn: [
     mod_architectdev_Networking_Spk01_Deploy
@@ -218,6 +219,7 @@ module mod_architectdev_Vnet2Vnet_Hub_Conn_Deploy 'modules/networking/arc.dev.ne
   scope: res_elz_networking_rg_hub01_name
   params:{
     location: deployment_location
+    networking_rg_onprem_name:elz_networking_rg_onprem_name
   }
   dependsOn:[
     mod_architectdev_Networking_Hub_Deploy
@@ -230,6 +232,7 @@ module mod_architectdev_Networking_Spk01_Deploy 'modules/networking/arc.dev.netw
   scope: res_elz_networking_rg_spk01_name
   params:{
     location: deployment_location
+    networking_Spoke01:networking_Spoke01
   }
 }
 module mod_architectprod_Networking_Spk02_Deploy 'modules/networking/arc.prod.networking.spk02.bicep' = {
@@ -237,10 +240,11 @@ module mod_architectprod_Networking_Spk02_Deploy 'modules/networking/arc.prod.ne
   scope: res_elz_networking_rg_spk02_name
   params:{
     location: deployment_location
+    networking_Spoke02:networking_Spoke02
   }
 }
 
-module mod_architecdev_Peering_Hub_spk01_deploy 'modules/networking/arc.dev.hub.peering.spok01.bicep'={
+module mod_architecdev_Peering_Hub_spk01_deploy 'modules/networking/peering/arc.dev.hub.peering.spok01.bicep'={
   name:'${'architectdevPeering_hub_spoke01_'}${currentDateTime}'
   scope:res_elz_networking_rg_hub01_name
   params:{
@@ -255,7 +259,7 @@ module mod_architecdev_Peering_Hub_spk01_deploy 'modules/networking/arc.dev.hub.
   ]
 }
 
-module mod_architecprod_Peering_Hub_spk02_deploy 'modules/networking/arc.prod.hub.peering.spok02.bicep'={
+module mod_architecprod_Peering_Hub_spk02_deploy 'modules/networking/peering/arc.prod.hub.peering.spok02.bicep'={
   name:'${'architectprodPeering_hub_spoke02_'}${currentDateTime}'
   scope:res_elz_networking_rg_hub01_name
   params:{
@@ -271,7 +275,7 @@ module mod_architecprod_Peering_Hub_spk02_deploy 'modules/networking/arc.prod.hu
   ]
 }
 
-module mod_architectdev_Peering_Spok01_Deploy 'modules/networking/arc.dev.peerings.bicep' = {
+module mod_architectdev_Peering_Spok01_Deploy 'modules/networking/peering/arc.dev.peerings.spk01.bicep' = {
   name: '${'architectdevPeering_Spk01_'}${currentDateTime}'
   scope: res_elz_networking_rg_spk01_name
   params:{
@@ -288,7 +292,7 @@ module mod_architectdev_Peering_Spok01_Deploy 'modules/networking/arc.dev.peerin
   ]
 }
 
-module mod_architectdev_Peering_Spok02_Deploy 'modules/networking/arc.prod.peeringsk02.bicep' = {
+module mod_architectdev_Peering_Spok02_Deploy 'modules/networking/peering/arc.prod.peeringsk02.bicep' = {
   name: '${'architectdevPeering_Spk02_'}${currentDateTime}'
   scope: res_elz_networking_rg_spk02_name
   params:{
@@ -363,6 +367,7 @@ module mod_architectdev_Workload_spk01_Deploy 'modules/arc.dev.worload.spk.bicep
   scope: res_elz_workloads_rg_spk01_name
   params:{
     location:deployment_location
+    networking_Spoke01:networking_Spoke01
     adminPasswordOrKey: 'usr$Am1n-2223'
   }
   dependsOn: [
@@ -376,6 +381,7 @@ module mod_architectprod_Workload_spk02_Deploy 'modules/arc.prod.worload.spk2.bi
   scope:res_elz_workloads_rg_spk02_name
   params:{
     location:deployment_location
+    networking_Spoke02:networking_Spoke02
     adminPasswordOrKey: 'usr$Am1n-2223'
   }
   dependsOn:[

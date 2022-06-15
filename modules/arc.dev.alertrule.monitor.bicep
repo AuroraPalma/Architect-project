@@ -16,8 +16,6 @@ resource activityLogAlerts_Alert_new_user_name_resource 'microsoft.insights/acti
   name: activityLogAlerts_Alert_new_user_name
   location: 'Global'
   tags: {
-    'Monitor': 'alert rule'
-    'Env': 'Shared'
   }
   properties: {
     scopes: [
@@ -46,8 +44,6 @@ resource activityLogAlerts_Delete_subscription 'microsoft.insights/activityLogAl
   name: activityLogAlerts_Delete_subscription_name
   location: 'Global'
   tags: {
-    'Monitor': 'alert rule'
-    'Env': 'Shared'
   }
   properties: {
     scopes: [
@@ -76,8 +72,6 @@ resource activityLogAlerts_Certificate_Key_vault_alert 'microsoft.insights/activ
   name: activityLogAlerts_Certificate_Key_vault_alert_name
   location: 'Global'
   tags: {
-    'Monitor': 'alert rule'
-    'Env': 'Shared'
   }
   properties: {
     scopes: [
@@ -106,8 +100,6 @@ resource activityLogAlerts_Policy_Definition_Alert 'microsoft.insights/activityL
   name: activityLogAlerts_Policy_Definition_Alert_name
   location: 'Global'
   tags: {
-    'Monitor': 'alert rule'
-    'Env': 'Shared'
   }
   properties: {
     scopes: [
@@ -136,8 +128,6 @@ resource activityLogAlerts_Policy_Tenant_alert 'microsoft.insights/activityLogAl
   name: activityLogAlerts_Policy_Tenant_alert_name
   location: 'Global'
   tags: {
-    'Monitor': 'alert rule'
-    'Env': 'Shared'
   }
   properties: {
     scopes: [

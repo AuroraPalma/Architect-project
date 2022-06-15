@@ -68,14 +68,7 @@ param vmName string = 'lxvm-azarc-science-prod-001'
 ])
 param cpu_gpu string = 'CPU-4GB'
 
-param networking_Spoke02 object = {
-  name: 'vnet-azarc-spk02'
-  addressPrefix: '10.2.0.0/22'
-  subnetFrontName: 'snet-spk02-front'
-  subnetFrontPrefix: '10.2.0.0/25'
-  subnetBackName: 'snet-spk02-back'
-  subnetBackPrefix: '10.2.0.128/25'
-}
+param networking_Spoke02 object
 
 param elz_networking_rg_spk02_name string = 'rg-azarc-spk02-networking-prod-01'
 param log_analytics_rg_name string = 'rg-azarc-analytics-monitor-01'
@@ -140,8 +133,6 @@ var publicIpAddressName = '${vmName}PublicIP'
 var nsgId = networkSecurityGroup.id
 var osDiskType = 'StandardSSD_LRS'
 var storageAccountName = 'storage${uniqueString(resourceGroup().id)}'
-var storageAccountType = 'Standard_LRS'
-var storageAccountKind = 'Storage'
 var vmSize = {
   'CPU-4GB': 'Standard_B2s'
   'CPU-7GB': 'Standard_D2s_v3'
@@ -262,7 +253,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2021-02-01' = {
   name: storageAccountName 
   location: location
   tags:{
-    'Env': 'Production'
+    'az-core-env': 'Production'
     'az-core-projectcode': 'BicepDeployment- Designing Microsoft Azure Infrastructure Solutions '
     'az-core-purpose': 'Storage Logs'
   }

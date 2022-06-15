@@ -4,28 +4,8 @@
 param location string = resourceGroup().location
 
 /* /22 = 1000 ips --> from 10.1.0.0 -to- 10.1.3.255 */
-param networking_Spoke01 object = {
-  name: 'vnet-azarc-spk01'
-  addressPrefix: '10.1.0.0/22'
-  subnetFrontName: 'snet-spk01-front'
-  subnetFrontPrefix: '10.1.0.0/25'
-  subnetBackName: 'snet-spk01-back'
-  subnetBackPrefix: '10.1.0.128/25'
-  subnetMangament: 'snet-spk01-mngnt'
-  subnetMangamentPrefix: '10.1.1.0/29'
+param networking_Spoke01 object
 
-}
-
-param networking_Hub01 object = {
-  name: 'vnet-azarc-hub01'
-  addressPrefix: '10.0.1.0/24'
-  subnetTransitName: 'snet-hub01-transit'
-  subnetTransit: '10.0.1.80/29'
-}
-
-param per_spk01_name string = 'per-azarc-hub01-to-spk01'
-param networking_rg_hub01_name string = 'rg-azarc-hub01-networking-shared-01'
-param lxvm_spk01_pip_name string = 'pip-azarc-spk01-lxvm01'
 param lxvm_spk01_nic_name string = 'nic-azarc-spk01-lxvmcheckcomms'
 param lxvm_spk01_nsg_name string = 'nsg-azarc-spk01-lxvmcheckconns'
 param lxvm_spk01_machine_name string = 'lxvmspk01netcheck'
@@ -69,34 +49,11 @@ resource res_networking_Spk01 'Microsoft.Network/virtualNetworks@2020-05-01' = {
 
 //LINUX VM FOR CONNECTION TESTING
 
-resource res_linuxVm_spk01_pip 'Microsoft.Network/publicIPAddresses@2019-11-01' = {
-  name: lxvm_spk01_pip_name
-  location: location
-  tags: {
-    'Env': 'Infrastructure'
-    'CostCenter': '00123'
-    'az-core-projectcode': 'BicepDeployment- Designing Microsoft Azure Infrastructure Solutions '
-    'az-core-purpose': 'Connectivity Check'
-    'az-aut-delete' : 'true'
-  }  
-  properties: {
-    publicIPAllocationMethod: 'Dynamic'
-    publicIPAddressVersion: 'IPv4'
-    dnsSettings: {
-      domainNameLabel: 'lxvmarchitecturespk01conncheck'
-    }
-    idleTimeoutInMinutes: 4
-  }
-  sku: {
-    name: 'Basic'
-  }
-}
-
  resource nicNameLinuxResource 'Microsoft.Network/networkInterfaces@2020-05-01' = {
   name: lxvm_spk01_nic_name
   location: location
   tags: {
-    'Env': 'Infrastructure'
+    'Env': 'Shared'
     'CostCenter': '00123'
     'az-core-projectcode': 'BicepDeployment- Designing Microsoft Azure Infrastructure Solutions '
     'az-core-purpose': 'Nic VM Linux'
@@ -110,9 +67,6 @@ resource res_linuxVm_spk01_pip 'Microsoft.Network/publicIPAddresses@2019-11-01' 
           privateIPAllocationMethod: 'Dynamic'
           subnet: {
             id: '${res_networking_Spk01.id}/subnets/${networking_Spoke01.subnetMangament}'
-          }
-          publicIPAddress: {
-            id: res_linuxVm_spk01_pip.id
           }
         }
       }
@@ -236,24 +190,4 @@ resource res_schedules_shutdown_computevm_vmNameWindowsResource 'microsoft.devte
   }
 }
 
-//PEERINGS HUB - SPOKES
-/*
-resource res_networking_Hub01_Vnet 'Microsoft.Network/virtualNetworks@2020-05-01' existing = {
-  name: networking_Hub01.name
-  scope: resourceGroup(networking_rg_hub01_name)
-}
-
-resource res_peering_Spk01_2_Hub01  'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2020-06-01' = {
-  name: '${res_networking_Spk01.name}/${per_spk01_name}'
-  properties: {
-    allowVirtualNetworkAccess: true
-    allowForwardedTraffic: true
-    allowGatewayTransit: false
-    useRemoteGateways: false
-    remoteVirtualNetwork: {
-      id: res_networking_Hub01_Vnet.id
-    }
-  }
-}
-*/
 

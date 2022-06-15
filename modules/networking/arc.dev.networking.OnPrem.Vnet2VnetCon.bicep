@@ -47,8 +47,8 @@ resource res_networking_OnPrem_conn 'Microsoft.Network/connections@2021-02-01' =
   name: networking_OnPrem_conn.name
   location: location
   tags: {
-    'Env': 'Infrastructure'
-    'CostCenter': '00123'
+    'az-core-env': 'Shared'
+    'az-core-costCenter': '00123'
     'az-core-projectcode': 'BicepDeployment- Designing Microsoft Azure Infrastructure Solutions '
     'az-core-purpose': 'Networking On premise- Simulation'
     'az-aut-delete' : 'true'
@@ -82,8 +82,8 @@ resource res_networking_OnPrem_localNetworkGateway 'Microsoft.Network/localNetwo
   name: networking_OnPrem_localNetworkGateway.name
   location: location
   tags: {
-    'Env': 'Infrastructure'
-    'CostCenter': '00123'
+    'az-core-env': 'Shared'
+    'az-core-costCenter': '00123'
     'az-core-projectcode': 'BicepDeployment- Designing Microsoft Azure Infrastructure Solutions '
     'az-core-purpose': 'Networking On premise- Simulation'
     'az-aut-delete' : 'true'

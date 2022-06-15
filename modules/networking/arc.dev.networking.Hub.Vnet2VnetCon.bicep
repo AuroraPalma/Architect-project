@@ -2,7 +2,7 @@
 
 //PARAMS
 param location string = resourceGroup().location
-param networking_rg_onprem_name string = 'rg-azarc-onprem-networking-shared-01'
+param networking_rg_onprem_name string
 param networking_Hub01_conn object = {
   name: 'con-azarc-hub01-con01'
   connectionType: 'Vnet2Vnet'   /*Site-to-Site => IPSec*/
@@ -46,8 +46,8 @@ resource res_networking_OnPrem_conn 'Microsoft.Network/connections@2021-02-01' =
   name: networking_Hub01_conn.name
   location: location
   tags: {
-    'Env': 'Infrastructure'
-    'CostCenter': '00123'
+    'az-core-env': 'Shared'
+    'az-core-costCenter': '00123'
     'az-core-projectcode': 'BicepDeployment- Designing Microsoft Azure Infrastructure Solutions '
     'az-core-purpose': 'Connection Hub-On premise'
     'az-aut-delete' : 'true'
@@ -81,7 +81,7 @@ resource res_networking_Hub01_localNetworkGateway 'Microsoft.Network/localNetwor
   name: networking_hub01_localNetworkGateway.name
   location: location
   tags: {
-    'Env': 'Infrastructure'
+    'Env': 'Shared'
     'CostCenter': '00123'
     'az-core-projectcode': 'BicepDeployment- Designing Microsoft Azure Infrastructure Solutions '
     'az-core-purpose': 'Connection HUb- On premise'

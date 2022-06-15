@@ -22,7 +22,7 @@ resource stAccount_stmazneucordfbi_datasvc 'Microsoft.Storage/storageAccounts@20
   name: storageAccountName 
   location: location
   tags:{
-    'Env': 'Dev'
+    'az-core-env': 'Shared'
     'az-core-projectcode': 'BicepDeployment- Designing Microsoft Azure Infrastructure Solutions '
     'az-core-purpose': 'General purpose storage'
   }

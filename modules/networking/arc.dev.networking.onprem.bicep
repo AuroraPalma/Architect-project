@@ -33,8 +33,8 @@ resource res_networking_OnPremises 'Microsoft.Network/virtualNetworks@2020-05-01
   name: networking_OnPremises.name
   location: location
   tags: {
-    'Env': 'Infrastructure'
-    'CostCenter': '00123'
+    'az-core-env': 'Shared'
+    'az-core-costCenter': '00123'
     'az-core-projectcode': 'BicepDeployment- Designing Microsoft Azure Infrastructure Solutions '
     'az-core-purpose': 'Networking On premise'
     'az-aut-delete' : 'true'
@@ -66,8 +66,8 @@ resource res_networking_OnPrem_vpnGateway_pip 'Microsoft.Network/publicIPAddress
   name: networking_OnPrem_vpnGateway.pipName
   location: location
   tags: {
-    'Env': 'Infrastructure'
-    'CostCenter': '00123'
+    'az-core-env': 'Shared'
+    'az-core-costCenter': '00123'
     'az-core-projectcode': 'BicepDeployment- Designing Microsoft Azure Infrastructure Solutions '
     'az-core-purpose': 'Networking On premise'
     'az-aut-delete' : 'true'
@@ -81,8 +81,8 @@ resource res_networking_OnPrem_vpnGateway 'Microsoft.Network/virtualNetworkGatew
   name: networking_OnPrem_vpnGateway.name
   location: location
   tags: {
-    'Env': 'Infrastructure'
-    'CostCenter': '00123'
+    'az-core-env': 'Shared'
+    'az-core-costCenter': '00123'
     'az-core-projectcode': 'BicepDeployment- Designing Microsoft Azure Infrastructure Solutions '
     'az-core-purpose': 'Networking On premise'
     'az-aut-delete' : 'true'
@@ -117,35 +117,12 @@ resource res_networking_OnPrem_vpnGateway 'Microsoft.Network/virtualNetworkGatew
 
 //Linux VM for connection testing
 
-resource res_linuxVm_OnPrem_pip 'Microsoft.Network/publicIPAddresses@2019-11-01' = if (networking_deploy_OnPrem_VpnGateway) {
-  name: lxvm_onprem_pip_name
-  location: location
-  tags: {
-    'Env': 'Infrastructure'
-    'CostCenter': '00123'
-    'az-core-projectcode': 'BicepDeployment- Designing Microsoft Azure Infrastructure Solutions '
-    'az-core-purpose': 'Networking On premise'
-    'az-aut-delete' : 'true'
-  }  
-  properties: {
-    publicIPAllocationMethod: 'Dynamic'
-    publicIPAddressVersion: 'IPv4'
-    dnsSettings: {
-      domainNameLabel: 'lxvmarchitectonpremconncheck'
-    }
-    idleTimeoutInMinutes: 4
-  }
-  sku: {
-    name: 'Basic'
-  }
-}
-
  resource nicNameLinuxResource 'Microsoft.Network/networkInterfaces@2020-05-01' = {
   name: lxvm_onprem_nic_name
   location: location
   tags: {
-    'Env': 'Infrastructure'
-    'CostCenter': '00123'
+    'az-core-env': 'Shared'
+    'az-core-costCenter': '00123'
     'az-core-projectcode': 'BicepDeployment- Designing Microsoft Azure Infrastructure Solutions '
     'az-core-purpose': 'Networking On premise'
     'az-aut-delete' : 'true'
@@ -158,9 +135,6 @@ resource res_linuxVm_OnPrem_pip 'Microsoft.Network/publicIPAddresses@2019-11-01'
           privateIPAllocationMethod: 'Dynamic'
           subnet: {
             id: '${res_networking_OnPremises.id}/subnets/${networking_OnPremises.subnetTransitName}'
-          }
-          publicIPAddress: {
-            id: res_linuxVm_OnPrem_pip.id
           }
         }
       }
