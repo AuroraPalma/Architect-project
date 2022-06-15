@@ -20,7 +20,7 @@ param networking_Hub01 object = {
   subnetTransit: '10.0.1.80/29'
 }
 param per_spk02_name string = 'per-azarc-hub01-to-spk02'
-param networking_rg_hub01_name string = 'rg-azarc-hub-networking-01'
+param networking_rg_hub01_name string = 'rg-azarc-hub01-networking-shared-01'
 param lxvm_spk02_pip_name string = 'pip-azarc-spk02-lxvm01'
 param lxvm_spk02_nic_name string = 'nic-azarc-spk02-lxvmcheckcomms'
 param lxvm_spk02_nsg_name string = 'nsg-azarc-spk02-lxvmcheckconns'

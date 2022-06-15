@@ -58,8 +58,8 @@ param lxvm_adminpass_hub string = 'Pa$$w0rd-007.'
 param lxvm_shutdown_name string = 'shutdown-computevm-lxvmhubnetcheck'
 @description('Write an email address to receive notifications when vm is running at 22:00')
 param email_recipient string = 'a.palma@htmedica.com'
-param networking_rg_spk01_name string = 'rg-azarc-spk01-networking-01'
-param networking_rg_spk02_name string = 'rg-azarc-spk02-networking-01'
+param networking_rg_spk01_name string = 'rg-azarc-spk01-networking-dev-01'
+param networking_rg_spk02_name string = 'rg-azarc-spk02-networking-prod-01'
 param per_spk01_name string = 'per-azarc-hub01-to-spk01'
 param per_spk02_name string = 'per-azarc-hub01-to-spk02'
 //RESOURCES

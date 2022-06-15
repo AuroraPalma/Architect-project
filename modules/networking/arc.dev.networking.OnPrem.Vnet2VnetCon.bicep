@@ -31,7 +31,7 @@ param networking_OnPrem_vpnGateway object = {
   subnetPrefix: '172.16.1.64/29'
   pipName: 'pip-azarc-onprem-vgw01'
 }
-param networking_rg_hub_name string = 'rg-azarc-hub-networking-01'
+param networking_rg_hub_name string = 'rg-azarc-hub01-networking-shared-01'
 
 //RESOURCES
 resource res_networking_OnPrem_vpnGateway 'Microsoft.Network/virtualNetworkGateways@2019-11-01' existing = {

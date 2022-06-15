@@ -24,7 +24,7 @@ param networking_Hub01 object = {
 }
 
 param per_spk01_name string = 'per-azarc-hub01-to-spk01'
-param networking_rg_hub01_name string = 'rg-azarc-hub-networking-01'
+param networking_rg_hub01_name string = 'rg-azarc-hub01-networking-shared-01'
 param lxvm_spk01_pip_name string = 'pip-azarc-spk01-lxvm01'
 param lxvm_spk01_nic_name string = 'nic-azarc-spk01-lxvmcheckcomms'
 param lxvm_spk01_nsg_name string = 'nsg-azarc-spk01-lxvmcheckconns'

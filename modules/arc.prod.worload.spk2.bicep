@@ -2,7 +2,7 @@
 
 //PARAMS
 @description('Cosmos DB account name, max length 44 characters')
-param accountName string = 'sql-${uniqueString(resourceGroup().id)}'
+param accountName string = 'cosmos-${uniqueString(resourceGroup().id)}-prod'
 
 @description('Location for the Cosmos DB account.')
 param location string = resourceGroup().location
@@ -77,8 +77,8 @@ param networking_Spoke02 object = {
   subnetBackPrefix: '10.2.0.128/25'
 }
 
-param elz_networking_rg_spk02_name string = 'rg-azarc-spk02-networking-01'
-
+param elz_networking_rg_spk02_name string = 'rg-azarc-spk02-networking-prod-01'
+param log_analytics_rg_name string = 'rg-azarc-analytics-monitor-01'
 @description('Name of the Network Security Group')
 param networkSecurityGroupName string = 'nsg-lxm-azarc-science-networking-02'
 
@@ -241,7 +241,7 @@ resource container 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/container
 /*Diagnostic Log Analytics*/
 resource loganalyticsprod_resource 'Microsoft.OperationalInsights/workspaces@2021-12-01-preview' existing = {
   name: logAnalyticsWorkspaceName
-  scope: resourceGroup('rg-azarc-analytics-01')
+  scope: resourceGroup(log_analytics_rg_name)
 }
 
 resource cosmosDBAccountDiagnostics 'Microsoft.Insights/diagnosticSettings@2017-05-01-preview' = {

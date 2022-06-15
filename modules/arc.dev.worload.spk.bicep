@@ -2,7 +2,7 @@
 
 //PARAMS
 @description('Cosmos DB account name, max length 44 characters')
-param accountName string = 'sql-${uniqueString(resourceGroup().id)}'
+param accountName string = 'cosmos-${uniqueString(resourceGroup().id)}-dev'
 
 @description('Location for the Cosmos DB account.')
 param location string = resourceGroup().location
@@ -80,7 +80,7 @@ param networking_Spoke01 object = {
 
 }
 
-param elz_networking_rg_spk01_name string = 'rg-azarc-spk01-networking-01'
+param elz_networking_rg_spk01_name string = 'rg-azarc-spk01-networking-dev-01'
 
 @description('Name of the Network Security Group')
 param networkSecurityGroupName string = 'nsg-lxm-data-science-networking-01'
