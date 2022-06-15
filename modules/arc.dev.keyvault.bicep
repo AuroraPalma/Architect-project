@@ -2,7 +2,7 @@
 
 //PARAMS
 @description('Specifies the name of the key vault.')
-param keyVaultName string = 'kvault-azarc-dev-01'
+param keyVaultName string = 'kvault-azarc-hub01-01'
 
 @description('Specifies the Azure location where the key vault should be created.')
 param location string = resourceGroup().location
@@ -41,11 +41,11 @@ param skuName string = 'standard'
 
 @description('Specifies the name of the secret that you want to create.')
 param secretName string = 'lxm-password-datascience-spk01'
-param secretName_windows string = 'wind-password-spk01'
+param secretName_shared string = 'lxm-password-shared-hubonprem01'
 @description('Specifies the value of the secret that you want to create.')
 @secure()
 param secretValue string
-param secretValue_windows string
+param secretValue_shared string
 resource kv 'Microsoft.KeyVault/vaults@2021-11-01-preview' = {
   name: keyVaultName
   location: location
@@ -53,7 +53,7 @@ resource kv 'Microsoft.KeyVault/vaults@2021-11-01-preview' = {
     enabledForDeployment: enabledForDeployment
     enabledForDiskEncryption: enabledForDiskEncryption
     enabledForTemplateDeployment: enabledForTemplateDeployment
-    enableSoftDelete: false /*para la presentación poner soft delete true*/
+    enableSoftDelete: false /*soft delete true*/
     tenantId: tenantId
     accessPolicies: [
       {
@@ -86,8 +86,8 @@ resource secret 'Microsoft.KeyVault/vaults/secrets@2021-11-01-preview' = {
 
 resource secret_windows 'Microsoft.KeyVault/vaults/secrets@2021-11-01-preview' = {
   parent: kv
-  name: secretName_windows
+  name: secretName_shared
   properties: {
-    value: secretValue_windows
+    value: secretValue_shared
   }
 }

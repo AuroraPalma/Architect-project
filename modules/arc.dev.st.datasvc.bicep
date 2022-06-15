@@ -4,7 +4,7 @@
 param location string = resourceGroup().location
 @minLength(3)
 @maxLength(24)
-param storageAccountName string = 'stazneugeneralaccount01'
+param storageAccountName string = 'stazarcaccountshared01'
 @allowed([
   'Standard_LRS'
   'Standard_GRS'
