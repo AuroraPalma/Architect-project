@@ -17,12 +17,7 @@ param publicIpName string = 'pip-hub01-bastion-01'
 @description('The name of the Bastion host')
 param bastionHostName string = 'bas-azarc-hub01-bastion-shared-01'
 
-param networking_Hub01 object = {
-  name: 'vnet-azarc-hub01-01'
-  addressPrefix: '10.0.1.0/24'
-  subnetTransitName: 'snet-hub01-transit01'
-  subnetTransit: '10.0.1.80/29'
-}
+param networking_Hub01 object
 
 resource res_networking_Hub01 'Microsoft.Network/virtualNetworks@2020-05-01' existing = {
   name: networking_Hub01.name

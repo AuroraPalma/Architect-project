@@ -237,7 +237,7 @@ resource res_schedules_shutdown_computevm_vmNameWindowsResource 'microsoft.devte
 }
 
 //PEERINGS HUB - SPOKES
-
+/*
 resource res_networking_Hub01_Vnet 'Microsoft.Network/virtualNetworks@2020-05-01' existing = {
   name: networking_Hub01.name
   scope: resourceGroup(networking_rg_hub01_name)
@@ -255,5 +255,5 @@ resource res_peering_Spk01_2_Hub01  'Microsoft.Network/virtualNetworks/virtualNe
     }
   }
 }
-
+*/
 

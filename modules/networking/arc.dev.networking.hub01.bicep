@@ -60,8 +60,8 @@ param lxvm_shutdown_name string = 'shutdown-computevm-lxvmhubnetcheck'
 param email_recipient string = 'a.palma@htmedica.com'
 param networking_rg_spk01_name string = 'rg-azarc-spk01-networking-dev-01'
 param networking_rg_spk02_name string = 'rg-azarc-spk02-networking-prod-01'
-param per_spk01_name string = 'per-azarc-hub01-to-spk01'
-param per_spk02_name string = 'per-azarc-hub01-to-spk02'
+param per_hub01spk01_name string = 'per-azarc-hub01-to-spk01'
+param per_hub01spk02_name string = 'per-azarc-hub01-to-spk02'
 //RESOURCES
 resource res_networking_Hub01 'Microsoft.Network/virtualNetworks@2020-05-01' = {
   name: networking_Hub01.name
@@ -323,7 +323,7 @@ resource res_schedules_shutdown_computevm_vmNameWindowsResource 'microsoft.devte
     targetResourceId: vmNameLinuxResource.id
   }
 }
-
+/*
 resource res_networking_Spk01_Vnet 'Microsoft.Network/virtualNetworks@2020-05-01' existing = {
   name: networking_Spoke01.name
   scope: resourceGroup(networking_rg_spk01_name)
@@ -335,7 +335,7 @@ resource res_networking_Spk02_Vnet 'Microsoft.Network/virtualNetworks@2020-05-01
 }
 
 resource res_peering_Hub01_2_Spk01  'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2020-06-01' = {
-  name: '${res_networking_Hub01.name}/${per_spk01_name}'
+  name: '${res_networking_Hub01.name}/${per_hub01spk01_name}'
   properties: {
     allowVirtualNetworkAccess: true
     allowForwardedTraffic: true
@@ -351,7 +351,7 @@ resource res_peering_Hub01_2_Spk01  'Microsoft.Network/virtualNetworks/virtualNe
 }
 
 resource res_peering_Hub01_to_Spk02 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2020-06-01' = {
-  name: '${res_networking_Hub01.name}/${per_spk02_name}'
+  name: '${res_networking_Hub01.name}/${per_hub01spk02_name}'
   properties: {
     allowVirtualNetworkAccess: true
     allowForwardedTraffic: true
@@ -365,4 +365,4 @@ resource res_peering_Hub01_to_Spk02 'Microsoft.Network/virtualNetworks/virtualNe
     res_networking_Hub01
   ]
 }
-
+*/
