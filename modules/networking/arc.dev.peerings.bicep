@@ -24,7 +24,7 @@ resource res_peering_Spk01_2_Hub01  'Microsoft.Network/virtualNetworks/virtualNe
   properties: {
     allowVirtualNetworkAccess: true
     allowForwardedTraffic: true
-    allowGatewayTransit: false
+    allowGatewayTransit: true
     useRemoteGateways: false
     remoteVirtualNetwork: {
       id: res_networking_Hub01_Vnet.id
