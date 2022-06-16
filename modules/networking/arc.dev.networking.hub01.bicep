@@ -3,34 +3,7 @@
 //PARAMS
 param location string = resourceGroup().location
 /* /24 = 256 ips --> from 10.0.1.0 -to- 10.0.1.255 */
-param networking_Hub01 object = {
-  name: 'vnet-azarc-hub01'
-  addressPrefix: '10.0.1.0/24'
-  subnetTransitName: 'snet-hub01-transit'
-  subnetTransit: '10.0.1.80/29'
-}
-
-param networking_Spoke01 object = {
-  name: 'vnet-azarc-spk01'
-  addressPrefix: '10.1.0.0/22'
-  subnetFrontName: 'snet-spk01-front'
-  subnetFrontPrefix: '10.1.0.0/25'
-  subnetBackName: 'snet-spk01-back'
-  subnetBackPrefix: '10.1.0.128/25'
-  subnetMangament: 'snet-spk01-mngnt'
-  subnetMangamentPrefix: '10.1.1.0/29'
-
-}
-
-param networking_Spoke02 object = {
-  name: 'vnet-azarc-spk02'
-  addressPrefix: '10.2.0.0/22'
-  subnetFrontName: 'snet-spk01-front'
-  subnetFrontPrefix: '10.2.0.0/25'
-  subnetBackName: 'snet-spk01-back'
-  subnetBackPrefix: '10.2.0.128/25'
-
-}
+param networking_Hub01 object 
 
 param networking_deploy_VpnGateway bool = true
 
@@ -58,17 +31,14 @@ param lxvm_adminpass_hub string = 'Pa$$w0rd-007.'
 param lxvm_shutdown_name string = 'shutdown-computevm-lxvmhubnetcheck'
 @description('Write an email address to receive notifications when vm is running at 22:00')
 param email_recipient string = 'a.palma@htmedica.com'
-param networking_rg_spk01_name string = 'rg-azarc-spk01-networking-dev-01'
-param networking_rg_spk02_name string = 'rg-azarc-spk02-networking-prod-01'
-param per_hub01spk01_name string = 'per-azarc-hub01-to-spk01'
-param per_hub01spk02_name string = 'per-azarc-hub01-to-spk02'
+
 //RESOURCES
 resource res_networking_Hub01 'Microsoft.Network/virtualNetworks@2020-05-01' = {
   name: networking_Hub01.name
   location: location
   tags: {
-    'Env': 'Infrastructure'
-    'CostCenter': '00123'
+    'az-core-env': 'Shared'
+    'az-core-costCenter': '00123'
     'az-core-projectcode': 'BicepDeployment- Designing Microsoft Azure Infrastructure Solutions '
     'az-core-purpose': 'Networking Hub'
     'az-aut-delete' : 'true'
@@ -106,8 +76,8 @@ resource res_networking_Hub_vpnGateway_pip 'Microsoft.Network/publicIPAddresses@
   name: networking_vpnGateway.pipName
   location: location
   tags: {
-    'Env': 'Infrastructure'
-    'CostCenter': '00123'
+    'az-core-env': 'Shared'
+    'az-core-costCenter': '00123'
     'az-core-projectcode': 'BicepDeployment- Designing Microsoft Azure Infrastructure Solutions '
     'az-core-purpose': 'Networking Hub'
     'az-aut-delete' : 'true'
@@ -121,8 +91,8 @@ resource res_networking_Hub_vpnGateway 'Microsoft.Network/virtualNetworkGateways
   name: networking_vpnGateway.name
   location: location
   tags: {
-    'Env': 'Infrastructure'
-    'CostCenter': '00123'
+    'az-core-env': 'Shared'
+    'az-core-costCenter': '00123'
     'az-core-projectcode': 'BicepDeployment- Designing Microsoft Azure Infrastructure Solutions '
     'az-core-purpose': 'IPSEC tunnel simulation Hub - On prem'
     'az-aut-delete' : 'true'
@@ -157,35 +127,12 @@ resource res_networking_Hub_vpnGateway 'Microsoft.Network/virtualNetworkGateways
 
 //Linux VM for connection testing
 
-resource res_linuxVm_Hub01_pip 'Microsoft.Network/publicIPAddresses@2019-11-01' = if (networking_deploy_VpnGateway) {
-  name: lxvm_hub_pip_name
-  location: location
-  tags: {
-    'Env': 'Infrastructure'
-    'CostCenter': '00123'
-    'az-core-projectcode': 'BicepDeployment- Designing Microsoft Azure Infrastructure Solutions '
-    'az-core-purpose': 'Connectivity Check'
-    'az-aut-delete' : 'true'
-  }  
-  properties: {
-    publicIPAllocationMethod: 'Dynamic'
-    publicIPAddressVersion: 'IPv4'
-    dnsSettings: {
-      domainNameLabel: 'lxvmarchitecturehub01conncheck'
-    }
-    idleTimeoutInMinutes: 4
-  }
-  sku: {
-    name: 'Basic'
-  }
-}
-
  resource nicNameLinuxResource 'Microsoft.Network/networkInterfaces@2020-05-01' = {
   name: lxvm_hub_nic_name
   location: location
   tags: {
-    'Env': 'Infrastructure'
-    'CostCenter': '00123'
+    'az-core-env': 'Shared'
+    'az-core-costCenter': '00123'
     'az-core-projectcode': 'BicepDeployment- Designing Microsoft Azure Infrastructure Solutions '
     'az-core-purpose': 'Nic VM Linux'
     'az-aut-delete' : 'true'
@@ -198,9 +145,6 @@ resource res_linuxVm_Hub01_pip 'Microsoft.Network/publicIPAddresses@2019-11-01' 
           privateIPAllocationMethod: 'Dynamic'
           subnet: {
             id: '${res_networking_Hub01.id}/subnets/${networking_Hub01.subnetTransitName}'
-          }
-          publicIPAddress: {
-            id: res_linuxVm_Hub01_pip.id
           }
         }
       }
@@ -323,46 +267,4 @@ resource res_schedules_shutdown_computevm_vmNameWindowsResource 'microsoft.devte
     targetResourceId: vmNameLinuxResource.id
   }
 }
-/*
-resource res_networking_Spk01_Vnet 'Microsoft.Network/virtualNetworks@2020-05-01' existing = {
-  name: networking_Spoke01.name
-  scope: resourceGroup(networking_rg_spk01_name)
-}
 
-resource res_networking_Spk02_Vnet 'Microsoft.Network/virtualNetworks@2020-05-01' existing = {
-  name: networking_Spoke02.name
-  scope: resourceGroup(networking_rg_spk02_name)
-}
-
-resource res_peering_Hub01_2_Spk01  'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2020-06-01' = {
-  name: '${res_networking_Hub01.name}/${per_hub01spk01_name}'
-  properties: {
-    allowVirtualNetworkAccess: true
-    allowForwardedTraffic: true
-    allowGatewayTransit: true
-    useRemoteGateways: false
-    remoteVirtualNetwork: {
-      id: res_networking_Spk01_Vnet.id
-    }
-  }
-  dependsOn: [
-    res_networking_Hub01
-  ]
-}
-
-resource res_peering_Hub01_to_Spk02 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2020-06-01' = {
-  name: '${res_networking_Hub01.name}/${per_hub01spk02_name}'
-  properties: {
-    allowVirtualNetworkAccess: true
-    allowForwardedTraffic: true
-    allowGatewayTransit: true
-    useRemoteGateways: false
-    remoteVirtualNetwork: {
-      id: res_networking_Spk02_Vnet.id
-    }
-  }
-  dependsOn: [
-    res_networking_Hub01
-  ]
-}
-*/

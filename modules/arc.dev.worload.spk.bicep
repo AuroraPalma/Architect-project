@@ -68,29 +68,12 @@ param vmName string = 'lxvm-data-science-dev'
 ])
 param cpu_gpu string = 'CPU-4GB'
 
-param networking_Spoke01 object = {
-  name: 'vnet-azarc-spk01'
-  addressPrefix: '10.1.0.0/22'
-  subnetFrontName: 'snet-spk01-front'
-  subnetFrontPrefix: '10.1.0.0/25'
-  subnetBackName: 'snet-spk01-back'
-  subnetBackPrefix: '10.1.0.128/25'
-  subnetMangament: 'snet-spk01-mngnt'
-  subnetMangamentPrefix: '10.1.1.0/29'
-
-}
+param networking_Spoke01 object
 
 param elz_networking_rg_spk01_name string = 'rg-azarc-spk01-networking-dev-01'
 
 @description('Name of the Network Security Group')
 param networkSecurityGroupName string = 'nsg-lxm-data-science-networking-01'
-
-@description('Type of authentication to use on the Virtual Machine. SSH key is recommended.')
-@allowed([
-  'sshPublicKey'
-  'password'
-])
-param authenticationType string = 'password'
 
 @description('SSH Key or password for the Virtual Machine. SSH key is recommended.')
 @secure()
@@ -240,7 +223,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2021-02-01' = {
   name: storageAccountName 
   location: location
   tags:{
-    'Env': 'development'
+    'az-core-env': 'Development'
     'az-core-projectcode': 'BicepDeployment- Designing Microsoft Azure Infrastructure Solutions '
     'az-core-purpose': 'Storage Logs'
   }

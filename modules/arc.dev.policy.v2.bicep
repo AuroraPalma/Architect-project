@@ -5,7 +5,7 @@ targetScope = 'subscription'
 param policySource string = 'Bicep/azure-policy-as-code'
 param policyCategory string = 'Custom'
 param assignmentIdentityLocation string 
-param mandatoryTag1Key string = 'Env' //TAG MANDATORY RESOURCES
+param mandatoryTag1Key string = 'az-core-env' //TAG MANDATORY RESOURCES
 param mandatoryTag1Value string 
 param assignmentEnforcementMode string = 'Default'
 param listOfAllowedLocations array = [
