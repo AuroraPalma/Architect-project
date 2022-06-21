@@ -289,6 +289,8 @@ module mod_architectdev_Peering_Spok01_Deploy 'modules/networking/peering/arc.de
   dependsOn:[
     mod_architectdev_Networking_Hub_Deploy
     mod_architectdev_Networking_Spk01_Deploy
+    mod_architecdev_Peering_Hub_spk01_deploy
+    mod_architecprod_Peering_Hub_spk02_deploy
   ]
 }
 
@@ -306,6 +308,9 @@ module mod_architectdev_Peering_Spok02_Deploy 'modules/networking/peering/arc.pr
   dependsOn:[
     mod_architectdev_Networking_Hub_Deploy
     mod_architectprod_Networking_Spk02_Deploy
+    mod_architecdev_Peering_Hub_spk01_deploy
+    mod_architecprod_Peering_Hub_spk02_deploy
+    mod_architectdev_Peering_Spok01_Deploy
   ]
 }
 

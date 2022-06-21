@@ -79,30 +79,36 @@ Puede ver la plantilla JSON que se envía a Resource Manager mediante el comando
 ```bicep build ./main.bicep```
 Puede usar la CLI de Bicep para descompilar cualquier plantilla de ARM en una plantilla de Bicep mediante el comando ```bicep decompile```
 ## Nomenclatura
+```bicep
 <Resource Type>-<Project>-<Workload1>-<Workload2>-<Environment><Instance id>
 
 rg-azarc-hub-networking-shared-01
 bas-azarc-hub01-bastion-shared-01
 vgtw-azarc-hub01-vgw01
+```
 
 ## Etiquetado
+```bicep
 <azure>-<core/automatization>-<description>
     'az-core-env': For environment (mandatoryTag)
     ' az-core-costCenter ': For costcenter
     'az-core-projectcode': Name of the project
     'az-core-purpose': What is the purpose of the resource
     'az-aut-delete': 'Boolean true or false if the resource is going to be deleted by Azure bash
-
+```
 
 # required steps - azure authentication
+```CLI
 az login
 az account list
+```
 # required steps - deploy to devtest
+```CLI
 az account set -s 'xxxx-xxxx-xxxx-xxxx-xxxx'
 az deployment sub create -f ./main.bicep -l australiaeast -p ./params-devtest.json
-# optional step to trigger a subscription-level policy compliance scan (uses current sub context)
-az policy state trigger-scan --no-wait
-## Comandos útiles
+```
+
+## Commands
 ```CLI
 az login
 ```
