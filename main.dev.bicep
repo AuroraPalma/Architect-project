@@ -1,7 +1,8 @@
 //MAIN BICEP- AZURE ARCHITECT PROJECT
 
 //PARAMS
-//Resource Groups
+
+//RESOURCE GROUPS
 param elz_networking_rg_hub01_name string = 'rg-azarc-hub01-networking-shared-01'
 param elz_storage_rg_hub01_name string = 'rg-azarc-hub01-st-shared-01'
 param deployment_location string = deployment().location
@@ -14,7 +15,7 @@ param elz_workloads_rg_spk02_name string = 'rg-azarc-spk02-prod-01'
 param elz_log_analytics_rg_name string = 'rg-azarc-analytics-monitor-01'
 param elz_alerts_monitor_rg_name string = 'rg-azarc-alerts-monitor-01'
 
-//Networking
+//NETWORKING
 param networking_Spoke01 object = {
   name: 'vnet-azarc-spk01'
   addressPrefix: '10.1.0.0/22'
@@ -53,6 +54,97 @@ param peering_spok01_to_hub_name string = '${networking_Spoke01.name}/${per_spk0
 param peering_spok02_to_hub_name string = '${networking_Spoke02.name}/${per_spk02_name}'
 param peering_hub01_to_spk01_name string = '${networking_Hub01.name}/${per_hub01spk01_name}'
 param peering_hub01_to_spok02_name string = '${networking_Hub01.name}/${per_hub01spk02_name}'
+
+//Connection VPN
+param networking_Hub01_conn object = {
+  name: 'con-azarc-hub01-con01'
+  connectionType: 'Vnet2Vnet'   /*Site-to-Site => IPSec*/
+  enableBgp: false
+  sharedKey: 'az_305_desingning_solutions2022'
+
+} 
+param networking_deploy_Hub01_VpnGateway bool = true
+
+param networking_hub01_localNetworkGateway object = {
+  name: 'lgw-azarc-hub01-lgw01'
+  localAddressPrefix: '172.16.1.0/26'
+}
+
+param networking_vpnGateway object = {
+  name: 'vgw-azarc-hub01-vgw01'
+  subnetName: 'GatewaySubnet'
+  subnetPrefix: '10.0.1.72/29'
+  pipName: 'pip-azarc-hub01-vgw01'
+}
+
+param networking_OnPrem_vpnGateway object = {
+  name: 'vgw-azarc-onprem-vgw01'
+  subnetName: 'GatewaySubnet'
+  subnetPrefix: '172.16.1.64/29'
+  pipName: 'pip-azarc-onprem-vgw01'
+}
+
+param networking_OnPrem_conn object = {
+  name: 'con-azarc-onprem-con01'
+  connectionType: 'Vnet2Vnet'   /*Site-to-Site => IPSec*/
+  enableBgp: false
+  sharedKey: 'az_305_desingning_solutions2022'
+
+} 
+param networking_OnPrem_localNetworkGateway object = {
+  name: 'lgw-azarc-onprem-lgw01'
+  localAddressPrefix: '10.0.1.80/29' /*10.0.1.80 - 10.0.1.87 (3 + 5*/
+}
+
+//Networking Hub
+
+param networking_deploy_VpnGateway bool = true
+
+param networking_AzureFirewall object = {
+  name: 'afw-azarc-firewall01'
+  publicIPAddressName: 'pip-azarc-afw01'
+  subnetName: 'AzureFirewallSubnet'
+  subnetPrefix: '10.0.1.0/26' /* 10.0.1.0 -> 10.0.1.63 */
+  routeName: 'udr-azarc-nxthop-to-fw'
+}
+param lxvm_hub_nic_name string = 'nic-azarc-hub01-lxvmcheckcomms'
+param lxvm_hub_nsg_name string = 'nsg-azarc-hub01-lxvmcheckconns'
+param lxvm_hub_machine_name string = 'lxvmhubnetcheck'
+param lxvm_adminuser_hub string = 'admin77'
+param lxvm_adminpass_hub string = 'Pa$$w0rd-007.'
+param lxvm_shutdown_name string = 'shutdown-computevm-lxvmhubnetcheck'
+@description('Write an email address to receive notifications when vm is running at 22:00')
+param email_recipient string = 'a.palma@htmedica.com'
+
+//Networking On Premise
+
+param networking_OnPremises object = {
+  name: 'vnet-azarc-onpremises01'
+  addressPrefix: '172.16.1.0/24'
+  subnetTransitName: 'snet-onprem-transit'
+  subnetTransit: '172.16.1.0/26'
+}
+param networking_deploy_OnPrem_VpnGateway bool = true
+param lxvm_onprem_nic_name string = 'nic-azarc-onprem-lxvmcheckcomms'
+param lxvm_onprem_nsg_name string = 'nsg-azarc-onprem-lxvmcheckcomms'
+param lxvm_onprem_machine_name string = 'lxvmonpnetcheck'
+param lxvm_adminuser_onprem string = 'admin77'
+param lxvm_adminpass_onprem string = 'Pa$$w0rd-007.'
+param lxvm_shutdown_name_onprem string = 'shutdown-computevm-lxvmonpnetcheck'
+@description('Write an email address to receive notifications when vm is running at 22:00')
+param email_recipient_onprem string = 'a.palma@htmedica.com'
+
+//Networking Spokes
+
+param lxvm_spk01_nic_name string = 'nic-azarc-spk01-lxvmcheckcomms'
+param lxvm_spk01_nsg_name string = 'nsg-azarc-spk01-lxvmcheckconns'
+param lxvm_spk01_machine_name string = 'lxvmspk01netcheck'
+param lxvm_adminuser_spk01 string = 'admin77'
+param lxvm_adminpass_spk01 string = 'Pa$$w0rd-007.'
+param lxvm_shutdown_name_spoke string = 'shutdown-computevm-lxvmspk01netcheck'
+@description('Write an email address to receive notifications when vm is running at 22:00')
+param email_recipient_spoke string = 'a.palma@htmedica.com'
+
 
 targetScope = 'subscription'
 
@@ -174,6 +266,16 @@ module mod_architectdev_Networking_OnPrem_Deploy 'modules/networking/arc.dev.net
   scope: res_elz_networking_rg_onprem_name
   params:{
     location: deployment_location
+    networking_deploy_OnPrem_VpnGateway:networking_deploy_OnPrem_VpnGateway
+    networking_OnPrem_vpnGateway:networking_OnPrem_vpnGateway
+    networking_OnPremises:networking_OnPremises
+    lxvm_adminuser_onprem:lxvm_adminuser_onprem
+    lxvm_adminpass_onprem:lxvm_adminpass_onprem
+    lxvm_onprem_machine_name:lxvm_onprem_machine_name
+    lxvm_onprem_nic_name:lxvm_onprem_nic_name
+    lxvm_onprem_nsg_name:lxvm_onprem_nsg_name
+    lxvm_shutdown_name:lxvm_shutdown_name_onprem
+    email_recipient:email_recipient_onprem
   }
 }
 
@@ -183,6 +285,16 @@ module mod_architectdev_Networking_Hub_Deploy 'modules/networking/arc.dev.networ
   params:{
     location: deployment_location
     networking_Hub01:networking_Hub01
+    networking_AzureFirewall:networking_AzureFirewall
+    networking_deploy_VpnGateway:networking_deploy_VpnGateway
+    networking_vpnGateway:networking_vpnGateway
+    lxvm_hub_machine_name:lxvm_hub_machine_name
+    lxvm_adminpass_hub:lxvm_adminpass_hub
+    lxvm_adminuser_hub:lxvm_adminuser_hub
+    lxvm_hub_nic_name:lxvm_hub_nic_name
+    lxvm_hub_nsg_name:lxvm_hub_nsg_name
+    lxvm_shutdown_name:lxvm_shutdown_name
+    email_recipient:email_recipient
   }
   dependsOn: [
     mod_architectdev_Networking_Spk01_Deploy
@@ -207,6 +319,12 @@ module mod_architectdev_Vnet2Vnet_OnPrem_Conn_Deploy 'modules/networking/arc.dev
   scope: res_elz_networking_rg_onprem_name
   params:{
     location: deployment_location
+    networking_deploy_OnPrem_VpnGateway:networking_deploy_OnPrem_VpnGateway
+    networking_OnPrem_conn:networking_OnPrem_conn
+    networking_OnPrem_localNetworkGateway:networking_OnPrem_localNetworkGateway
+    networking_OnPrem_vpnGateway:networking_OnPrem_vpnGateway
+    networking_rg_hub_name:elz_networking_rg_hub01_name
+    networking_vpnGateway:networking_vpnGateway
   }
   dependsOn:[
     mod_architectdev_Networking_OnPrem_Deploy
@@ -220,6 +338,11 @@ module mod_architectdev_Vnet2Vnet_Hub_Conn_Deploy 'modules/networking/arc.dev.ne
   params:{
     location: deployment_location
     networking_rg_onprem_name:elz_networking_rg_onprem_name
+    networking_deploy_Hub01_VpnGateway:networking_deploy_Hub01_VpnGateway
+    networking_Hub01_conn:networking_Hub01_conn
+    networking_hub01_localNetworkGateway:networking_hub01_localNetworkGateway
+    networking_OnPrem_vpnGateway:networking_OnPrem_vpnGateway
+    networking_vpnGateway:networking_vpnGateway
   }
   dependsOn:[
     mod_architectdev_Networking_Hub_Deploy
@@ -233,6 +356,13 @@ module mod_architectdev_Networking_Spk01_Deploy 'modules/networking/arc.dev.netw
   params:{
     location: deployment_location
     networking_Spoke01:networking_Spoke01
+    lxvm_adminpass_spk01:lxvm_adminpass_spk01
+    lxvm_adminuser_spk01:lxvm_adminuser_spk01
+    lxvm_shutdown_name:lxvm_shutdown_name_spoke
+    lxvm_spk01_machine_name:lxvm_spk01_machine_name
+    lxvm_spk01_nic_name:lxvm_spk01_nic_name
+    lxvm_spk01_nsg_name:lxvm_spk01_nsg_name
+    email_recipient:email_recipient_spoke
   }
 }
 module mod_architectprod_Networking_Spk02_Deploy 'modules/networking/arc.prod.networking.spk02.bicep' = {
