@@ -143,8 +143,40 @@ param lxvm_adminuser_spk01 string = 'admin77'
 param lxvm_adminpass_spk01 string = 'Pa$$w0rd-007.'
 param lxvm_shutdown_name_spoke string = 'shutdown-computevm-lxvmspk01netcheck'
 @description('Write an email address to receive notifications when vm is running at 22:00')
-param email_recipient_spoke string = 'a.palma@htmedica.com'
+param email_recipient_spk01 string = 'a.palma@htmedica.com'
+param lxvm_spk02_nic_name string = 'nic-azarc-spk02-lxvmcheckcomms'
+param lxvm_spk02_nsg_name string = 'nsg-azarc-spk02-lxvmcheckconns'
+param lxvm_spk02_machine_name string = 'lxvmspk02netcheck'
+param lxvm_adminuser_spk02 string = 'admin77'
+param lxvm_adminpass_spk02 string = 'Pa$$w0rd-007.'
+param lxvm_shutdown_name_spk02 string = 'shutdown-computevm-lxvmspk02netcheck'
+@description('Write an email address to receive notifications when vm is running at 22:00')
+param email_recipient_spk02 string = 'a.palma@htmedica.com'
 
+//ALERT RULE PARAMS
+param subscriptionid string = '/subscriptions/4c81b137-e05f-43f5-a271-e5a7c3ce6f74'
+param activityLogAlerts_Alert_new_user_name string = 'Alert new user'
+param activityLogAlerts_Delete_subscription_name string = 'Delete subscription'
+param activityLogAlerts_Certificate_Key_vault_alert_name string = 'Certificate Key vault alert'
+param activityLogAlerts_Policy_Definition_Alert_name string = 'Policy Definition Alert'
+param activityLogAlerts_Policy_Tenant_alert_name string = 'Policy Tenant alert'
+param field_category_name string = 'category'
+param field_equals_name string = 'Administrative'
+param field_operation_name string = 'operationName'
+
+//BASTION PARAMS
+
+@description('Virtual network name')
+param vnetName string = networking_Hub01.name
+
+@description('The address prefix to use for the Bastion subnet')
+param addressPrefix string = '10.0.1.64/29'
+
+@description('The name of the Bastion public IP address')
+param publicIpName string = 'pip-hub01-bastion-01'
+
+@description('The name of the Bastion host')
+param bastionHostName string = 'bas-azarc-hub01-bastion-shared-01'
 
 targetScope = 'subscription'
 
@@ -308,6 +340,10 @@ module mod_architectdev_bastion_Hub_Deploy 'modules/arc.dev.bastion.bicep' = {
   params:{
     location:deployment_location
     networking_Hub01:networking_Hub01
+    addressPrefix:addressPrefix
+    vnetName:vnetName
+    bastionHostName:bastionHostName
+    publicIpName:publicIpName
   }
   dependsOn:[
     mod_architectdev_Networking_Hub_Deploy
@@ -362,7 +398,7 @@ module mod_architectdev_Networking_Spk01_Deploy 'modules/networking/arc.dev.netw
     lxvm_spk01_machine_name:lxvm_spk01_machine_name
     lxvm_spk01_nic_name:lxvm_spk01_nic_name
     lxvm_spk01_nsg_name:lxvm_spk01_nsg_name
-    email_recipient:email_recipient_spoke
+    email_recipient:email_recipient_spk01
   }
 }
 module mod_architectprod_Networking_Spk02_Deploy 'modules/networking/arc.prod.networking.spk02.bicep' = {
@@ -371,6 +407,13 @@ module mod_architectprod_Networking_Spk02_Deploy 'modules/networking/arc.prod.ne
   params:{
     location: deployment_location
     networking_Spoke02:networking_Spoke02
+    lxvm_adminpass_spk02:lxvm_adminpass_spk02
+    lxvm_adminuser_spk02:lxvm_adminuser_spk02
+    lxvm_shutdown_name:lxvm_shutdown_name_spk02
+    lxvm_spk02_machine_name:lxvm_spk02_machine_name
+    lxvm_spk02_nic_name:lxvm_spk02_nic_name
+    lxvm_spk02_nsg_name:lxvm_spk02_nsg_name
+    email_recipient:email_recipient_spk02
   }
 }
 
@@ -478,6 +521,17 @@ module mod_architectdev_Policies_Deploy 'modules/arc.dev.policy.v2.bicep' = {
 module mod_architectdev_Alerts_Deploy 'modules/arc.dev.alertrule.monitor.bicep' = {
   name:'${'architectdevAlerts_Monitor_'}${currentDateTime}'
   scope: res_elz_alerts_monitor_rg_name
+  params:{
+    activityLogAlerts_Alert_new_user_name:activityLogAlerts_Alert_new_user_name
+    activityLogAlerts_Certificate_Key_vault_alert_name:activityLogAlerts_Certificate_Key_vault_alert_name
+    activityLogAlerts_Delete_subscription_name:activityLogAlerts_Delete_subscription_name
+    activityLogAlerts_Policy_Definition_Alert_name:activityLogAlerts_Policy_Definition_Alert_name
+    activityLogAlerts_Policy_Tenant_alert_name:activityLogAlerts_Policy_Tenant_alert_name
+    field_category_name:field_category_name
+    field_equals_name:field_equals_name
+    field_operation_name:field_operation_name
+    subscriptionid:subscriptionid
+  }
 }
 
 module mod_architectdev_KeyVault_Hub_Deploy 'modules/arc.dev.keyvault.bicep' = {

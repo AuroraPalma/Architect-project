@@ -46,6 +46,8 @@ param secretName_shared string = 'lxm-password-shared-hubonprem01'
 @secure()
 param secretValue string
 param secretValue_shared string
+
+//RESOURCES
 resource kv 'Microsoft.KeyVault/vaults@2021-11-01-preview' = {
   name: keyVaultName
   location: location
