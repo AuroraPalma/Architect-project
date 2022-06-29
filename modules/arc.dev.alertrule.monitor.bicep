@@ -1,15 +1,15 @@
 //MODULE ALERT RULES BICEP- AZURE ARCHITECT PROJECT
 
 //PARAMS
-param subscriptionid string = '/subscriptions/4c81b137-e05f-43f5-a271-e5a7c3ce6f74'
-param activityLogAlerts_Alert_new_user_name string = 'Alert new user'
-param activityLogAlerts_Delete_subscription_name string = 'Delete subscription'
-param activityLogAlerts_Certificate_Key_vault_alert_name string = 'Certificate Key vault alert'
-param activityLogAlerts_Policy_Definition_Alert_name string = 'Policy Definition Alert'
-param activityLogAlerts_Policy_Tenant_alert_name string = 'Policy Tenant alert'
-param field_category_name string = 'category'
-param field_equals_name string = 'Administrative'
-param field_operation_name string = 'operationName'
+param subscriptionid string
+param activityLogAlerts_Alert_new_user_name string
+param activityLogAlerts_Delete_subscription_name string
+param activityLogAlerts_Certificate_Key_vault_alert_name string
+param activityLogAlerts_Policy_Definition_Alert_name string
+param activityLogAlerts_Policy_Tenant_alert_name string
+param field_category_name string
+param field_equals_name string
+param field_operation_name string
 
 //RESOURCES
 resource activityLogAlerts_Alert_new_user_name_resource 'microsoft.insights/activityLogAlerts@2020-10-01' = {

@@ -3,14 +3,14 @@
 //PARAMS
 param location string = resourceGroup().location
 param networking_Spoke02 object 
-param lxvm_spk02_nic_name string = 'nic-azarc-spk02-lxvmcheckcomms'
-param lxvm_spk02_nsg_name string = 'nsg-azarc-spk02-lxvmcheckconns'
-param lxvm_spk02_machine_name string = 'lxvmspk02netcheck'
-param lxvm_adminuser_spk02 string = 'admin77'
-param lxvm_adminpass_spk02 string = 'Pa$$w0rd-007.'
-param lxvm_shutdown_name string = 'shutdown-computevm-lxvmspk02netcheck'
+param lxvm_spk02_nic_name string
+param lxvm_spk02_nsg_name string
+param lxvm_spk02_machine_name string
+param lxvm_adminuser_spk02 string
+param lxvm_adminpass_spk02 string
+param lxvm_shutdown_name string
 @description('Write an email address to receive notifications when vm is running at 22:00')
-param email_recipient string = 'a.palma@htmedica.com'
+param email_recipient string
 
 @allowed([
   'Standard_B1ls'

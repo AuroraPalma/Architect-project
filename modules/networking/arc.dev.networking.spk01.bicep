@@ -2,18 +2,17 @@
 
 //PARAMS
 param location string = resourceGroup().location
-
 /* /22 = 1000 ips --> from 10.1.0.0 -to- 10.1.3.255 */
 param networking_Spoke01 object
-
-param lxvm_spk01_nic_name string = 'nic-azarc-spk01-lxvmcheckcomms'
-param lxvm_spk01_nsg_name string = 'nsg-azarc-spk01-lxvmcheckconns'
-param lxvm_spk01_machine_name string = 'lxvmspk01netcheck'
-param lxvm_adminuser_spk01 string = 'admin77'
-param lxvm_adminpass_spk01 string = 'Pa$$w0rd-007.'
-param lxvm_shutdown_name string = 'shutdown-computevm-lxvmspk01netcheck'
+param lxvm_spk01_nic_name string
+param lxvm_spk01_nsg_name string
+param lxvm_spk01_machine_name string
+param lxvm_adminuser_spk01 string
+param lxvm_adminpass_spk01 string
+param lxvm_shutdown_name string
 @description('Write an email address to receive notifications when vm is running at 22:00')
-param email_recipient string = 'a.palma@htmedica.com'
+param email_recipient string
+
 //RESOURCES
 resource res_networking_Spk01 'Microsoft.Network/virtualNetworks@2020-05-01' = {
   name: networking_Spoke01.name

@@ -4,33 +4,17 @@
 param location string = resourceGroup().location
 /* /24 = 256 ips --> from 10.0.1.0 -to- 10.0.1.255 */
 param networking_Hub01 object 
-
-param networking_deploy_VpnGateway bool = true
-
-param networking_AzureFirewall object = {
-  name: 'afw-azarc-firewall01'
-  publicIPAddressName: 'pip-azarc-afw01'
-  subnetName: 'AzureFirewallSubnet'
-  subnetPrefix: '10.0.1.0/26' /* 10.0.1.0 -> 10.0.1.63 */
-  routeName: 'udr-azarc-nxthop-to-fw'
-}
-
-param networking_vpnGateway object = {
-  name: 'vgw-azarc-hub01-vgw01'
-  subnetName: 'GatewaySubnet'
-  subnetPrefix: '10.0.1.72/29'
-  pipName: 'pip-azarc-hub01-vgw01'
-}
-
-param lxvm_hub_pip_name string = 'pip-azarc-hub01-lxvm2'
-param lxvm_hub_nic_name string = 'nic-azarc-hub01-lxvmcheckcomms'
-param lxvm_hub_nsg_name string = 'nsg-azarc-hub01-lxvmcheckconns'
-param lxvm_hub_machine_name string = 'lxvmhubnetcheck'
-param lxvm_adminuser_hub string = 'admin77'
-param lxvm_adminpass_hub string = 'Pa$$w0rd-007.'
-param lxvm_shutdown_name string = 'shutdown-computevm-lxvmhubnetcheck'
+param networking_deploy_VpnGateway bool
+param networking_AzureFirewall object 
+param networking_vpnGateway object
+param lxvm_hub_nic_name string
+param lxvm_hub_nsg_name string
+param lxvm_hub_machine_name string
+param lxvm_adminuser_hub string
+param lxvm_adminpass_hub string
+param lxvm_shutdown_name string
 @description('Write an email address to receive notifications when vm is running at 22:00')
-param email_recipient string = 'a.palma@htmedica.com'
+param email_recipient string
 
 //RESOURCES
 resource res_networking_Hub01 'Microsoft.Network/virtualNetworks@2020-05-01' = {

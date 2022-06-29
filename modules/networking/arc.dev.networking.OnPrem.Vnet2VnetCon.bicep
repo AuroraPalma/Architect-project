@@ -2,36 +2,12 @@
 
 //PARAMS
 param location string = resourceGroup().location
-
-param networking_OnPrem_conn object = {
-  name: 'con-azarc-onprem-con01'
-  connectionType: 'Vnet2Vnet'   /*Site-to-Site => IPSec*/
-  enableBgp: false
-  sharedKey: 'az_305_desingning_solutions2022'
-
-} 
-
-param networking_deploy_OnPrem_VpnGateway bool = true
-
-param networking_OnPrem_localNetworkGateway object = {
-  name: 'lgw-azarc-onprem-lgw01'
-  localAddressPrefix: '10.0.1.80/29' /*10.0.1.80 - 10.0.1.87 (3 + 5*/
-}
-
-param networking_vpnGateway object = {
-  name: 'vgw-azarc-hub01-vgw01'
-  subnetName: 'GatewaySubnet'
-  subnetPrefix: '10.0.1.72/29'
-  pipName: 'pip-azarc-hub01-vgw01'
-}
-
-param networking_OnPrem_vpnGateway object = {
-  name: 'vgw-azarc-onprem-vgw01'
-  subnetName: 'GatewaySubnet'
-  subnetPrefix: '172.16.1.64/29'
-  pipName: 'pip-azarc-onprem-vgw01'
-}
-param networking_rg_hub_name string = 'rg-azarc-hub01-networking-shared-01'
+param networking_OnPrem_conn object
+param networking_deploy_OnPrem_VpnGateway bool
+param networking_OnPrem_localNetworkGateway object
+param networking_vpnGateway object
+param networking_OnPrem_vpnGateway object
+param networking_rg_hub_name string
 
 //RESOURCES
 resource res_networking_OnPrem_vpnGateway 'Microsoft.Network/virtualNetworkGateways@2019-11-01' existing = {
