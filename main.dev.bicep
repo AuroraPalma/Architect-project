@@ -178,6 +178,83 @@ param publicIpName string = 'pip-hub01-bastion-01'
 @description('The name of the Bastion host')
 param bastionHostName string = 'bas-azarc-hub01-bastion-shared-01'
 
+//KEY VAULT PARAMS
+
+@description('Specifies the name of the key vault.')
+param keyVaultName string = 'kvault-azarc-hub01-01'
+
+@description('Specifies whether Azure Virtual Machines are permitted to retrieve certificates stored as secrets from the key vault.')
+param enabledForDeployment bool = true
+
+@description('Specifies whether Azure Disk Encryption is permitted to retrieve secrets from the vault and unwrap keys.')
+param enabledForDiskEncryption bool = true
+
+@description('Specifies whether Azure Resource Manager is permitted to retrieve secrets from the key vault.')
+param enabledForTemplateDeployment bool = true
+
+@description('Specifies the Azure Active Directory tenant ID that should be used for authenticating requests to the key vault. Get it by using Get-AzSubscription cmdlet.')
+param tenantId string = subscription().tenantId
+
+@description('Specifies the object ID of a user, service principal or security group in the Azure Active Directory tenant for the vault. The object ID must be unique for the list of access policies. Get it by using Get-AzADUser or Get-AzADServicePrincipal cmdlets.')
+param objectId string = 'cd6fd6f1-a0c4-4402-8e74-dee66ddf5485'
+
+@description('Specifies the permissions to keys in the vault. Valid values are: all, encrypt, decrypt, wrapKey, unwrapKey, sign, verify, get, list, create, update, import, delete, backup, restore, recover, and purge.')
+param keysPermissions array = [
+  'all'
+]
+
+@description('Specifies the permissions to secrets in the vault. Valid values are: all, get, list, set, delete, backup, restore, recover, and purge.')
+param secretsPermissions array = [
+  'all'
+]
+
+@description('Specifies whether the key vault is a standard vault or a premium vault.')
+@allowed([
+  'standard'
+  'premium'
+])
+param skuName string = 'standard'
+
+@description('Specifies the name of the secret that you want to create.')
+param secretName string = 'lxm-password-datascience-spk01'
+param secretName_shared string = 'lxm-password-shared-hubonprem01'
+
+//LOG ANALYTICS PARAMS
+
+@description('Name of the workspace.')
+param workspaceName string = 'lg-azarc-analytics-hub01-001'
+
+@description('Pricing tier: PerGB2018 or legacy tiers (Free, Standalone, PerNode, Standard or Premium) which are not available to all customers.')
+@allowed([
+  'PerGB2018'
+  'Free'
+  'Standalone'
+  'PerNode'
+  'Standard'
+  'Premium'
+])
+param sku string = 'PerGB2018'
+@description('Number of days to retain data.')
+param retentionInDays int = 30
+
+//STORAGE PARAMS
+
+@minLength(3)
+@maxLength(24)
+param storageAccountName string = 'stazarcaccountshared01'
+@allowed([
+  'Standard_LRS'
+  'Standard_GRS'
+  'Standard_RAGRS'
+  'Standard_ZRS'
+  'Premium_LRS'
+  'Premium_ZRS'
+  'Standard_GZRS'
+  'Standard_RAGZRS'
+])
+param storageSKU string = 'Standard_LRS'
+
+//SCOPE
 targetScope = 'subscription'
 
 //RESOURCES
@@ -493,6 +570,9 @@ module mod_architectdev_Loganalytics_hub_Deploy 'modules/arc.dev.loganalytics.bi
   scope: res_elz_log_analytics_rg_name
   params:{
     location:deployment_location
+    sku:sku
+    retentionInDays:retentionInDays
+    workspaceName:workspaceName
   }
 }
 
@@ -541,6 +621,17 @@ module mod_architectdev_KeyVault_Hub_Deploy 'modules/arc.dev.keyvault.bicep' = {
     location:deployment_location
     secretValue: 'usr$Am1n-2223'
     secretValue_shared: 'Pa$$w0rd-007.'
+    enabledForDeployment:enabledForDeployment
+    enabledForDiskEncryption:enabledForDiskEncryption
+    enabledForTemplateDeployment:enabledForTemplateDeployment
+    keysPermissions:keysPermissions
+    keyVaultName:keyVaultName
+    objectId:objectId
+    secretName:secretName
+    secretName_shared:secretName_shared
+    secretsPermissions:secretsPermissions
+    skuName:skuName
+    tenantId:tenantId
   }
 }
 
@@ -549,6 +640,8 @@ module mod_architectdev_storage_Hub_Deploy 'modules/arc.dev.st.datasvc.bicep' = 
   scope: res_elz_storage_rg_hub01_name
   params: {
     location: deployment_location
+    storageAccountName:storageAccountName
+    storageSKU:storageSKU
   }
 }
 module mod_architectdev_Workload_spk01_Deploy 'modules/arc.dev.worload.spk.bicep' = {
