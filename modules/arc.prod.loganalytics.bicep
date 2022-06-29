@@ -2,8 +2,7 @@
 
 //PARAMS
 @description('Name of the workspace.')
-param workspaceName string = 'lg-azarc-analytics-prod-001'
-
+param workspaceName string
 @description('Pricing tier: PerGB2018 or legacy tiers (Free, Standalone, PerNode, Standard or Premium) which are not available to all customers.')
 @allowed([
   'PerGB2018'
@@ -13,13 +12,11 @@ param workspaceName string = 'lg-azarc-analytics-prod-001'
   'Standard'
   'Premium'
 ])
-param sku string = 'PerGB2018'
-
+param sku string
 @description('Specifies the location for the workspace.')
 param location string = resourceGroup().location
-
 @description('Number of days to retain data.')
-param retentionInDays int = 30
+param retentionInDays int
 
 //RESOURCES
 resource loganalyticsdev_resource 'Microsoft.OperationalInsights/workspaces@2021-12-01-preview' = {

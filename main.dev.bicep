@@ -220,7 +220,7 @@ param secretName string = 'lxm-password-datascience-spk01'
 param secretName_shared string = 'lxm-password-shared-hubonprem01'
 
 //LOG ANALYTICS PARAMS
-
+//Dev
 @description('Name of the workspace.')
 param workspaceName string = 'lg-azarc-analytics-hub01-001'
 
@@ -253,6 +253,10 @@ param storageAccountName string = 'stazarcaccountshared01'
   'Standard_RAGZRS'
 ])
 param storageSKU string = 'Standard_LRS'
+
+//Prod
+@description('Name of the workspace.')
+param workspaceName_prod string = 'lg-azarc-analytics-prod-001'
 
 //WORKLOAD
 //SPOKE 01 DEV PARAMS 
@@ -324,6 +328,48 @@ param adminPasswordOrKey string
 param storageSKU_spoke string = 'Standard_LRS'
 @description('Nombre de la aplicación o proyecto - Prefijo para el nombre de los recursos')
 param resourceName string = 'lxvm-data-science-dev'
+
+//SPOKE 02 PROD PARAMS
+@description('The name for the database')
+param databaseName_p string = 'Db-cosmos-prod-data-001'
+
+@description('The name for the container')
+param containerName_p string = 'dataingestioncosmos'
+
+@description('Username for Administrator Account')
+param adminUsername_p string = 'vmadmin'
+
+@description('The name of you Virtual Machine.')
+param vmName_p string = 'lxvm-azarc-science-prod-001'
+
+@description('Choose between CPU or GPU processing')
+@allowed([
+  'CPU-4GB'
+  'CPU-7GB'
+  'CPU-8GB'
+  'CPU-14GB'
+  'CPU-16GB'
+  'GPU-56GB'
+])
+param cpu_gpu_p string = 'CPU-4GB'
+
+param log_analytics_rg_name string = 'rg-azarc-analytics-monitor-01'
+@description('Name of the Network Security Group')
+param networkSecurityGroupName_p string = 'nsg-lxm-azarc-science-networking-02'
+
+@description('Type of authentication to use on the Virtual Machine. SSH key is recommended.')
+@allowed([
+  'sshPublicKey'
+  'password'
+])
+param authenticationType string = 'password'
+
+@description('SSH Key or password for the Virtual Machine. SSH key is recommended.')
+@secure()
+param adminPasswordOrKey_p string
+param storageSKU_p string = 'Standard_LRS'
+@description('Nombre de la aplicación o proyecto - Prefijo para el nombre de los recursos')
+param resourceName_p string = 'lxvm-data-science-prod'
 
 //SCOPE
 targetScope = 'subscription'
@@ -652,6 +698,9 @@ module mod_architectprod_Loganalytics_Deploy 'modules/arc.prod.loganalytics.bice
   scope: res_elz_log_analytics_rg_name
   params:{
     location:deployment_location
+    sku:sku
+    workspaceName:workspaceName_prod
+    retentionInDays:retentionInDays
   }
 }
 
@@ -751,6 +800,22 @@ module mod_architectprod_Workload_spk02_Deploy 'modules/arc.prod.worload.spk2.bi
     location:deployment_location
     networking_Spoke02:networking_Spoke02
     adminPasswordOrKey: 'usr$Am1n-2223'
+    elz_networking_rg_spk02_name:elz_networking_rg_spk02_name
+    adminUsername:adminUsername_p
+    automaticFailover:automaticFailover
+    containerName:containerName_p
+    cpu_gpu:cpu_gpu_p
+    databaseName:databaseName_p
+    defaultConsistencyLevel:defaultConsistencyLevel
+    log_analytics_rg_name:elz_log_analytics_rg_name
+    maxIntervalInSeconds:maxIntervalInSeconds
+    maxStalenessPrefix:maxStalenessPrefix
+    networkSecurityGroupName:networkSecurityGroupName_p
+    resourceName:resourceName_p
+    secondaryRegion:secondaryRegion
+    storageSKU:storageSKU_p
+    throughput:throughput
+    vmName:vmName_p
   }
   dependsOn:[
     mod_architectprod_Networking_Spk02_Deploy
