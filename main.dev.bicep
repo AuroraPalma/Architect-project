@@ -254,6 +254,77 @@ param storageAccountName string = 'stazarcaccountshared01'
 ])
 param storageSKU string = 'Standard_LRS'
 
+//WORKLOAD
+//SPOKE 01 DEV PARAMS 
+
+@description('The secondary replica region for the Cosmos DB account.')
+param secondaryRegion string = 'westeurope'
+
+@allowed([
+  'Eventual'
+  'ConsistentPrefix'
+  'Session'
+  'BoundedStaleness'
+  'Strong'
+])
+@description('The default consistency level of the Cosmos DB account.')
+param defaultConsistencyLevel string = 'Session'
+
+@minValue(10)
+@maxValue(2147483647)
+@description('Max stale requests. Required for BoundedStaleness. Valid ranges, Single Region: 10 to 1000000. Multi Region: 100000 to 1000000.')
+param maxStalenessPrefix int = 100000
+
+@minValue(5)
+@maxValue(86400)
+@description('Max lag time (minutes). Required for BoundedStaleness. Valid ranges, Single Region: 5 to 84600. Multi Region: 300 to 86400.')
+param maxIntervalInSeconds int = 300
+
+@allowed([
+  true
+  false
+])
+@description('Enable automatic failover for regions')
+param automaticFailover bool = true
+
+@description('The name for the database')
+param databaseName string = 'Db-cosmos-dev-data-001'
+
+@description('The name for the container')
+param containerName string = 'dataingestioncosmos'
+
+@minValue(400)
+@maxValue(1000000)
+@description('The throughput for the container')
+param throughput int = 400
+
+@description('Username for Administrator Account')
+param adminUsername string = 'vmadmin'
+
+@description('The name of you Virtual Machine.')
+param vmName string = 'lxvm-data-science-dev'
+
+@description('Choose between CPU or GPU processing')
+@allowed([
+  'CPU-4GB'
+  'CPU-7GB'
+  'CPU-8GB'
+  'CPU-14GB'
+  'CPU-16GB'
+  'GPU-56GB'
+])
+param cpu_gpu string = 'CPU-4GB'
+
+@description('Name of the Network Security Group')
+param networkSecurityGroupName string = 'nsg-lxm-data-science-networking-01'
+
+@description('SSH Key or password for the Virtual Machine. SSH key is recommended.')
+@secure()
+param adminPasswordOrKey string
+param storageSKU_spoke string = 'Standard_LRS'
+@description('Nombre de la aplicación o proyecto - Prefijo para el nombre de los recursos')
+param resourceName string = 'lxvm-data-science-dev'
+
 //SCOPE
 targetScope = 'subscription'
 
@@ -651,6 +722,21 @@ module mod_architectdev_Workload_spk01_Deploy 'modules/arc.dev.worload.spk.bicep
     location:deployment_location
     networking_Spoke01:networking_Spoke01
     adminPasswordOrKey: 'usr$Am1n-2223'
+    adminUsername:adminUsername
+    automaticFailover:automaticFailover
+    containerName:containerName
+    cpu_gpu:cpu_gpu
+    databaseName:databaseName
+    defaultConsistencyLevel:defaultConsistencyLevel
+    elz_networking_rg_spk01_name:elz_networking_rg_spk01_name
+    maxIntervalInSeconds:maxIntervalInSeconds
+    maxStalenessPrefix:maxStalenessPrefix
+    networkSecurityGroupName:networkSecurityGroupName
+    resourceName:resourceName
+    secondaryRegion:secondaryRegion
+    storageSKU:storageSKU_spoke
+    throughput:throughput
+    vmName:vmName
   }
   dependsOn: [
         mod_architectdev_Networking_Spk01_Deploy

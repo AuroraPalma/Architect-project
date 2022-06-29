@@ -11,7 +11,7 @@ param location string = resourceGroup().location
 param primaryRegion string = location
 
 @description('The secondary replica region for the Cosmos DB account.')
-param secondaryRegion string = 'westeurope'
+param secondaryRegion string
 
 @allowed([
   'Eventual'
@@ -21,41 +21,41 @@ param secondaryRegion string = 'westeurope'
   'Strong'
 ])
 @description('The default consistency level of the Cosmos DB account.')
-param defaultConsistencyLevel string = 'Session'
+param defaultConsistencyLevel string
 
 @minValue(10)
 @maxValue(2147483647)
 @description('Max stale requests. Required for BoundedStaleness. Valid ranges, Single Region: 10 to 1000000. Multi Region: 100000 to 1000000.')
-param maxStalenessPrefix int = 100000
+param maxStalenessPrefix int
 
 @minValue(5)
 @maxValue(86400)
 @description('Max lag time (minutes). Required for BoundedStaleness. Valid ranges, Single Region: 5 to 84600. Multi Region: 300 to 86400.')
-param maxIntervalInSeconds int = 300
+param maxIntervalInSeconds int
 
 @allowed([
   true
   false
 ])
 @description('Enable automatic failover for regions')
-param automaticFailover bool = true
+param automaticFailover bool
 
 @description('The name for the database')
-param databaseName string = 'Db-cosmos-dev-data-001'
+param databaseName string
 
 @description('The name for the container')
-param containerName string = 'dataingestioncosmos'
+param containerName string
 
 @minValue(400)
 @maxValue(1000000)
 @description('The throughput for the container')
-param throughput int = 400
+param throughput int
 
 @description('Username for Administrator Account')
-param adminUsername string = 'vmadmin'
+param adminUsername string
 
 @description('The name of you Virtual Machine.')
-param vmName string = 'lxvm-data-science-dev'
+param vmName string
 
 @description('Choose between CPU or GPU processing')
 @allowed([
@@ -66,21 +66,21 @@ param vmName string = 'lxvm-data-science-dev'
   'CPU-16GB'
   'GPU-56GB'
 ])
-param cpu_gpu string = 'CPU-4GB'
+param cpu_gpu string
 
 param networking_Spoke01 object
 
-param elz_networking_rg_spk01_name string = 'rg-azarc-spk01-networking-dev-01'
+param elz_networking_rg_spk01_name string
 
 @description('Name of the Network Security Group')
-param networkSecurityGroupName string = 'nsg-lxm-data-science-networking-01'
+param networkSecurityGroupName string
 
 @description('SSH Key or password for the Virtual Machine. SSH key is recommended.')
 @secure()
 param adminPasswordOrKey string
-param storageSKU string = 'Standard_LRS'
+param storageSKU string
 @description('Nombre de la aplicación o proyecto - Prefijo para el nombre de los recursos')
-param resourceName string = 'lxvm-data-science-dev'
+param resourceName string
 
 //VARIABLES
 var avSetName       = '${resourceName}-avset'
@@ -133,7 +133,9 @@ var vmSize = {
 }
 
 //RESOURCES
+
 //COSMOSDB
+
 resource account 'Microsoft.DocumentDB/databaseAccounts@2021-10-15' = {
   name: toLower(accountName)
   location: location
