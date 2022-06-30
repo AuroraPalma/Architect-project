@@ -4,7 +4,7 @@
 param location string = resourceGroup().location
 @minLength(3)
 @maxLength(24)
-param storageAccountName string
+param storageAccountName string = 'stazarcaccountshared01'
 @allowed([
   'Standard_LRS'
   'Standard_GRS'
@@ -15,7 +15,7 @@ param storageAccountName string
   'Standard_GZRS'
   'Standard_RAGZRS'
 ])
-param storageSKU string
+param storageSKU string = 'Standard_LRS'
 
 //RESOURCES
 resource stAccount_stmazneucordfbi_datasvc 'Microsoft.Storage/storageAccounts@2021-02-01' = {
