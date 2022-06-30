@@ -3,18 +3,31 @@
 //PARAMS
 param location string = resourceGroup().location
 /* /24 = 256 ips --> from 172.16.1.0 -to- 172.16.1.255 */
-param networking_OnPremises object
-param networking_deploy_OnPrem_VpnGateway bool
-param networking_OnPrem_vpnGateway object
-param lxvm_onprem_nic_name string
-param lxvm_onprem_nsg_name string
-param lxvm_onprem_machine_name string
-param lxvm_adminuser_onprem string
-param lxvm_adminpass_onprem string
-param lxvm_shutdown_name string
-@description('Write an email address to receive notifications when vm is running at 22:00')
-param email_recipient string
+param networking_OnPremises object = {
+  name: 'vnet-azarc-onpremises01'
+  addressPrefix: '172.16.1.0/24'
+  subnetTransitName: 'snet-onprem-transit'
+  subnetTransit: '172.16.1.0/26'
+}
 
+param networking_deploy_OnPrem_VpnGateway bool = true
+
+param networking_OnPrem_vpnGateway object = {
+  name: 'vgw-azarc-onprem-vgw01'
+  subnetName: 'GatewaySubnet'
+  subnetPrefix: '172.16.1.64/29'
+  pipName: 'pip-azarc-onprem-vgw01'
+}
+
+param lxvm_onprem_pip_name string = 'pip-azarc-onprem-lxvm1'
+param lxvm_onprem_nic_name string = 'nic-azarc-onprem-lxvmcheckcomms'
+param lxvm_onprem_nsg_name string = 'nsg-azarc-onprem-lxvmcheckcomms'
+param lxvm_onprem_machine_name string = 'lxvmonpnetcheck'
+param lxvm_adminuser_onprem string = 'admin77'
+param lxvm_adminpass_onprem string = 'Pa$$w0rd-007.'
+param lxvm_shutdown_name string = 'shutdown-computevm-lxvmonpnetcheck'
+@description('Write an email address to receive notifications when vm is running at 22:00')
+param email_recipient string = 'a.palma@htmedica.com'
 //RESOURCES
 resource res_networking_OnPremises 'Microsoft.Network/virtualNetworks@2020-05-01' = {
   name: networking_OnPremises.name
