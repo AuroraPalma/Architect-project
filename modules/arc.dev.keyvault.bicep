@@ -20,7 +20,7 @@ param enabledForTemplateDeployment bool = true
 param tenantId string = subscription().tenantId
 
 @description('Specifies the object ID of a user, service principal or security group in the Azure Active Directory tenant for the vault. The object ID must be unique for the list of access policies. Get it by using Get-AzADUser or Get-AzADServicePrincipal cmdlets.')
-param objectId string = 'cd6fd6f1-a0c4-4402-8e74-dee66ddf5485'
+param objectId string = 'ObjectID'
 
 @description('Specifies the permissions to keys in the vault. Valid values are: all, encrypt, decrypt, wrapKey, unwrapKey, sign, verify, get, list, create, update, import, delete, backup, restore, recover, and purge.')
 param keysPermissions array = [
@@ -53,7 +53,7 @@ resource kv 'Microsoft.KeyVault/vaults@2021-11-01-preview' = {
     enabledForDeployment: enabledForDeployment
     enabledForDiskEncryption: enabledForDiskEncryption
     enabledForTemplateDeployment: enabledForTemplateDeployment
-    enableSoftDelete: false /*soft delete true*/
+    enableSoftDelete: true /*soft delete true*/
     tenantId: tenantId
     accessPolicies: [
       {
