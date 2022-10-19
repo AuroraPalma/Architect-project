@@ -30,7 +30,7 @@ param lxvm_adminuser_hub string = 'admin77'
 param lxvm_adminpass_hub string = 'Pa$$w0rd-007.'
 param lxvm_shutdown_name string = 'shutdown-computevm-lxvmhubnetcheck'
 @description('Write an email address to receive notifications when vm is running at 22:00')
-param email_recipient string = 'a.palma@htmedica.com'
+param email_recipient string = 'your-email-account'
 
 //RESOURCES
 resource res_networking_Hub01 'Microsoft.Network/virtualNetworks@2020-05-01' = {
