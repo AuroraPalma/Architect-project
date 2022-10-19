@@ -10,7 +10,7 @@ param lxvm_adminuser_spk02 string = 'admin77'
 param lxvm_adminpass_spk02 string = 'Pa$$w0rd-007.'
 param lxvm_shutdown_name string = 'shutdown-computevm-lxvmspk02netcheck'
 @description('Write an email address to receive notifications when vm is running at 22:00')
-param email_recipient string = 'a.palma@htmedica.com'
+param email_recipient string = 'your-email-account'
 
 @allowed([
   'Standard_B1ls'
