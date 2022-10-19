@@ -1,7 +1,7 @@
 //MODULE ALERT RULES BICEP- AZURE ARCHITECT PROJECT
 
 //PARAMS
-param subscriptionid string = '/subscriptions/4c81b137-e05f-43f5-a271-e5a7c3ce6f74'
+param subscriptionid string = '/subscriptions/enter-your-subscription-ID'
 param activityLogAlerts_Alert_new_user_name string = 'Alert new user'
 param activityLogAlerts_Delete_subscription_name string = 'Delete subscription'
 param activityLogAlerts_Certificate_Key_vault_alert_name string = 'Certificate Key vault alert'
