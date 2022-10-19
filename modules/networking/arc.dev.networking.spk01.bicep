@@ -13,7 +13,7 @@ param lxvm_adminuser_spk01 string = 'admin77'
 param lxvm_adminpass_spk01 string = 'Pa$$w0rd-007.'
 param lxvm_shutdown_name string = 'shutdown-computevm-lxvmspk01netcheck'
 @description('Write an email address to receive notifications when vm is running at 22:00')
-param email_recipient string = 'a.palma@htmedica.com'
+param email_recipient string = 'your-email-account'
 //RESOURCES
 resource res_networking_Spk01 'Microsoft.Network/virtualNetworks@2020-05-01' = {
   name: networking_Spoke01.name
