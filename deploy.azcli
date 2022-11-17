@@ -10,7 +10,6 @@ Script de inicialización de recursos
 Nomenclatura:  
     rg: grupo de recursos
     asae: Azure Solutions Architect Expert
-    mlopez: usuario que realiza el proyecto
     elz01: Enterprise Landing Zone 01 (escalabilidad de las ELZ)
 */
 az group create --name rg-asae-mlopez-elz01 --location 'northeurope'
